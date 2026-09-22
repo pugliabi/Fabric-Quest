@@ -64,7 +64,7 @@ export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onTog
           <button type="button" className="mute inline" onClick={(e) => { e.stopPropagation(); onToggleMute(); }} aria-label={muted ? 'Unmute' : 'Mute'}>
             {muted ? '♪ off' : '♪ on'}
           </button>
-          Fabric&rsquo;s Quest
+          Fabric&rsquo;s Quest{state.flags.god ? ' ⚡' : ''}
         </span>
       </div>
       <ScenePanel room={room} sceneId={sceneId} state={state}>

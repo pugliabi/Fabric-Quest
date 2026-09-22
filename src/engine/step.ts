@@ -1,6 +1,7 @@
 import { parse } from './parser';
 import { pickSnark } from './snark';
 import * as B from './builtins';
+import { godStep } from './god';
 import type { GameState, Outcome, ParsedCommand, StepResult } from './types';
 import type { Rule, World } from '../world/types';
 
@@ -98,9 +99,14 @@ export function step(prev: GameState, input: string, world: World): StepResult {
   const base: GameState = { ...prev, turns: prev.turns + 1 };
   const lower = input.trim().toLowerCase();
 
+  // 0. God mode (undocumented). Checked first so nothing else can shadow it.
+  const parsedEarly = parse(input);
+  const god = godStep(base, lower, world, parsedEarly);
+  if (god) return god;
+
   // 1. Phrase rules (easter eggs / deaths that don't fit the verb-noun grammar).
   const phrase = world.phraseRules.find((p) => (!p.room || p.room === base.room) && p.test.test(lower));
-  const parsed = parse(input);
+  const parsed = parsedEarly;
   if (phrase) {
     const state = { ...base, dead: base.dead || !!phrase.death };
     return {

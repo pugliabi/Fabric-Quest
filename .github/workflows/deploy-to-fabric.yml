@@ -1,8 +1,21 @@
 name: Deploy to Fabric
 
-# Optional: deploys the Fabric App (schema + static) on demand with the service principal.
-# Add repository secrets CLIENT_ID, TENANT_ID, CLIENT_SECRET first.
+# Keeps the Fabric App (backend entities + static frontend) in lockstep with the GitHub Pages mirror:
+# every push to main runs this AND pages.yml, so one `git push` updates both hosts.
+# Needs repository secrets CLIENT_ID, TENANT_ID, CLIENT_SECRET (the Fabric API service principal).
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'rayfin/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'tsconfig.json'
+      - '.github/workflows/deploy-to-fabric.yml'
   workflow_dispatch:
     inputs:
       force:
@@ -13,6 +26,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: fabric-deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -29,7 +46,14 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - run: npm test
+      - name: Check secrets are present
+        run: |
+          if [ -z "$CLIENT_ID" ] || [ -z "$TENANT_ID" ] || [ -z "$CLIENT_SECRET" ]; then
+            echo "::error::Add repository secrets CLIENT_ID, TENANT_ID and CLIENT_SECRET (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
       - name: Login to Rayfin with the service principal
         run: npx rayfin login --service-principal -t "$TENANT_ID" -u "$CLIENT_ID" -p "$CLIENT_SECRET" --encryption-fallback-enabled
-      - name: Deploy
+      - name: Deploy app + schema to the FabricQuest workspace
         run: npx rayfin up --workspace "FabricQuest" --yes ${{ inputs.force && '--force' || '' }}

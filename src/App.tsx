@@ -183,6 +183,7 @@ export default function App({ recorder }: { recorder: Recorder }) {
         finishedAt={finishedAt}
         endingText={log.slice(-1)[0] ?? ''}
         recorder={recorder}
+        cheated={!!state.flags.god}
         onSubmit={submitScore}
         onPlayAgain={() => { clearSave(); setScreen('title'); setState(null); setSession(null); setLog([]); }}
       />

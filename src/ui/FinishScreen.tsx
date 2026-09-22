@@ -10,13 +10,15 @@ type Props = {
   finishedAt: string;
   endingText: string;
   recorder: Recorder;
+  /** True when the run used god mode — no Hall of Fame for burninators. */
+  cheated?: boolean;
   onSubmit: () => Promise<void>;
   onPlayAgain: () => void;
 };
 
 const fmt = (secs: number) => `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
 
-export function FinishScreen({ playerName, score, maxScore, turns, startedAt, finishedAt, endingText, recorder, onSubmit, onPlayAgain }: Props) {
+export function FinishScreen({ playerName, score, maxScore, turns, startedAt, finishedAt, endingText, recorder, cheated, onSubmit, onPlayAgain }: Props) {
   const elapsed = Math.max(0, Math.round((new Date(finishedAt).getTime() - new Date(startedAt).getTime()) / 1000));
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [hall, setHall] = useState<HallEntry[] | null>(null);
@@ -44,7 +46,9 @@ export function FinishScreen({ playerName, score, maxScore, turns, startedAt, fi
         <div>Score {score} / {maxScore} &middot; {turns} turns &middot; {fmt(elapsed)}</div>
       </div>
       <div className="buttons">
-        {recorder.live ? (
+        {cheated ? (
+          <span className="muted-note">Burninators are not eligible for the Hall of Fame.</span>
+        ) : recorder.live ? (
           <button type="button" onClick={submit} disabled={status === 'sending' || status === 'done'}>
             {status === 'done' ? 'Submitted!' : status === 'sending' ? 'Submitting…' : status === 'error' ? 'Try again' : 'Submit to Hall of Fame'}
           </button>

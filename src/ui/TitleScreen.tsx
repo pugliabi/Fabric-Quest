@@ -64,6 +64,7 @@ export function TitleScreen({ onStart, onRestore, savedName, muted, onToggleMute
             </button>
           )}
           <p className="credits">by Puglia BI &middot; a tribute to the text adventures of yore &middot; &copy; 2026</p>
+          <p className="credits">fabricquest.pugliabi.com &middot; built with Fabric Apps</p>
         </div>
         <div className="title-right" aria-hidden="true">
           <PixelHero />
