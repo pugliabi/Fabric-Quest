@@ -89,7 +89,7 @@ export default function App({ recorder }: { recorder: Recorder }) {
     seqRef.current += 1;
     const lines = [...log, `> ${trimmed}`, ...r.output];
     recorder.record({
-      questId: session.questId, seq: seqRef.current, stepId: r.stepId, roomId: r.state.room, rawInput: trimmed,
+      questId: session.questId, playerName: session.playerName, clientId: getClientId(), seq: seqRef.current, stepId: r.stepId, roomId: r.state.room, rawInput: trimmed,
       verb: r.parsed.verb, noun: [r.parsed.noun, r.parsed.noun2].filter(Boolean).join(' / ') || undefined,
       outcome: r.outcome, outputText: r.output.join('\n'), pointsAwarded: r.pointsAwarded, scoreAfter: r.state.score,
       turnsAfter: r.state.turns, flagsAfter: JSON.stringify(r.state.flags), occurredAt: new Date().toISOString(),

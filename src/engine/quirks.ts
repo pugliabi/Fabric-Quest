@@ -21,62 +21,77 @@ export function bangs(input: string): number {
 }
 
 const SHOUT_OK = [
-  'The exclamation mark helped. Probably.',
-  'Enthusiasm noted. The realm awards no points for enthusiasm, but it noticed.',
-  'It would also have worked quietly. But sure.',
-  'The narrator appreciates the energy.',
+  'Ye did it, and ye did it LOUDLY.',
+  'Whoa. Okay. It worked. No need to punch the keyboard.',
+  "The realm heard that in the back row. Result: the same. Everyone's awake now, though.",
+  'Enthusiasm accepted. Points unchanged. Volume logged.',
+  'Great job. Somebody get this peasant a cold one.',
 ];
 const SHOUT_NO = [
-  'Shouting does not change the parser\'s mind. It has been shouted at before.',
-  'The realm hears you. The realm is unmoved.',
-  'Volume is not a verb.',
-  'You said it louder. The result is the same, but louder.',
+  'Shouting at the parser has never once worked. The parser keeps a tally.',
+  "NO. Also no. See? Caps don't help me either.",
+  "The exclamation mark has been received and filed under 'not a verb.'",
+  "You holler. A peasant three rooms over hollers back 'WHAT?' That is the whole exchange.",
+  'Louder is not a synonym for correct. Ask any stakeholder.',
+  'Ye wish. Ye wish LOUDLY.',
+  'The system is not down. Your command is.',
   'Your exclamation mark echoes off the Lakehouse. Nothing echoes back.',
-  'Somewhere, a capacity admin flinches. That is all that happens.',
 ];
 const SHOUT_FLASK = [
-  'YE FLASK REMAINS UNGOTTEN. Louder now.',
-  'Ye cannot get ye flask, and the capitals do not help.',
-  'The flask hears you. The flask has heard everyone. The flask is tired.',
+  'YE FLASK IS UNMOVED BY YOUR CAPS LOCK.',
+  'Ye cannot get ye flask. Ye cannot shout ye flask either.',
+  'The flask has heard it all. It has heard it all in caps.',
+  'Ye wish! Ye wish at volume.',
 ];
 const SHOUT_CRUDE = [
-  'Shouting it does not make it hygienic.',
-  'Louder does not mean cleaner.',
-  'The exclamation mark has been added to the incident report.',
   'You announced it. Everyone in the realm now knows. Nobody wanted to.',
+  'Shouting it does not make it hygienic.',
+  'The exclamation mark has been added to the incident report.',
+  "Say it louder — the Duke's guards didn't catch that for the log.",
 ];
 const SHOUT_MANY = [
   'Three exclamation marks. The realm has opened a ticket.',
-  'That many exclamation marks is a P1. The realm will get back to you within four business days.',
-  'The punctuation budget for this quest is now exhausted.',
+  'That many exclamation marks is a P1. Response time: four business days.',
+  'The punctuation budget for this quest is exhausted. Refills at the Mill.',
+  '!!! is not in the sudoers file either.',
+  'Okay. OKAY. We heard you. So did the dragon.',
 ];
 
 const REPEAT_2 = [
-  'Same command, same room, same answer.',
-  'You try again. The realm tries the same answer again.',
-  'It went about the same as last time.',
+  "You try that again. The realm gives the same answer again. It's called consistency.",
+  'Same thing. You could type it a third time, but the narrator is begging you.',
   'Once more, with feeling. Still no.',
+  'Ye wish. Ye wished that already.',
+  "It's a parser, not a slot machine.",
+  "Nothing new. This isn't Excel — you can't fix it by clicking harder.",
 ];
 const REPEAT_3 = [
   'Third time. The realm is starting to suspect a load test.',
-  'You have now done this three times. The narrator is writing it down.',
-  'Three attempts. A lesser game would have crashed by now.',
+  'Three times. A lesser game would have crashed by now. This one is merely disappointed.',
+  'You have done this three times. The narrator is writing it down in a very small notebook.',
+  'Three. Three attempts. The dragon does not respect this.',
 ];
 const REPEAT_MANY = [
-  (n: number) => `That is ${n} times. Please consider a different verb.`,
+  (n: number) => `That's ${n} times. Please consider a different verb. Any verb.`,
   (n: number) => `${n} attempts. The realm admires your refresh schedule.`,
-  (n: number) => `Attempt ${n}. This is, technically, a retry policy.`,
+  (n: number) => `Attempt ${n}. This is, technically, a retry policy. It is not a good one.`,
+  (n: number) => `${n}. The number is ${n}. The peasant three rooms over just yelled 'STOP.'`,
+  (n: number) => `You have now typed that ${n} times. The Miller has started a pool on when you'll quit.`,
 ];
 const REPEAT_FLASK = [
   'Ye still cannot get ye flask.',
   'The flask is aware of you now.',
   'Ye flask has filed a complaint.',
   'Still a flask. Still ungettable. Still the best hint in the realm.',
+  'Ye wish! (Again.)',
+  'You probably WISH you could get that flask. The wish has been logged.',
 ];
 const REPEAT_LOOK = [
   'You look again. It has not changed. Neither have you.',
   'Still there. Still the same. Still a little sad.',
   'Nothing new since the last time you looked, four seconds ago.',
+  'Looking twice is free. Understanding remains full price.',
+  "It's not going to develop a plot if you stare at it.",
 ];
 
 function pick<T>(s: GameState, pool: T[], salt: number): T {

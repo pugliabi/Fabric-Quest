@@ -19,7 +19,7 @@ describe('chirps: shouting', () => {
   });
   it('get ye flask! gets the flask-specific reaction', () => {
     const { last } = play(['get ye flask!']);
-    expect(last.some((l) => /flask/i.test(l) && /louder|capitals|tired/i.test(l))).toBe(true);
+    expect(last.some((l) => /flask/i.test(l) && /caps|shout|volume/i.test(l))).toBe(true);
   });
   it('three or more marks get the ticket line', () => {
     const { last } = play(['dance!!!']);

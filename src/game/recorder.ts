@@ -3,7 +3,7 @@ import type { ProsQuestSchema } from '../../rayfin/data/schema';
 
 export type QuestStart = { questId: string; playerName: string; clientId: string; worldVersion: string; startedAt: string };
 export type ActivityRecord = {
-  questId: string; seq: number; stepId: string; roomId: string; rawInput: string; verb?: string; noun?: string;
+  questId: string; playerName: string; clientId: string; seq: number; stepId: string; roomId: string; rawInput: string; verb?: string; noun?: string;
   outcome: string; outputText: string; pointsAwarded: number; scoreAfter: number; turnsAfter: number; flagsAfter: string; occurredAt: string;
 };
 export type FinishRecord = { questId: string; playerName: string; score: number; turns: number; elapsedSeconds: number; finishedAt: string };
@@ -142,6 +142,8 @@ export class RayfinRecorder implements Recorder {
   private writeActivity(a: ActivityRecord): Promise<void> {
     return createBlind(() => this.client.data.Activity.create({
           quest_id: a.questId,
+          player_name: clip(a.playerName, 40),
+          client_id: a.clientId,
           seq: a.seq,
           step_id: clip(a.stepId, 80),
           room_id: clip(a.roomId, 80),

@@ -17,6 +17,16 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'death.swim-moat', test: /^(swim|dive|jump)\b.*(moat|in)?/, room: 'fortress.bridge', text: 'You dive into the Moat of T-SQL. It is deeper than it looks and made entirely of nested subqueries. You are still in there. You will always be in there.', death: 'death.swim-moat' },
 
   // ---- Classic verbs the parser was always going to be asked ----
+  // ---- Greetings from another realm (triggers only; the lines are ours) ----
+  { id: 'egg.fhqwhgads', test: /fhqwhgads/, text: 'Come on. Everybody. To the Lakehouse. That is the whole song now. It is not a good song.' },
+  { id: 'egg.system-down', test: /^the system is down/, text: 'The system is not down. It is throttled. There is a difference, and the dragon would like you to learn it.' },
+  { id: 'egg.deleted', test: /^deleted?!?$/, text: 'DELETED! …the command, that is. Your quest remains, regrettably, undeleted.' },
+  { id: 'egg.preeow', test: /^pre+e*ow/, text: 'That is the sound of a scheduled refresh starting. Or a floppy disk. Nobody alive remembers which.' },
+  { id: 'egg.throw-baby', test: /^throw (the )?baby/, text: 'There is no baby in this realm. This is a data platform. Please stop looking for one.' },
+  { id: 'egg.other-realm', test: /^(strong ?bad|homestar|the cheat|kerrek|jhonka|dennis|marzipan|coach z|bubs|pom pom|king of town|poopsmith)\b/, text: 'You call out a name from another realm. A monk looks up, briefly hopeful. Then no. Different realm. Different guy. Better computer.' },
+  { id: 'egg.beefy', test: /(consummate v|beefy arm|majesty)/, text: 'The dragon here has no beefy arm. He has an F2 and opinions.' },
+  { id: 'egg.email', test: /^(check )?(sb)?e-?mail\b/, text: 'You check your email. 47 unread. All of them are Jeff. All of them say "Excel?"' },
+  { id: 'egg.dos', test: /^(dir|ls|cd |cd$|reboot|ctrl.?alt.?del|format|defrag)\b/, text: 'This is not that kind of prompt. It is a worse kind.' },
   // ---- Bodily functions. The realm has a policy. ----
   {
     id: 'egg.pee',

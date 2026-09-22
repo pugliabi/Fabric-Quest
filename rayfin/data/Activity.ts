@@ -11,6 +11,10 @@ import { anonymous, authenticated, date, entity, int, text, uuid } from '@micros
 export class Activity {
   @uuid() id!: string;
   @text({ max: 64 }) quest_id!: string;
+  /** Who typed it — denormalized from Quest so this table stands on its own. */
+  @text({ max: 40, optional: true }) player_name?: string;
+  /** Random per-browser id (same across a player's quests on one device). */
+  @text({ max: 64, optional: true }) client_id?: string;
   @int() seq!: number;
   /** Rule id that fired, or the room id when none did (e.g. 'fortress.moat', 'village.square'). */
   @text({ max: 80 }) step_id!: string;
