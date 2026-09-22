@@ -39,7 +39,7 @@ function getCtx(): AudioContext | null {
   } catch { return null; }
 }
 
-export function setSfxMuted(m: boolean): void { muted = m; }
+export function setSfxMuted(m: boolean): void { muted = m; if (m) stopTheme(); }
 export function isSfxMuted(): boolean { return muted; }
 
 /** Must first be called from a user gesture (click/keypress) so the browser allows audio. */
@@ -77,3 +77,88 @@ export function cueForOutcome(outcome: string, pointsAwarded: number): Cue | nul
     default: return null;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Title theme — a looping 8-bit overture                                */
+/* ------------------------------------------------------------------ */
+
+const A2 = 110.0, C3b = 130.81, E2 = 82.41, F2 = 87.31, G2 = 98.0;
+const A5 = 880.0, B5 = 987.77, F5 = 698.46;
+const REST = 0;
+
+// Lead, in eighth notes: [freq, eighths]. Am – F – C – G (x2), Am – G – F – E, Am – F – C/G – Am.
+const THEME_LEAD: [number, number][] = [
+  [A4, 2], [E5, 2], [A5, 2], [G5, 1], [E5, 1],
+  [F5, 2], [E5, 1], [D5, 1], [C5, 2], [D5, 2],
+  [E5, 2], [C5, 2], [G5, 2], [E5, 2],
+  [D5, 3], [B4, 1], [G4, 2], [B4, 1], [D5, 1],
+  [A4, 2], [E5, 2], [A5, 2], [B5, 1], [A5, 1],
+  [G5, 2], [F5, 1], [E5, 1], [F5, 2], [A5, 2],
+  [G5, 2], [E5, 2], [C6, 2], [B5, 1], [G5, 1],
+  [A5, 2], [G5, 1], [F5, 1], [E5, 2], [D5, 2],
+  [C5, 2], [A4, 2], [E5, 4],
+  [D5, 2], [B4, 2], [G5, 4],
+  [C5, 2], [A4, 2], [F5, 2], [E5, 2],
+  [D5, 1], [C5, 1], [B4, 2], [E5, 4],
+  [A5, 2], [E5, 2], [C6, 2], [B5, 1], [A5, 1],
+  [G5, 3], [F5, 1], [E5, 2], [F5, 2],
+  [E5, 2], [G5, 2], [D5, 2], [B4, 2],
+  [A4, 6], [REST, 2],
+];
+// Bass roots per bar, one bar = 8 eighths; pattern R R 5 R  R R 5 5 (5 = fifth, an octave up feel).
+const THEME_BASS_ROOTS = [A2, F2, C3b, G2, A2, F2, C3b, G2, A2, G2, F2, E2, A2, F2, C3b, A2];
+const BASS_PATTERN = [0, 0, 7, 0, 0, 0, 7, 7]; // semitone offsets
+const EIGHTH = 0.19; // seconds — ~158 BPM
+
+let themeTimer: number | undefined;
+let themeNodes: AudioNode[] = [];
+let themeOn = false;
+
+function scheduleThemeLoop(ac: AudioContext, start: number): number {
+  let t = start;
+  for (const [freq, n] of THEME_LEAD) {
+    const dur = n * EIGHTH;
+    if (freq > 0) {
+      const osc = ac.createOscillator(); const g = ac.createGain();
+      osc.type = 'square'; osc.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0.09, t); g.gain.setValueAtTime(0.09, t + dur * 0.8); g.gain.exponentialRampToValueAtTime(0.001, t + dur - 0.01);
+      osc.connect(g).connect(ac.destination); osc.start(t); osc.stop(t + dur); themeNodes.push(osc);
+    }
+    t += dur;
+  }
+  let b = start;
+  for (const root of THEME_BASS_ROOTS) {
+    for (const semis of BASS_PATTERN) {
+      const osc = ac.createOscillator(); const g = ac.createGain();
+      osc.type = 'triangle'; osc.frequency.setValueAtTime(root * Math.pow(2, semis / 12), b);
+      g.gain.setValueAtTime(0.16, b); g.gain.exponentialRampToValueAtTime(0.001, b + EIGHTH * 0.9);
+      osc.connect(g).connect(ac.destination); osc.start(b); osc.stop(b + EIGHTH); themeNodes.push(osc);
+      b += EIGHTH;
+    }
+  }
+  return t; // end of the loop
+}
+
+/** Start the looping title theme. Safe to call repeatedly; needs a prior user gesture. */
+export function startTheme(): void {
+  if (muted || themeOn) return;
+  const ac = getCtx();
+  if (!ac) return;
+  themeOn = true;
+  const loop = (at: number) => {
+    if (!themeOn) return;
+    themeNodes = [];
+    const end = scheduleThemeLoop(ac, at);
+    themeTimer = window.setTimeout(() => loop(end), Math.max(0, (end - ac.currentTime) * 1000 - 250));
+  };
+  loop(ac.currentTime + 0.05);
+}
+
+export function stopTheme(): void {
+  themeOn = false;
+  if (themeTimer !== undefined) { window.clearTimeout(themeTimer); themeTimer = undefined; }
+  for (const n of themeNodes) { try { (n as OscillatorNode).stop(); } catch { /* already stopped */ } }
+  themeNodes = [];
+}
+
+export function isThemePlaying(): boolean { return themeOn; }

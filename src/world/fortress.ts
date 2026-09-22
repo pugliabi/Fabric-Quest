@@ -13,7 +13,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         ? 'The drawbridge is down. The Great Hall of Warehouse Fortress yawns north. The foothills are south.'
         : 'Warehouse Fortress. The drawbridge is up. A guard leans over the battlements. Below, the Moat of T-SQL glitters with semicolons. The foothills are south.',
     exits: { s: 'peaks.foothills', n: (s) => (s.flags['bridge.down'] ? 'fortress.hall' : null) },
-    items: ['drawbridge'],
+    items: ['drawbridge', 'moat'],
     npcs: ['guard'],
     scene: (s) => (s.flags['bridge.down'] ? 'fortress.bridge-down' : 'fortress.bridge'),
     flaskHint: (s) =>
@@ -62,7 +62,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     describe: () =>
       "The Great Hall. Long tables, all of them clustered columnstore. Guards line the walls. The Duke's chamber is north; a door east leads to the Pipeline Yard; the drawbridge is south.",
     exits: { s: 'fortress.bridge', n: 'fortress.throne', e: 'fortress.yard' },
-    items: [],
+    items: ['tables'],
     npcs: [],
     scene: () => 'fortress.hall',
     flaskHint: (s) => (s.flags['trial.moat'] ? 'East, the Pipeline Yard has two activities and a problem you can win by doing nothing.' : 'North. Insult the Duke properly and he will do the rest.'),
@@ -81,7 +81,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         ? "The Duke's chamber. The Duke pretends not to see you. You still smell like the moat. The hall is south."
         : "The Duke's chamber. The Duke of Warehouse sits on a throne of stacked schemas. He speaks only in JOINs. The hall is south.",
     exits: { s: 'fortress.hall' },
-    items: [],
+    items: ['throne'],
     npcs: ['duke'],
     scene: () => 'fortress.throne',
     flaskHint: (s) => (s.flags['trial.moat'] ? 'You have the smell. Nothing more for you here.' : 'Say the two-word query every warehouse lord despises. Star is involved.'),

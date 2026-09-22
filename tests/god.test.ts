@@ -49,6 +49,15 @@ describe('god mode (burninate)', () => {
     expect(r.last).toContain('taken.model = true');
   });
 
+  it('normal play keeps working while burninating — rules, points, movement, easter eggs', () => {
+    const r = run(['burninate', 'get mug', 'out', 'read board', 'give mug to jeff', 'warp mill', 'talk to miller', 'get ye flask']);
+    expect(r.s.flags.god).toBe(true);
+    expect(r.s.score).toBe(15); // prophecy +5, credentials +10 — awarded exactly as without god mode
+    expect(r.s.inventory).toContain('credentials');
+    expect(r.s.room).toBe('village.mill');
+    expect(r.last.length).toBeGreaterThan(0); // the flask still answers
+  });
+
   it('every step is logged as meta with a god.* step id', () => {
     let s = newGame(WORLD, 1);
     for (const c of ['burninate', 'rooms', 'prompts', 'flags']) {

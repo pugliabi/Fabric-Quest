@@ -55,7 +55,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
     describe: () =>
       'The Throttling Pass. Every step takes longer than the last. The air is thin and billed per second. The Bursting Ledge is north; the foothills, west.',
     exits: { w: 'peaks.foothills', n: 'peaks.ledge' },
-    items: [],
+    items: ['rocks'],
     npcs: [],
     scene: () => 'peaks.pass',
     onEnter: (s) => (s.worn.includes('boots') ? 'You burst through the Pass.' : 'Your every movement is throttled.'),

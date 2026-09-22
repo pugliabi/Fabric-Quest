@@ -78,7 +78,7 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.plot', test: /^(plot|graph|chart|visualize|make a chart)\b/, text: 'You make a chart. It is a pie chart. It has 31 slices. The realm looks away.' },
   { id: 'egg.publish', test: /^(publish|deploy|ship)\b/, text: 'You publish. A dialog asks: "Replace existing?" You have never been more afraid of a Yes button.' },
   { id: 'egg.git', test: /^git\b/, text: "The realm does not have version control. The realm has 'Sales_v3_FINAL_final2.pbix'." },
-  { id: 'egg.dragon-name', test: /^(trogdor|burninate)\b/, text: 'A different dragon. A different realm. This one only throttles.' },
+  { id: 'egg.dragon-name', test: /^trogdor\b/, text: 'A different dragon. A different realm. This one only throttles.' },
   { id: 'egg.boo', test: /^(boo|scare|spook)\b/, text: 'Boo. Nobody is scared. The realm has seen a 400-column table.' },
   { id: 'egg.dad', test: /^(who are you|who is this|narrator)\b/, text: 'I am the narrator. I have watched eleven thousand Report Builders die in the Bronze Marsh. You are not special. You are, so far, alive.' },
   { id: 'egg.magic', test: /^(cast|abracadabra|magic|spell|alakazam)\b/, text: 'You cast a spell. It is CALCULATETABLE. Nothing in the realm is prepared for it, least of all you.' },

@@ -60,7 +60,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
     describe: () =>
       "The cloister. Monks pace in circles, each murmuring the same phrase: 'spark dot read, spark dot read.' The Abbot stands at the center. The Spark Session Chamber is east; the Library, west; the gate, south.",
     exits: { s: 'monastery.gate', e: 'monastery.spark', w: 'monastery.library' },
-    items: [],
+    items: ['floor'],
     npcs: ['abbot'],
     scene: () => 'monastery.cloister',
     flaskHint: (s) =>
@@ -134,7 +134,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
       (s.flags['scroll.lent'] ? ' The case is open and empty.' : ' Inside the case: the Spark Scroll.') +
       ' The cloister is east.',
     exits: { e: 'monastery.cloister' },
-    items: [],
+    items: ['shelves', 'case'],
     npcs: ['librarian'],
     scene: (s) => (s.flags['scroll.lent'] ? 'monastery.library-open' : 'monastery.library'),
     flaskHint: (s) => (s.flags['scroll.lent'] ? 'Read the scroll. Then east, then east again.' : 'Show the Librarian your license. It is, technically, a card.'),

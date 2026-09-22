@@ -169,6 +169,7 @@ export default function App({ recorder }: { recorder: Recorder }) {
         savedName={savedGame?.playerName}
         muted={muted}
         onToggleMute={toggleMute}
+        recorder={recorder}
       />
     );
   }

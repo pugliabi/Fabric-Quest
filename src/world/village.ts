@@ -10,7 +10,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       (s.flags['taken.mug'] ? ' The desk looks lonely without the mug.' : ' A mug sits on the desk.') +
       ' The door is out, to the east.',
     exits: { out: 'village.square', e: 'village.square' },
-    items: ['report', 'mug'],
+    items: ['report', 'mug', 'bed', 'candle', 'desk', 'window', 'cottage-door'],
     npcs: [],
     scene: () => 'village.cottage',
     flaskHint: (s) => (s.flags['taken.mug'] ? 'The village square is out the door. Read what you find there.' : 'Take the mug. Someone in the square will want it.'),
@@ -27,8 +27,33 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       },
       {
         id: 'cottage.sleep',
-        when: { verb: 'use', noun: ['bed', 'candle', 'desk'] },
-        then: { text: 'Not now. There is a dragon.', outcome: 'fail' },
+        when: { verb: 'use', noun: ['bed', 'cot', 'bunk', 'blanket', 'pillow'] },
+        then: { text: 'You lie down. Not now. There is a dragon. Also the 2 AM refresh would run across your face.', outcome: 'fail' },
+      },
+      {
+        id: 'cottage.candle',
+        when: { verb: 'use', noun: ['candle', 'light', 'flame', 'wax'] },
+        then: { text: 'You hold the candle up. The room gets no bigger. The report gets no shorter.', outcome: 'fail' },
+      },
+      {
+        id: 'cottage.desk',
+        when: { verb: 'use', noun: ['desk', 'table', 'workbench', 'workstation'] },
+        then: { text: 'You sit at the desk and open the report. Page 12 is still a pie chart with 31 slices. You close the report. Somewhere, a dragon throttles.', outcome: 'fail' },
+      },
+      {
+        id: 'cottage.window',
+        when: { verb: 'use', noun: ['window', 'glass', 'shutters'] },
+        then: { text: 'You open the window. Jeff from Finance, in the square, looks up hopefully. You close the window.', outcome: 'fail' },
+      },
+      {
+        id: 'cottage.open-window',
+        when: { verb: 'open', noun: ['window', 'glass', 'shutters'] },
+        then: { text: 'You open the window. Jeff from Finance, in the square, looks up hopefully. You close the window.', outcome: 'fail' },
+      },
+      {
+        id: 'cottage.open-door',
+        when: { verb: 'open', noun: ['door', 'front door', 'exit door'] },
+        then: { text: 'It is already open. It is always open. Try: out.', outcome: 'fail' },
       },
     ],
   }),
@@ -91,7 +116,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       'The Dataflow Gen1 Mill. The wheel still turns, slowly, powered by a scheduled refresh nobody has touched since 2019. A banner reads: DECOMMISSION: Q3.' +
       (s.flags['has.credentials'] ? ' The chest marked CREDENTIALS is empty.' : ' The Miller sits by a chest marked CREDENTIALS.'),
     exits: { s: 'village.square' },
-    items: [],
+    items: ['wheel', 'banner', 'chest'],
     npcs: ['miller'],
     scene: () => 'village.mill',
     flaskHint: (s) => (s.flags['has.credentials'] ? 'Someone on the water has been waiting for those credentials.' : 'Talk to the Miller, or just open the chest. He will not stop you.'),
@@ -132,7 +157,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
     describe: () =>
       'The Refresh Fields. Rows of refreshes sway in the wind, most of them failed. A scarecrow named Manual keeps the birds off. East, the land rises toward the Capacity Peaks; the square is west.',
     exits: { w: 'village.square', e: 'peaks.foothills' },
-    items: [],
+    items: ['crops'],
     npcs: ['scarecrow', 'jeff'],
     scene: () => 'village.fields',
     flaskHint: () => 'East are the Peaks — and, north of the foothills, a fortress. But the Shrine wants three things first.',

@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import type { Room } from '@/world/types';
 import type { GameState } from '@/engine/types';
 import { DrawnScene, SCENES } from '@/scenes';
+import { GodDragon, H, W } from '@/scenes/kit';
 
 const REGION_BG: Record<Room['region'], [string, string]> = {
   village: ['#aa5500', '#ffff55'],
@@ -42,6 +43,11 @@ export function ScenePanel({ room, sceneId, state, children }: { room: Room; sce
           <div className="scene-region">{room.region.toUpperCase()}</div>
           <div className="scene-name">{room.name}</div>
         </div>
+      )}
+      {state.flags.god && (
+        <svg className="scene-svg scene-overlay" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+          <GodDragon />
+        </svg>
       )}
       {children}
     </div>

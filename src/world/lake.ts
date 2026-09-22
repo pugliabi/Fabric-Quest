@@ -90,7 +90,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       (s.flags['taken.personal key'] ? ' The PERSONAL key is gone.' : '') +
       ' The boat waits to take you back west.',
     exits: { w: 'lake.dock' },
-    items: ['personal key', 'standard key'],
+    items: ['personal key', 'standard key', 'plinth', 'plaque'],
     npcs: [],
     scene: () => 'lake.island',
     flaskHint: (s) => (s.flags['trial.key'] ? 'Board the boat back. Two trials remain, unless they don\'t.' : 'One key works for everyone. The other works for one person with an open laptop. Choose like a grown-up.'),
@@ -128,7 +128,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
     describe: () =>
       "The Bronze Marsh. Raw data pools in every footprint. Nothing has a type. Nothing has a name. A CSV floats by with 'Column1, Column2, Column3' on its face. The shore is north; the marsh silvers to the south.",
     exits: { n: 'lake.shore', s: 'swamp.silver' },
-    items: ['water'],
+    items: ['water', 'csv'],
     npcs: [],
     scene: () => 'swamp.bronze',
     flaskHint: () => 'Do not drink here. Keep going south until things have names.',

@@ -481,3 +481,36 @@ export function Scarecrow({ x, y }: { x: number; y: number }) {
 export function Label({ x, y, text, color = EGA.white, size = 7 }: { x: number; y: number; text: string; color?: string; size?: number }) {
   return <text x={x} y={y} fontSize={size} fontFamily="'Press Start 2P', monospace" fill={color}>{text}</text>;
 }
+
+/* ------------------------------------------------------------------ */
+/* God mode                                                             */
+/* ------------------------------------------------------------------ */
+
+// A small dragon, facing left, burninating. Original sprite; not the one at the Shrine.
+const GOD_DRAGON_ROWS = [
+  '....................kk............',
+  '...................kGGk...........',
+  '..................kGGGGk..........',
+  '..........kkkk...kGGGGGGk.........',
+  '.........kGGGGk.kGGGGGGGGk........',
+  '........kGyGGGGkGGGGGGGGGGk.......',
+  '....YY.kGGGGGGGGGGGGGGGGGGGk......',
+  '..YYRRkGkkkGGGGGGGGGGGGGGGGGk.....',
+  'YYRRRRkGGGGGGGGGGGGGGGGGGGGGGk....',
+  '.YYRRRkGGGGGGGGGGGGGGGGGGGGGGGk...',
+  '...YYRkGGGGGGGGGkkkkGGGGGGkGGGGk..',
+  '......kGGGGGGGGk....kGGGGkk.kGGGk.',
+  '.......kkGGGGk.......kGGk....kGGGk',
+  '.........kGkGk.......kGkGk....kkkk',
+  '.........kk.kk.......kk.kk........',
+];
+
+/** The burninating dragon that hangs in the sky while god mode is on. */
+export function GodDragon({ x = 186, y = 6, px = 2 }: { x?: number; y?: number; px?: number }) {
+  return (
+    <>
+      <Sprite rows={GOD_DRAGON_ROWS} pal={{ k: EGA.black, G: EGA.green, y: EGA.yellow, Y: EGA.yellow, R: EGA.lred }} x={x} y={y} px={px} />
+      <Label x={x + 8} y={y + 40} text="burninating" color={EGA.yellow} size={5} />
+    </>
+  );
+}

@@ -12,6 +12,11 @@ Play at **[fabricquest.pugliabi.com](https://fabricquest.pugliabi.com)**.
 2. The title screen asks **ENTER YOUR NAME, PEASANT:** Type a name (up to 40 characters) and press Enter. This is
    the name that goes on the Hall of Fame if you finish.
 3. If you played before in this browser, a **Restore …'s game** link appears under the prompt.
+4. **VIEW HIGH SCORES** shows the public Hall of Fame (top 20; a score of zero doesn't make the board).
+   **ABOUT THE GAME** has the short version of why this exists and links to the code, the blog, the podcast and
+   Tommy's profiles.
+
+The title screen plays a looping 8-bit theme once you've clicked; the `SFX` toggle silences it.
 
 The screen is laid out the way Sierra did it in 1987: a white **status bar** with your score, the **scene** of the
 room you're in, a **text window** with the narration, and the `>` **prompt** at the bottom. Blue-bordered

@@ -39,6 +39,7 @@ input { font-family: var(--font-mono); }
 .scene { width: 100%; max-width: var(--scene-w); aspect-ratio: 4 / 3; position: relative; overflow: hidden; margin: 0 auto; flex: 0 0 auto; }
 .statusbar, .prompt { flex: 0 0 auto; }
 .scene-svg { display: block; width: 100%; height: 100%; }
+.scene-overlay { position: absolute; inset: 0; pointer-events: none; }
 .statusbar { max-width: var(--scene-w); width: 100%; margin-left: auto; margin-right: auto; }
 .scene-img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; display: block; }
 .scene-placeholder {
@@ -87,6 +88,24 @@ input { font-family: var(--font-mono); }
 @keyframes blink { to { visibility: hidden; } }
 .restore-link { margin-top: 18px; background: none; border: 2px solid var(--ega-cyan); color: var(--ega-cyan); padding: 8px 10px; align-self: flex-start; font-size: 9px; }
 .credits { font-family: var(--font-pixel); font-size: 8px; color: var(--ega-dgray); margin-top: 40px; line-height: 1.8; }
+.credits + .credits { margin-top: 0; }
+.title-menu { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.menu-btn { background: none; border: 2px solid var(--ega-yellow); color: var(--ega-yellow); padding: 8px 10px; font-size: 9px; cursor: pointer; }
+.menu-btn:hover, .menu-btn:focus-visible { background: var(--ega-yellow); color: var(--ega-black); outline: none; }
+.title-panel-wrap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(0, 0, 0, 0.55); z-index: 5; }
+.title-panel { background: var(--ega-black); border: 4px double var(--ega-white); box-shadow: 0 0 0 4px var(--ega-blue); color: var(--ega-white); font-family: var(--font-pixel); font-size: 9px; line-height: 1.9; padding: 18px 20px; max-width: 560px; width: 100%; max-height: 85dvh; overflow: auto; }
+.title-panel h2 { font-size: 12px; margin: 0 0 12px; color: var(--ega-yellow); }
+.title-panel p { margin: 0 0 10px; }
+.title-panel .muted-note { font-size: 9px; }
+.hall-list { list-style: none; padding: 0; margin: 0; }
+.hall-list li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dotted var(--ega-dgray); padding: 4px 0; }
+.about-grid { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; margin-bottom: 8px; }
+.about-portrait { image-rendering: pixelated; border: 3px solid var(--ega-white); background: var(--ega-black); }
+.about-links { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }
+.about-links a { color: var(--ega-cyan); text-decoration: none; }
+.about-links a:hover { text-decoration: underline; }
+.panel-close { margin-top: 14px; background: none; border: 2px solid var(--ega-white); color: var(--ega-white); padding: 6px 10px; font-size: 9px; cursor: pointer; }
+@media (max-width: 520px) { .about-grid, .about-links { grid-template-columns: 1fr; } }
 .hero { width: 160px; height: auto; display: block; }
 
 /* ---------- death card ---------- */
