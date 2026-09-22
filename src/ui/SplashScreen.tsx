@@ -70,19 +70,6 @@ function Ball({ px = 6 }: { px?: number }) {
   );
 }
 
-/** The pitcher, 12×16: a figure with the throwing arm out to the left. */
-const PITCHER = [
-  '.....kkk....', '....kwwwk...', '....kwwwk...', '.....kwk....', '....kwwwk...', 'kkkkwwwwwk..', 'kwwwkwwwkwk.', 'kkk.kwk.kwk.',
-  '.....kwk....', '....kwwwk...', '...kwk.kwk..', '...kwk.kwk..', '...kwk.kwk..', '...kwk.kwk..', '...kk...kk..', '............',
-];
-function Pitcher({ px = 6 }: { px?: number }) {
-  return (
-    <svg viewBox={`0 0 ${12 * px} ${16 * px}`} width={12 * px} height={16 * px} shapeRendering="crispEdges" aria-hidden="true">
-      {PITCHER.flatMap((row, y) => [...row].map((c, x) => (c === '.' ? null : <rect key={`${x}-${y}`} x={x * px} y={y * px} width={px} height={px} fill={c === 'k' ? '#000' : '#fff'} />)))}
-    </svg>
-  );
-}
-
 function Runner({ frame, px = 6 }: { frame: 0 | 1; px?: number }) {
   const rows = frame === 0 ? RUN_A : RUN_B;
   return (
@@ -130,7 +117,7 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
   if (t >= PITCH_START && t < CONTACT) {
     // pitched: straight in from the right edge to the bat, at bat height
     const p = (t - PITCH_START) / (CONTACT - PITCH_START);
-    ballLeft = 90 - p * 76; ballTop = 52 + Math.sin(p * Math.PI) * 4; ballVisible = true;
+    ballLeft = 100 - p * 86; ballTop = 52 + Math.sin(p * Math.PI) * 4; ballVisible = true;
   } else if (t >= CONTACT && t < CONTACT + 0.5) {
     // hit: up and away over the wordmark
     const p = (t - CONTACT) / 0.5;
@@ -162,7 +149,6 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
         ) : (
           <div className="runner" style={{ left: 0 }}><Batter frame={phase === 'swing' ? 1 : 0} /></div>
         )}
-        {t < RUN + 0.35 && <div className="runner pitcher" style={{ right: 0 }}><Pitcher /></div>}
         {ballVisible && <div className="ball" style={{ left: `${ballLeft}%`, top: `${ballTop}%` }}><Ball /></div>}
       </div>
     </div>

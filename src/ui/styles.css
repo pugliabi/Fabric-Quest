@@ -169,7 +169,6 @@ input { font-family: var(--font-mono); }
 .wordmark-presents { position: absolute; left: 50%; top: 80%; transform: translateX(-50%); font-family: var(--font-pixel); font-size: 9px; color: var(--ega-gray); }
 .runner { position: absolute; top: 36%; }
 .ball { position: absolute; }
-.pitcher { left: auto; }
 @media (prefers-reduced-motion: reduce) { .runner { transition: none; } .blink, .msgbox-hint, .boot-line.blink { animation: none; } }
 @media (max-width: 520px) { .wordmark-big, .wordmark-small { font-size: 22px; } .logo-mark { width: 52px; height: 36px; } .msgbox { font-size: 8px; padding: 10px; } }
 
