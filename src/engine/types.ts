@@ -30,6 +30,8 @@ export type GameState = {
   won: boolean;
   /** Deterministic seed for snark rotation; derived from the quest id. */
   seed: number;
+  /** Last command (normalized), where it was typed, and how many times in a row. Drives the repeat quirks. */
+  recent?: { input: string; room: string; n: number };
 };
 
 export type StepResult = {

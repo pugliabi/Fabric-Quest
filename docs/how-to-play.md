@@ -138,6 +138,13 @@ remembered.
 - Check `inventory` — you start with something useful already in your pocket.
 - The [README hints](../README.md#hints) are spoiler-light; the [ledger](ledger.md) is the full walkthrough.
 
+## The narrator talks back
+
+Shout a command (`get ye flask!`) and the narrator has something to say about the volume. Repeat a command that
+didn't work — same room, same words — and it notices, and keeps noticing. Type the sort of thing people type
+into text adventures when nobody is watching and the realm has a policy about that, adjusted for where you are
+standing. Most "that doesn't work" answers rotate rather than repeat.
+
 ## Things the narrator has opinions about
 
 Typing the following is safe (mostly) and rewarded with commentary: `export to excel`, `ask copilot`, `refresh`,

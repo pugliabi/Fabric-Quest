@@ -17,6 +17,24 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'death.swim-moat', test: /^(swim|dive|jump)\b.*(moat|in)?/, room: 'fortress.bridge', text: 'You dive into the Moat of T-SQL. It is deeper than it looks and made entirely of nested subqueries. You are still in there. You will always be in there.', death: 'death.swim-moat' },
 
   // ---- Classic verbs the parser was always going to be asked ----
+  // ---- Bodily functions. The realm has a policy. ----
+  {
+    id: 'egg.pee',
+    test: /^(pee|piss|wee|urinate|take a (leak|whiz)|relieve myself|go to the bathroom|go potty)\b/,
+    text: (s, w) => {
+      const region = w.rooms[s.room]?.region;
+      if (region === 'lake') return 'You relieve yourself into the OneLake. Somewhere, a lineage view updates. It has your name on it.';
+      if (region === 'swamp') return 'The marsh does not notice. The marsh has seen worse. The marsh is worse.';
+      if (region === 'monastery') return 'The monks pause their chanting. Then resume, slightly faster.';
+      if (region === 'fortress') return 'The guards write it down. Everything in the Warehouse is logged, and this now has a row.';
+      if (region === 'peaks') return 'It freezes instantly. It is billed per second until it thaws.';
+      if (s.room === 'village.cottage') return 'In your own workspace? There is a well outside. Show some governance.';
+      return 'In the square? Jeff from Finance looks up, mildly impressed, then goes back to waiting for his export.';
+    },
+  },
+  { id: 'egg.poop', test: /^(poop|poo|crap|defecate|take a (dump|poop|crap)|number two)\b/, text: 'You leave a small unstructured file. It will be ingested on Monday, by someone who did not sign up for this.' },
+  { id: 'egg.fart', test: /^(fart|toot|break wind|pass gas)\b/, text: 'A small burst of Spark. Nobody claims it. The session timer restarts.' },
+  { id: 'egg.puke', test: /^(spit|vomit|puke|throw up|barf|hurl)\b/, text: 'You add to the data lake. Quality, as always, varies by source.' },
   { id: 'egg.sudo', test: /^sudo\b/, text: 'You are not in the sudoers file. This incident will be reported to your capacity admin.' },
   { id: 'egg.excel', test: /export.*excel|^excel\b|to excel|analyze in excel/, text: 'The game exports itself to Excel. 1,048,576 rows later, it stops. Nothing has changed.' },
   { id: 'egg.calculate', test: /^calculate\b/, text: 'CALCULATE what? Context is everything.' },
@@ -72,7 +90,7 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.hello', test: /^(hello|hi|hey|yo|sup|greetings)\b/, text: 'The realm does not say hello back. The realm is busy refreshing.' },
   { id: 'egg.thanks', test: /^(thanks|thank you|ty)\b/, text: 'You are welcome. This is the first gratitude the realm has received since 2019. It does not know what to do with it.' },
   { id: 'egg.sorry', test: /^(sorry|apologize|my bad)\b/, text: 'Apology logged. Outcome: no change. Same as every retrospective.' },
-  { id: 'egg.swear', test: /\b(damn|hell|crap|wtf|ffs)\b/, text: 'Language, peasant. This is a governed tenant.' },
+  { id: 'egg.swear', test: /\b(damn|hell|crap|wtf|ffs|fuck|shit)\b/, text: 'Language, peasant. This is a governed tenant. The narrator has a certification and would like to keep it.' },
   { id: 'egg.please', test: /^please\b/, text: 'Manners will not help you here. Two words. Verb, noun.' },
   { id: 'egg.what', test: /^(what|huh|wat|what now|what do i do)\??$/, text: "What indeed. Try 'look'. Try 'help'. Try, as a last resort, 'get ye flask'." },
   { id: 'egg.plot', test: /^(plot|graph|chart|visualize|make a chart)\b/, text: 'You make a chart. It is a pie chart. It has 31 slices. The realm looks away.' },
