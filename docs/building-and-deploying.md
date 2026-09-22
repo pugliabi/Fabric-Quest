@@ -174,6 +174,12 @@ in flight at a time, so a small capacity isn't hammered. God-mode turns (see bel
 To analyze it, add a **OneLake shortcut** to the app's SQL database from a Lakehouse (or query the SQL endpoint
 directly), and you have a ready-made fact table (`Activities`) with two dimensions (`Quests`, `HallOfFames`).
 
+### The board's launch cutoff
+
+`HALL_OPENED` in `src/game/recorder.ts` is the public-launch timestamp; Hall of Fame queries filter
+`finished_at >= HALL_OPENED` and `score > 0`, so pre-launch test rows stay in the database (useful data) but never
+show on the board. Move the date to reset the board without deleting anything.
+
 ### Housekeeping
 
 Anonymous callers can only insert, so test rows are removed by hand in the database's query editor:

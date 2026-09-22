@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { play, startTheme, stopTheme } from '@/game/sfx';
-import type { HallEntry, Recorder } from '@/game/recorder';
+import { isThemePlaying, play, startTheme, stopTheme } from '@/game/sfx';
+import { HALL_SIZE, type HallEntry, type Recorder } from '@/game/recorder';
 import { PixelHero } from './PixelHero';
 
 type Props = {
@@ -35,19 +35,20 @@ export function TitleScreen({ onStart, onRestore, savedName, muted, onToggleMute
   const [hallStatus, setHallStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const input = useRef<HTMLInputElement>(null);
 
-  // The jingle waits for the first click/keypress so autoplay policy is satisfied; then the theme loops.
+  // The boot click already unlocked audio, so the theme starts the moment the title screen appears.
+  // It follows the mute toggle and stops when the title screen goes away.
+  useEffect(() => {
+    if (muted) { stopTheme(); return; }
+    startTheme();
+    return () => stopTheme();
+  }, [muted]);
+
   const arm = () => {
-    if (!armed) { setArmed(true); play('title'); }
+    if (!armed) { setArmed(true); if (!muted && !isThemePlaying()) startTheme(); } // in case audio was locked until now
     if (panel === 'none') input.current?.focus();
   };
 
   useEffect(() => { input.current?.focus(); }, []);
-  // The theme follows the mute toggle and stops when the title screen goes away.
-  useEffect(() => {
-    if (!armed || muted) { stopTheme(); return; }
-    const t = window.setTimeout(startTheme, 1400); // let the jingle finish first
-    return () => { window.clearTimeout(t); stopTheme(); };
-  }, [armed, muted]);
 
   const openScores = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -55,8 +56,8 @@ export function TitleScreen({ onStart, onRestore, savedName, muted, onToggleMute
     if (hallStatus === 'idle' || hallStatus === 'error') {
       setHallStatus('loading');
       try {
-        const rows = await recorder.hallOfFame(30);
-        setHall(rows.filter((r) => r.score > 0).slice(0, 20)); // zeros don't count
+        const rows = await recorder.hallOfFame(HALL_SIZE);
+        setHall(rows.filter((r) => r.score > 0).slice(0, HALL_SIZE)); // zeros don't count
         setHallStatus('done');
       } catch { setHallStatus('error'); }
     }
@@ -65,6 +66,8 @@ export function TitleScreen({ onStart, onRestore, savedName, muted, onToggleMute
   const start = () => {
     const n = name.trim().slice(0, 40);
     if (!n) { input.current?.focus(); return; }
+    stopTheme();      // the overture ends…
+    play('title');    // …and the "ba ba ba baaa" sends you off
     onStart(n);
   };
 
@@ -95,7 +98,7 @@ export function TitleScreen({ onStart, onRestore, savedName, muted, onToggleMute
                 aria-label="Your name"
               />
             </div>
-            <button type="submit" className="blink">CLICK ANYWHERE TO PLAY!</button>
+            <button type="submit" className="blink">{name.trim() ? 'CLICK HERE TO PLAY!' : 'TYPE YOUR NAME, THEN PRESS ENTER'}</button>
           </form>
           {onRestore && (
             <button type="button" className="restore-link" onClick={(e) => { e.stopPropagation(); onRestore(); }}>
@@ -119,6 +122,7 @@ export function TitleScreen({ onStart, onRestore, savedName, muted, onToggleMute
             {panel === 'scores' ? (
               <>
                 <h2>HALL OF FAME</h2>
+                <p className="muted-note">Top {HALL_SIZE}. Scores are posted from the finish screen — finish the quest, or type QUIT to end early and post what you have.</p>
                 {hallStatus === 'loading' && <p className="muted-note">Consulting the realm…</p>}
                 {hallStatus === 'error' && <p className="muted-note">The realm is slow. {recorder.live ? 'Try again in a moment.' : 'Scores are offline in this build.'}</p>}
                 {hallStatus === 'done' && (hall && hall.length ? (

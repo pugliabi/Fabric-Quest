@@ -59,7 +59,7 @@ export default function App({ recorder }: { recorder: Recorder }) {
       describeRoom(s, WORLD),
     ];
     setSession(sess); setState(s); setLog(intro); setScreen('play');
-    setNotice({ text: `Welcome, ${playerName}. Every night THROTTLOR throttles the village's refreshes. Find the Golden Semantic Model. Be Worthy.` });
+    setNotice({ text: `Welcome, ${playerName}. Every night THROTTLOR throttles the village's refreshes. Find the Golden Semantic Model. Be Worthy.\n\nYour game autosaves here. Your SCORE reaches the Hall of Fame only when you finish — or type QUIT to end early and post it.` });
     persist(s, sess, intro);
   }, [recorder, persist]);
 
@@ -104,7 +104,18 @@ export default function App({ recorder }: { recorder: Recorder }) {
       return;
     }
     if (v === 'restart') { setState(r.state); setLog(lines); restartGame(); return; }
-    if (v === 'quit') { clearSave(); setState(null); setSession(null); setLog([]); setScreen('title'); return; }
+    if (v === 'quit') {
+      // Retire: the run ends here, but the score can still be posted to the Hall of Fame.
+      const retired = [...lines, `You retire from the quest with ${r.state.score} points in ${r.state.turns} turns. The dragon keeps the Model. For now.`];
+      setState(r.state);
+      setLog(retired);
+      setNotice(null);
+      setFinishedAt(new Date().toISOString());
+      setScreen('finish');
+      clearSave();
+      sfx('door');
+      return;
+    }
 
     setState(r.state);
     setLog(lines);
@@ -138,6 +149,14 @@ export default function App({ recorder }: { recorder: Recorder }) {
       clearSave();
     }
   }, [state, session, log, recorder, persist, restoreGame, restartGame, sfx]);
+
+  // Leaving mid-quest is safe (autosave), but the score only reaches the Hall of Fame from the finish screen.
+  useEffect(() => {
+    if (screen !== 'play') return;
+    const warn = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [screen]);
 
   const submitScore = useCallback(async () => {
     if (!state || !session) return;

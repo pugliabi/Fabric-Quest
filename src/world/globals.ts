@@ -209,7 +209,7 @@ export const SNARK: string[] = [
 ];
 
 export const HELP_TEXT =
-  'Two words, peasant. Try: look, look at <thing>, get <thing>, drop <thing>, use <thing> on <thing>, talk to <someone>, say <words>, give <thing> to <someone>, read <thing>, wear <thing>, wait, open <thing>, board boat, n/s/e/w/out, inventory, score, save, restore, restart. When lost: get ye flask.';
+  'Two words, peasant. Try: look, look at <thing>, get <thing>, drop <thing>, use <thing> on <thing>, talk to <someone>, say <words>, give <thing> to <someone>, read <thing>, wear <thing>, wait, open <thing>, board boat, n/s/e/w/out, inventory, score, save, restore, restart, quit (ends the quest and lets you post your score). When lost: get ye flask.';
 
 /** Jeff will not let it go. Every third turn near him, until pacified. */
 export function ambient(s: GameState): string | null {

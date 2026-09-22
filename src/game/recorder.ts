@@ -28,6 +28,9 @@ export class ConsoleRecorder implements Recorder {
 }
 
 const QUEUE_KEY = 'fabricsquest.telemetry-queue';
+/** Rows before this are pre-launch test runs; they stay in the database but never on the board. */
+export const HALL_OPENED = new Date('2026-09-22T19:00:00Z');
+export const HALL_SIZE = 25;
 const clip = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
 
 /**
@@ -97,6 +100,7 @@ export class RayfinRecorder implements Recorder {
   async hallOfFame(limit: number): Promise<HallEntry[]> {
     const rows = await this.client.data.HallOfFame
       .select(['player_name', 'score', 'turns', 'elapsed_seconds', 'finished_at'])
+      .where({ finished_at: { gte: HALL_OPENED }, score: { gt: 0 } }) // the board reset at public launch; zeros don't count
       .orderBy({ score: 'desc', turns: 'asc' })
       .first(limit)
       .execute();

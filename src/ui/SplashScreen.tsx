@@ -11,6 +11,37 @@ const RUN_B = [
   '.....kwk....', '....kwwwk...', '....kwkwk...', '....kwkwk...', '....kwkwk...', '...kwk.kwk..', '...kk...kk..', '............',
 ];
 
+/** Puglia BI mark, 26×18 cells: rising bars inside the angled bracket. */
+const LOGO_MARK = [
+  '........................ww',
+  '.....................www.w',
+  '..................www....w',
+  '...............www.......w',
+  '...........wwww....ggg...w',
+  '........www........ggg...w',
+  '.....www...........ggg...w',
+  '..www.........ggg..ggg...w',
+  'ww............ggg..ggg...w',
+  'w.............ggg..ggg...w',
+  'w........ggg..ggg..ggg...w',
+  'w........ggg..ggg..ggg...w',
+  'w........ggg..ggg..ggg...w',
+  'w...ggg..ggg..ggg..ggg...w',
+  'w...ggg..ggg..ggg..ggg...w',
+  'w...ggg..ggg..ggg..ggg...w',
+  'w...ggg..ggg..ggg..ggg...w',
+  'wwwwwwwwwwwwwwwwwwwwwwwwww',
+];
+export const PUGLIA_GREEN = '#4ce88c';
+
+function LogoMark({ px = 3 }: { px?: number }) {
+  return (
+    <svg viewBox={`0 0 ${26 * px} ${18 * px}`} width={26 * px} height={18 * px} shapeRendering="crispEdges" aria-hidden="true" className="logo-mark">
+      {LOGO_MARK.flatMap((row, y) => [...row].map((c, x) => (c === '.' ? null : <rect key={`${x}-${y}`} x={x * px} y={y * px} width={px} height={px} fill={c === 'w' ? '#fff' : PUGLIA_GREEN} />)))}
+    </svg>
+  );
+}
+
 function Runner({ frame, px = 6 }: { frame: 0 | 1; px?: number }) {
   const rows = frame === 0 ? RUN_A : RUN_B;
   return (
@@ -66,10 +97,12 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
     <div className="screen splash" onClick={finish} role="presentation">
       <div className="splash-stage">
         <div className="wordmark">
+          <LogoMark />
           <span className="wordmark-big">PUGLIA</span>
           <span className="wordmark-small">BI</span>
         </div>
-        <div className="wordmark-sub">presents</div>
+        <div className="wordmark-sub">consulting &middot; analytics &middot; training</div>
+        <div className="wordmark-presents">presents</div>
         <div className="runner" style={{ left: `${left}%` }}><Runner frame={frame} /></div>
       </div>
     </div>

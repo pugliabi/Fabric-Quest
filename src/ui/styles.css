@@ -161,12 +161,15 @@ input { font-family: var(--font-mono); }
 .boot-line.blink { font-size: 10px; animation: blink 1.1s steps(2, start) infinite; }
 .splash-stage { position: relative; width: 100%; max-width: 640px; height: 260px; overflow: hidden; }
 .wordmark { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -60%); display: flex; align-items: baseline; gap: 14px; font-family: var(--font-pixel); color: var(--ega-white); white-space: nowrap; }
-.wordmark-big { font-size: 46px; letter-spacing: 2px; color: var(--ega-black); -webkit-text-stroke: 3px var(--ega-white); paint-order: stroke fill; }
-.wordmark-small { font-size: 30px; color: var(--ega-yellow); text-shadow: 3px 3px 0 var(--ega-red); }
-.wordmark-sub { position: absolute; left: 50%; top: 68%; transform: translateX(-50%); font-family: var(--font-pixel); font-size: 9px; color: var(--ega-gray); }
+.wordmark-big { font-size: 40px; letter-spacing: 2px; color: var(--ega-white); }
+.wordmark-small { font-size: 40px; letter-spacing: 2px; color: #4ce88c; }
+.wordmark { align-items: center; }
+.logo-mark { display: block; margin-right: 6px; }
+.wordmark-sub { position: absolute; left: 50%; top: 66%; transform: translateX(-50%); font-family: var(--font-pixel); font-size: 8px; letter-spacing: 1px; color: var(--ega-white); white-space: nowrap; }
+.wordmark-presents { position: absolute; left: 50%; top: 80%; transform: translateX(-50%); font-family: var(--font-pixel); font-size: 9px; color: var(--ega-gray); }
 .runner { position: absolute; top: 36%; }
 @media (prefers-reduced-motion: reduce) { .runner { transition: none; } .blink, .msgbox-hint, .boot-line.blink { animation: none; } }
-@media (max-width: 520px) { .wordmark-big { font-size: 28px; } .wordmark-small { font-size: 18px; } .msgbox { font-size: 8px; padding: 10px; } }
+@media (max-width: 520px) { .wordmark-big, .wordmark-small { font-size: 22px; } .logo-mark { width: 52px; height: 36px; } .msgbox { font-size: 8px; padding: 10px; } }
 
 .link-btn { background: none; border: 2px solid var(--ega-cyan); color: var(--ega-cyan); padding: 8px 10px; font-size: 9px; }
 .link-btn:disabled { opacity: 0.6; cursor: default; }

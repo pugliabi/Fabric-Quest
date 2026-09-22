@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { HallEntry, Recorder } from '@/game/recorder';
+import { HALL_SIZE, type HallEntry, type Recorder } from '@/game/recorder';
 
 type Props = {
   playerName: string;
@@ -27,7 +27,7 @@ export function FinishScreen({ playerName, score, maxScore, turns, startedAt, fi
   // The board is read only when asked for (or right after a submit), never on mount — it costs capacity.
   const loadHall = async () => {
     setHallStatus('loading');
-    try { setHall(await recorder.hallOfFame(20)); setHallStatus('done'); } catch { setHallStatus('error'); }
+    try { setHall((await recorder.hallOfFame(HALL_SIZE)).filter((h) => h.score > 0)); setHallStatus('done'); } catch { setHallStatus('error'); }
   };
 
   const submit = async () => {
@@ -48,6 +48,8 @@ export function FinishScreen({ playerName, score, maxScore, turns, startedAt, fi
       <div className="buttons">
         {cheated ? (
           <span className="muted-note">Burninators are not eligible for the Hall of Fame.</span>
+        ) : score <= 0 ? (
+          <span className="muted-note">Zero points. The Hall of Fame politely declines.</span>
         ) : recorder.live ? (
           <button type="button" onClick={submit} disabled={status === 'sending' || status === 'done'}>
             {status === 'done' ? 'Submitted!' : status === 'sending' ? 'Submitting…' : status === 'error' ? 'Try again' : 'Submit to Hall of Fame'}

@@ -12,11 +12,11 @@ Play at **[fabricquest.pugliabi.com](https://fabricquest.pugliabi.com)**.
 2. The title screen asks **ENTER YOUR NAME, PEASANT:** Type a name (up to 40 characters) and press Enter. This is
    the name that goes on the Hall of Fame if you finish.
 3. If you played before in this browser, a **Restore …'s game** link appears under the prompt.
-4. **VIEW HIGH SCORES** shows the public Hall of Fame (top 20; a score of zero doesn't make the board).
+4. **VIEW HIGH SCORES** shows the public Hall of Fame (top 25; a score of zero doesn't make the board).
    **ABOUT THE GAME** has the short version of why this exists and links to the code, the blog, the podcast and
    Tommy's profiles.
 
-The title screen plays a looping 8-bit theme once you've clicked; the `SFX` toggle silences it.
+The title screen plays a looping 8-bit theme; the `SFX` toggle silences it.
 
 The screen is laid out the way Sierra did it in 1987: a white **status bar** with your score, the **scene** of the
 room you're in, a **text window** with the narration, and the `>` **prompt** at the bottom. Blue-bordered
@@ -84,7 +84,7 @@ phrase through.
 | `save` | the game already autosaves after every turn; this just says so |
 | `restore` | reload the last save (useful after a death) |
 | `restart` | new game, same name |
-| `quit` | ends the game (the dragon wins) |
+| `quit` | ends the quest early and takes you to the finish screen, where you can post whatever score you have |
 
 ## Scoring
 
@@ -95,6 +95,19 @@ your turn total. The complete list is in [the ledger](ledger.md).
 
 Turns count every command, including `look` and `help`. The Hall of Fame records score, turns and elapsed time,
 so a tight run is worth something.
+
+## Saving, leaving, and getting on the board
+
+Two different things are going on, and it's worth knowing which is which:
+
+- **Your progress** is autosaved to this browser after every turn. Close the tab, come back tomorrow, click
+  **Restore …'s game** on the title screen and you're where you left off. (The browser will ask "leave site?" if
+  you close mid-game — that's just a reminder; nothing is lost.)
+- **Your score** reaches the public Hall of Fame only from the **finish screen**, by clicking *Submit to Hall of
+  Fame*. You get there by finishing the quest, or by typing **`quit`** at any time to retire with the points you
+  have. A run you abandon without doing either is never posted.
+
+The board shows the top 25. A score of zero doesn't make it. Runs that used god mode aren't eligible.
 
 ## Dying
 

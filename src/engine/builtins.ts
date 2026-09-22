@@ -135,7 +135,7 @@ export function handle(s: GameState, cmd: ParsedCommand, world: World): Handled 
     case 'restart':
       return { state: s, output: ['Restarting…'], outcome: 'meta' };
     case 'quit':
-      return { state: s, output: ['Quitting. The dragon wins this one.'], outcome: 'meta' };
+      return { state: s, output: ['Quitting. The dragon wins this one — but your score can still make the Hall of Fame.'], outcome: 'meta' };
     case 'wait':
       return { state: s, output: ['Time passes.'], outcome: 'meta' };
     case 'talk': {

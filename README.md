@@ -92,7 +92,9 @@ Then it's up the Peaks, past the interactive delay, to Throttlor. Bring a star s
 3. Points are awarded for progress, once each, out of **200**. The status bar keeps count.
 4. When you die — you will — the Sierra death card offers **Restore**, **Restart** or **Quit**. The game autosaves
    after every turn to your browser, so restoring costs you nothing but dignity.
-5. Finish, and you can submit your name, score, turn count and time to the public **Hall of Fame**.
+5. Finish — or type `quit` to retire early — and you can submit your name, score, turn count and time to the
+   public **Hall of Fame** (top 25). Your progress autosaves as you play; your *score* is posted only from that
+   finish screen.
 
 Sound is on by default (chiptune cues for moves, items, doors, deaths and the victory fanfare). The `♪` toggle in
 the status bar mutes it.
