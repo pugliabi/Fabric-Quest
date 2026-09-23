@@ -10,12 +10,12 @@ throttling the nightly refreshes, and Jeff from Finance would still like an Exce
                          ┌──────────────────────────────────────────────┐
                          │ Score : 0 of 200              Fabric's Quest │
                          ├──────────────────────────────────────────────┤
-                         │    [ 8-bit scene of your cottage here ]      │
+                         │    [ 8-bit scene of My Workspace here ]      │
                          ├──────────────────────────────────────────────┤
-                         │ YOUR COTTAGE                                 │
-                         │ Your cottage. A workspace, technically.      │
-                         │ One desk, one candle, one report you have    │
-                         │ been 'about to finish' since spring.         │
+                         │ MY WORKSPACE                                 │
+                         │ Your cottage. My Workspace, officially.      │
+                         │ Nobody else can see in. One desk, one candle,│
+                         │ one report 'about to finish' since spring.   │
                          │ You see: mug.   Exits: out, e.               │
                          │                                              │
                          │ > get ye flask_                              │
@@ -68,12 +68,18 @@ Then it's up the Peaks, past the interactive delay, to Throttlor. Bring a star s
 
 Two side quests hide in the realm: type `show me a table` and you're in Jeff's Excel, trying to make his export
 match the report; type `what are my sales numbers` and you're arguing with Copilot. Both pay bonus points on top
-of the 200. Both can be left with `exit`.
+of the 200. Both can be left with `exit`. Three more bonuses sit in the main map: the seven Applied Steps in the
+Power Query Hall, the Abbot's errand, and putting the tenant settings back the way you found them.
+
+Up the spiral stair from the Cloister is the **Sacristy**: sixteen books, a tenant settings shelf and a capacity
+ledger. They are real tenant settings — the same names you'd find in the Fabric admin portal — and each one does
+something to the realm. Flip them and find out. Two of them kill you. Up the steps from the Village Square, the
+Town Hall's Clerk will tell you where the admins are, if you keep talking.
 
 West of the OneLake Shore, there's also a house. On a lake. It's called the Lake House. That's the whole joke;
 there are no points in it.
 
-29 rooms · 97 items · 14 characters · 200 points · a respectable number of ways to die.
+31 rooms · 134 items · 15 characters · 200 points + 70 bonus · a respectable number of ways to die.
 
 ## How to play
 
@@ -113,16 +119,24 @@ Spoiler-light, in rough order of "how stuck are you":
 - **Read everything and talk to everyone.** Every notice board, scroll and NPC is there for a reason, and the
   narrator drops hints in the flavor text.
 - **`get ye flask` works in every room.** It won't give you a flask. It will tell you what you're missing here.
-- The village has three things you need before you leave it. One of them is in your cottage.
+- The village has three things you need before you leave it. One of them is in My Workspace.
 - Jeff from Finance will not stop asking. Giving him *something* makes the square quieter.
 - The Keep is east, past the fields; the monks are behind it. At the gate, the guard wants a SKU. The cheapest
   one gets you in.
-- In the Duke's chamber, the query every DBA hates gets you exactly where you need to go.
+- In the Duke's chamber, say the modeling shortcut every DAX purist hates. It gets you exactly where you need
+  to go, which is the Moat.
 - The Report Studio has a Card that needs out-staring, and a Big Refresh that wants a policy — the Model View,
   west of the hall, keeps one on a lectern.
 - The Ferryman is offline for a boring, real-world reason. The Mill knows more.
 - At the Monastery, waiting is sometimes the correct answer. So is having a library card.
 - Throttlor wants one thing said to his face. It's the same thing every Power BI consultant wants said.
+- The Town Hall, up from the Square, has no points in it. Keep talking to the Clerk anyway: it's how you find
+  out where the admins are.
+- The Sacristy, up from the Cloister, is the tenant settings. `settings` reads the shelf, `read` any book to see
+  what it does, `turn off` the one the Abbot asked about. Put everything back before you leave and the realm pays
+  you for it.
+- The Power Query Hall's query is broken at a step. `look at steps`, then apply them in order, one command each,
+  the way the Applied Steps pane lists them.
 - Don't drink the water in the swamp. Don't import the lake. Don't swim the moat. The narrator did warn you.
 
 The full spoiler walkthrough and every point in the 200-point ledger are in [docs/ledger.md](docs/ledger.md).
@@ -157,7 +171,10 @@ see **[docs/building-and-deploying.md](docs/building-and-deploying.md)**.
 ## Documentation
 
 - [How to play](docs/how-to-play.md) — full command reference, the parser's grammar, saving, sound, the death card
-- [The ledger](docs/ledger.md) — all 200 points, and a complete spoiler walkthrough
+- [The ledger](docs/ledger.md) — all 200 points and the 70 bonus, a complete spoiler walkthrough, every death
+  and curse
+- [The cheat sheet](docs/cheat-sheet.md) — one page of every command worth typing
+- [The room guide](docs/room-guide.md) — all 31 rooms, what's in each, and how to get there
 - [Building & deploying](docs/building-and-deploying.md) — local dev, deploying to Fabric, the GitHub Pages mirror,
   configuration, extending the world, troubleshooting
 

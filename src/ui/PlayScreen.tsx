@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { GameState } from '@/engine/types';
 import { WORLD } from '@/world';
+import { curseOf } from '@/world/curses';
 import { play } from '@/game/sfx';
 import { ScenePanel } from './ScenePanel';
 import { MessageBox } from './MessageBox';
@@ -8,6 +9,8 @@ import type { Notice } from '@/App';
 
 type Props = {
   state: GameState;
+  /** The name from the title screen: under the Duke's curse the status bar calls you a Calculated Column by it. */
+  playerName: string;
   score: number;
   maxScore: number;
   log: string[];
@@ -21,7 +24,7 @@ type Props = {
   flash?: boolean;
 };
 
-export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onToggleMute, disabled, notice, onDismissNotice, flash }: Props) {
+export function PlayScreen({ state, playerName, score, maxScore, log, onSubmit, muted, onToggleMute, disabled, notice, onDismissNotice, flash }: Props) {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [histIx, setHistIx] = useState<number>(-1);
@@ -30,6 +33,9 @@ export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onTog
 
   const room = WORLD.rooms[state.room]!;
   const sceneId = room.scene(state);
+  // Worse than death (spec1 §5.4): a column has your name in the status bar, (Blank) has none, and Jeff owns the prompt.
+  const curse = curseOf(state);
+  const title = curse === 'column' ? `Calculated Column ${playerName}` : curse === 'blank' ? '(Blank)' : 'Fabric’s Quest';
 
   useEffect(() => { if (!disabled) inputRef.current?.focus(); }, [disabled, log]);
   useEffect(() => { textRef.current?.scrollTo({ top: textRef.current.scrollHeight }); }, [log]);
@@ -66,7 +72,7 @@ export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onTog
           <button type="button" className="mute inline" onClick={(e) => { e.stopPropagation(); onToggleMute(); }} aria-label={muted ? 'Unmute' : 'Mute'}>
             {muted ? '♪ off' : '♪ on'}
           </button>
-          Fabric&rsquo;s Quest{state.flags.god ? ' ⚡' : ''}
+          {title}{state.flags.god ? ' ⚡' : ''}
         </span>
       </div>
       <ScenePanel room={room} sceneId={sceneId} state={state} className={flash ? 'flash' : undefined}>
@@ -80,7 +86,7 @@ export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onTog
         ))}
       </div>
       <form className="prompt" onSubmit={(e) => { e.preventDefault(); submit(); }}>
-        <span className="caret">&gt;</span>
+        <span className="caret">{curse === 'jeff' ? 'Jeff >' : '>'}</span>
         <input
           ref={inputRef}
           value={input}
@@ -92,7 +98,7 @@ export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onTog
           autoCorrect="off"
           spellCheck={false}
           aria-label="Command"
-          placeholder={disabled ? '' : 'what now?'}
+          placeholder={disabled ? '' : curse === 'jeff' ? 'so… excel?' : 'what now?'}
         />
       </form>
     </div>

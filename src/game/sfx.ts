@@ -4,7 +4,8 @@
  */
 export type Cue =
   | 'title' | 'splash' | 'move' | 'success' | 'item' | 'fail' | 'snark' | 'door' | 'death' | 'win' | 'flask' | 'type'
-  | 'sidequest' | 'sidequest-out' | 'excel-ding' | 'copilot-think' | 'bonus';
+  | 'sidequest' | 'sidequest-out' | 'excel-ding' | 'copilot-think' | 'bonus'
+  | 'toggle' | 'toggle-off' | 'survey' | 'curse';
 
 /** `together`: start at the same moment as the previous note (a chord / a bass hit under the lead). */
 type Note = [freq: number, ms: number, wave?: OscillatorType, gain?: number, together?: boolean];
@@ -15,7 +16,7 @@ const C5 = 523.25, D5 = 587.33, E5 = 659.25, G5 = 783.99, C6 = 1046.5;
 const E6 = 1318.51, G6 = 1567.98;
 const B3 = 246.94, A3 = 220.0, E3 = 164.81, C3 = 130.81;
 
-const CUES: Record<Cue, Note[]> = {
+export const CUES: Record<Cue, Note[]> = {
   // "do, do, do, dooo" — the title jingle
   title: [[C4, 120], [E4, 120], [G4, 120], [C5, 260], [0, 60], [G4, 100], [C5, 380]],
   // the big boot-up: "do do do DOOO" with a bass under it
@@ -37,6 +38,13 @@ const CUES: Record<Cue, Note[]> = {
   'excel-ding': [[E5, 60, 'triangle', 0.14], [G5, 160, 'triangle', 0.14]],
   'copilot-think': [[C5, 50, 'triangle', 0.1], [E5, 50, 'triangle', 0.1], [G5, 50, 'triangle', 0.1], [0, 80], [C5, 50, 'triangle', 0.1], [E5, 50, 'triangle', 0.1], [G5, 50, 'triangle', 0.1]],
   bonus: [[C5, 60], [E5, 60], [G5, 60], [C6, 60], [E6, 60], [G6, 300, 'square', 0.16]],
+  // a two-note click: up for ON, down for OFF (the Sacristy's books, spec2 §10)
+  toggle: [[E5, 40, 'triangle', 0.14], [G5, 70, 'triangle', 0.14]],
+  'toggle-off': [[G5, 40, 'triangle', 0.14], [E5, 70, 'triangle', 0.14]],
+  // the survey's soft ding-dong
+  survey: [[E5, 120, 'triangle', 0.12], [C5, 220, 'triangle', 0.12]],
+  // a curse: three steps down and a low hum, worse than death
+  curse: [[D5, 140], [B4, 140], [G4, 180], [0, 60], [E3, 420, 'square', 0.2]],
 };
 
 let ctx: AudioContext | null = null;

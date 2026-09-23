@@ -16,8 +16,8 @@ describe('Semantic Model Keep', () => {
     expect(s.inventory).toContain('policy');
     expect(last[0]).toMatch(/incremental/i);
   });
-  it('the Duke of DAX still throws SQL into the moat (+25, trial)', () => {
-    const { s, last } = play(['say select *'], 'fortress.throne', { 'fortress.sku': true });
+  it('the Duke of DAX throws a calculated column into the moat (+25, trial)', () => {
+    const { s, last } = play(['say calculated column'], 'fortress.throne', { 'fortress.sku': true });
     expect(s.score).toBe(25);
     expect(s.flags['trial.moat']).toBe(true);
     expect(last[0]).toMatch(/IN\.? MY\.? MODEL/);

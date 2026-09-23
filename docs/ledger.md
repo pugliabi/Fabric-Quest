@@ -1,7 +1,7 @@
 # The 200-point ledger
 
 Every point in Fabric's Quest, and — further down, behind a spoiler warning — the shortest known route to all of
-them. The two side-quest bonuses have their own table and spoilers, further down still.
+them. The 70 bonus points have their own table and spoilers, further down still.
 
 ## Points
 
@@ -20,7 +20,7 @@ Points are awarded once per step. Where a step has more than one solution, they 
 | 9 | Fix Brother Pandas' notebook | Spark Session Chamber | 20 | 105 |
 | 10 | The Hoodie of Spark, from the Abbot | Cloister | 15 | 120 |
 | 11 | Say the trial SKU at the gate | Power BI Desktop Gate | 10 | 130 |
-| 12 | Say `select *` to the Duke and get thrown in the Moat | Duke's Chamber | 25 | 155 |
+| 12 | Tell the Duke you'll just use a calculated column and get thrown in the Moat | Duke's Chamber | 25 | 155 |
 | 13 | Out-stare the Card visual | The Report Studio | 10 | 165 |
 | 14 | Incremental policy → the Big Refresh → Bursting Boots | The Report Studio | 15 | 180 |
 | 15 | Open the Shrine door as one of the Worthy | Bursting Ledge | 5 | 185 |
@@ -35,9 +35,9 @@ A finished game with fewer than 200 points still counts as a win; the Hall of Fa
 ## Map
 
 ```
-                                 [Mill]
-                                   |
-              [Cottage] -- [Village Square] -- [Refresh Fields] -- [Foothills] -- [Throttling Pass] -- [Bursting Ledge] -- [Shrine]
+                    [Town Hall]  [Mill]
+                         up |     |
+         [My Workspace] -- [Village Square] -- [Refresh Fields] -- [Foothills] -- [Throttling Pass] -- [Bursting Ledge] -- [Shrine]
                                    |                                        |
              [Lake House] -- [OneLake Shore] -- [Dock] ~~ [Isle of Gateway] [PBI Desktop Gate]
                                    |                                                 |
@@ -47,7 +47,7 @@ A finished game with fewer than 200 points still counts as a win; the Hall of Fa
                                    |                                   |
                                [Gold Marsh] -- [Monastery Gate] ------ +
                                                       |
-                                                  [Cloister] -- [Spark Chamber]
+                                  [Sacristy] -up- [Cloister] -- [Spark Chamber]
                                                       |
                                                   [Library]
 ```
@@ -56,7 +56,9 @@ A finished game with fewer than 200 points still counts as a win; the Hall of Fa
 onto the Monastery Gate — a shortcut that skips the swamp entirely, since every model needs its engineers. The
 swamp still reaches the Monastery the long way, east of its gold layer, and is where the Shortcut lives. The
 Lake House is west of the OneLake Shore — a house, on a lake, with no points in it. The swamp itself is south of
-the lake shore — bronze, silver, gold.)
+the lake shore — bronze, silver, gold. My Workspace, west of the Square, is where the game starts; it used to be
+called the Cottage. Two rooms are UP rather than on the compass: the Town Hall, up the steps from the Square, and
+the Sacristy, up the spiral stair from the Cloister — sixteen books, a tenant settings shelf and a capacity ledger.)
 
 ---
 
@@ -92,7 +94,7 @@ n
 say trial                    +10  the guard takes the free 60-day trial capacity; the gate opens
 n
 n
-say select *                 +25  the Duke throws you in the Moat of T-SQL — Trial 2: you smell like a Warehouse
+say calculated column         +25  the Duke throws you in the Moat of T-SQL — Trial 2: you smell like a Warehouse
 n
 w
 get policy                        an incremental refresh policy, off the lectern in the Model View
@@ -172,14 +174,18 @@ get model                      +5   the Golden Semantic Model. 200/200.
 
 ## Bonus
 
-Two side quests, reachable from anywhere in the realm at any time and left with `exit`, pay bonus points on top
-of the 200-point score above. Bonus is never added to `score` — the status bar shows it separately, as
-`Score : N of 200 +B` — and the Hall of Fame has its own bonus column.
+Seventy bonus points sit on top of the 200-point score above: two side quests (reachable from anywhere in the
+realm at any time and left with `exit`) and three errands in the main map. Bonus is never added to `score` — the
+status bar shows it separately, as `Score : N of 200 +B` — and the Hall of Fame has its own bonus column. None of
+it is on the golden path.
 
-| Quest | Trigger | Bonus |
-|---|---|---|
-| Jeff's Excel | `show me a table` (or `help jeff` / `talk to jeff about excel` in the Village Square, or `yes` right after Jeff asks) | +20 |
-| Copilot | `what are my sales numbers` (or `copilot`, or `ask copilot …`, which asks the rest of the line on the way in) | +25 |
+| Bonus | Where / trigger | Points | Running |
+|---|---|---|---|
+| Jeff's Excel | `show me a table` (or `help jeff` / `talk to jeff about excel` in the Village Square, or `yes` right after Jeff asks) | +20 | 20 |
+| Copilot | `what are my sales numbers` (or `copilot`, or `ask copilot …`, which asks the rest of the line on the way in) | +25 | 45 |
+| The Applied Steps | Power Query Hall: apply the hall's seven broken steps in order | +10 | 55 |
+| The Abbot's errand | Cloister: the Abbot asks you to turn Publish to web off, up in the Sacristy | +10 | 65 |
+| Governance restored | The Sacristy: put every book you moved back where you found it | +5 | **70** |
 
 <details>
 <summary>Click to reveal: Jeff's Excel</summary>
@@ -228,15 +234,87 @@ left off. From outside the realm, `ask copilot for` followed by the same prompt 
 
 </details>
 
+<details>
+<summary>Click to reveal: the Applied Steps</summary>
+
+`look at steps` (or `look at query`) lists the chain with its state: open, waiting, yellow. Apply them in order:
+
+```
+source
+navigate
+promote headers
+change type
+filter rows
+remove other columns
+rename columns                +10  the query refreshes
+```
+
+Out of order, you get the real Power Query error and every step after the last good one turns yellow; you are
+back where the query stopped. Three places where the game departs from the governance spec's §8, on purpose:
+
+- **The errors are the real M strings.** Where the spec's table had placeholders (`Details: Column1`,
+  `'Column3'`), the game prints what Power Query actually says for this query (`Details: Region`, `'Year'`).
+- **Changed Type counts.** Re-applying Changed Type gives `Changed Type1`, then `Changed Type2`, and so on — a
+  counter, not the same line every time. Power Query adds a new one. It always will.
+- **After the query is done, `change type` still does it.** Once all seven are applied, `change type` gives the
+  next `Changed TypeN` instead of an "already applied" line.
+
+</details>
+
+<details>
+<summary>Click to reveal: the Sacristy (the Abbot's errand, governance restored)</summary>
+
+The Sacristy is up the spiral stair from the Cloister (`u`, or `climb stairs`). `settings` lists the tenant
+settings shelf; `capacity settings` lists the capacity ledger; `read <book>` says what a setting does, in real
+admin-portal words and then in game words; `turn on <book>` / `turn off <book>` flips it. They are real tenant
+settings, and flipping them changes the realm — Copilot off means every Copilot trigger says contact your
+administrator, Export to Excel off closes Jeff's Excel for business, and so on.
+
+```
+talk to abbot                 (once the gate is open) he asks you to take Publish to web down
+up
+turn off publish to web       +10  the errand, paid on the flip (or paid by the Abbot if the book was already off)
+```
+
+Governance restored (+5) is paid the first time every book you moved away from its default is back on its default
+again — flip each one back by hand, or `reset settings` to put the whole shelf back at once. Turning Publish to web
+off for the Abbot makes off its default from then on, so the errand never counts against the +5 (and never doubles
+as it). Nobody will ever know.
+
+</details>
+
 ## Deaths (for completeness)
 
 | Where | What you did |
 |---|---|
 | Anywhere (except inside the side quests, which only shrug) | `die`, `attack me`, `delete workspace`, `rm -rf` / `format c:` / `drop database` |
+| Anywhere you carry it, and on the Throttling Pass | drank the CapacityAde (`drink capacityade`) — 64 CUs, billed before you arrive |
 | Village Square | offered Jeff a paginated report |
+| My Workspace | `merge` the FINAL files — there is now a `Sales_v3_FINAL_final4` and you are not in it |
+| My Workspace | `publish` to the entire internet (`publish to web`) while the Publish to web setting is still on |
+| Refresh Fields | a full `refresh` at 9:02 on a Monday (`schedule refresh` is safe; `refresh manual` is the scarecrow) |
 | OneLake Shore | tried to `import` the lake into Desktop |
 | Bronze Marsh | drank the water |
 | Power BI Desktop Gate | swam / dove into the Moat |
+| The Model View | set every relationship to Both (`set all relationships to both`, `enable bidirectional`) — ambiguous path |
+| The Model View | a tenth calculated column (`add calculated column`) — nine warnings, counted out loud, then Word |
+| Power Query Hall | typed DAX into the M editor (`type dax`, `write a measure`) |
+| The Report Studio | opened the 400-visual page (`open page 2`, `open the other page`, `open do not open`) |
+| The Sacristy | turned on Block Public Internet Access, by its name |
+| The Sacristy | turned on Pause capacity (or said `pause capacity`), by its name |
 | The Shrine | attacked Throttlor |
 
-All of them are one **Restore** away from undone.
+All of them are one **Restore** away from undone. The two Sacristy deaths only fire when you name the book: a
+title word that happens to match (`turn on internet`) gets a warning instead, and the setting is never saved, so a
+restore puts you back on the stair.
+
+## Curses (worse than death)
+
+Three things don't kill you. They stick. The status bar and the prompt show the curse until you lift it, and no
+curse can lock you out of the win.
+
+| Curse | How you get it | The undo |
+|---|---|---|
+| Calculated Column | say the wrong thing to the Duke three times — he makes you a CALCULATED COLUMN, and Throttlor won't negotiate with a column | `use policy on self` (the incremental refresh policy from the Model View); the Duke's Moat also washes it off |
+| (Blank) | stare at the Card visual a seventh time in the Report Studio — every character looks through you | `say star schema`, anywhere |
+| Jeff | talk to Jeff an eighth time in the Village Square with nothing to give — you are Jeff now | `give mug to jeff` |

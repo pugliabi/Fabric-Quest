@@ -52,6 +52,10 @@ The room description ends with `Exits: …`. Exits can appear and disappear as t
 | `inventory` / `i` / `inv` | what you're carrying and wearing |
 | `score` | score and turn count |
 | `help` / `?` | the short in-game command list |
+| `goal` / `objective` / `what do i do` | what you're here for; inside a side quest, what that quest wants |
+| `hint` / `clue` / `what now` / `stuck` | the room's hint, in a hollow voice — the flask hint without the flask |
+| `where` / `where am i` | the room's name, and the narrator's opinion of you for standing in it |
+| `why` | the narrator's honest answer, which is that it wishes it knew |
 
 ### Doing things
 
@@ -66,6 +70,7 @@ The room description ends with `Exits: …`. Exits can appear and disappear as t
 | `drink water` / `sip` / `taste` | usually a bad idea |
 | `attack dragon` / `fight` / `hit` / `kill` / `punch` / `stab` / `slay` | also usually a bad idea |
 | `wait` / `z` / `rest` | let a turn pass (some puzzles need this) |
+| `publish` (in My Workspace) | asks which workspace; answer `my workspace`. The other answer is a death, and only appears while Publish to web is on |
 | `plant seed`, `skip pebble`, `squeeze ball`, `knock` | more ways of using a thing; every room has something small to pick up and one place it earns a line (never points) |
 
 ### Talking
@@ -75,8 +80,8 @@ The room description ends with `Exits: …`. Exits can appear and disappear as t
 | `talk to miller` / `speak to` / `ask` / `chat` | hear what someone has to say right now |
 | `say star schema` / `shout` / `answer` / `tell` / `whisper` | say specific words out loud — the guard, the Duke and the dragon all want to hear something particular |
 
-Some puzzles use `say` with more than two words (`say select *`, `say star schema`). The parser passes the whole
-phrase through.
+Some puzzles use `say` with more than two words (`say calculated column`, `say star schema`). The parser passes the
+whole phrase through.
 
 ### Meta commands
 
@@ -116,6 +121,42 @@ you.
 If you get stuck in Copilot, look at what it suggests under its own reply — those `[Copilot suggests: …]` lines
 are Copilot telling on itself, and following them up the ladder is the fastest way to the number you're after.
 
+## The Sacristy: tenant settings
+
+Up the spiral stair from the Cloister, the Sacristy keeps the realm's tenant settings — sixteen books across a
+tenant shelf and a capacity ledger, named exactly as they are in the Fabric admin portal. Flip them and find out.
+
+| Type | Meaning |
+|---|---|
+| `settings` / `shelf` | list the tenant settings shelf, with each book's state |
+| `capacity settings` / `ledger` | list the capacity ledger |
+| `read <book>` | what the setting really does, then what it does here |
+| `turn on <book>` / `turn off <book>` (`enable`, `disable`, `toggle`, `flip`) | change one setting |
+| `reset settings` / `restore defaults` | put every book back the way you found it |
+
+A book answers to any word in its title (`turn off copilot`, `read export`). Settings change the realm outside the
+Sacristy: the Copilot sparkle, Jeff's Excel, the Model Gallery's badge, what `publish` offers in My Workspace, and
+more. Two books kill you when you turn them on; those two only answer to their own names, so you can't do it by
+accident. Put everything back before you leave and you're paid for the governance.
+
+## The Applied Steps
+
+The Power Query Hall's query is broken, and every doorway in the hall is one of its seven Applied Steps.
+`look at steps` (or `look at query`) lists them: open, waiting, yellow. Apply them in order, one command each:
+
+| Step | Command |
+|---|---|
+| Source | `source` (`get data`) |
+| Navigation | `navigate` (`pick table`) |
+| Promoted Headers | `promote headers` (`use first row as headers`) |
+| Changed Type | `change type` (`detect type`) |
+| Filtered Rows | `filter rows` |
+| Removed Other Columns | `remove other columns` |
+| Renamed Columns | `rename columns` |
+
+Out of order, you get the real Power Query error, and every step after the last good one turns yellow. Apply
+Changed Type again and Power Query adds another one — `Changed Type1`, `Changed Type2` — as it always will.
+
 ## Saving, leaving, and getting on the board
 
 Two different things are going on, and it's worth knowing which is which:
@@ -142,6 +183,10 @@ of things it has been waiting for you to try. Death brings up the Sierra card:
 The game saves to your browser's local storage after every turn, and deliberately does *not* overwrite that save
 with the turn that killed you, so Restore always works.
 
+Some things are worse than death. Push the Duke, the Card or Jeff too far and you are cursed — a calculated
+column, (Blank), or Jeff — and the status bar says so until you find the undo. No curse can lock you out of the
+win. The [ledger](ledger.md#curses-worse-than-death) has every death and every curse, with the cure.
+
 ## Sound
 
 Chiptune sound effects are synthesized in the browser — nothing is downloaded. There's a cue for the splash, the
@@ -156,7 +201,14 @@ remembered.
 - `look` again. Room descriptions change as flags flip; things you couldn't see before may be visible now.
 - `talk to` everyone twice. NPCs say different things once you've done something for them.
 - Check `inventory` — you start with something useful already in your pocket.
-- The [README hints](../README.md#hints) are spoiler-light; the [ledger](ledger.md) is the full walkthrough.
+- **`hint`** — the same nudge as the flask, without the flask. **`goal`** reminds you what you're here for.
+- The [README hints](../README.md#hints) are spoiler-light; the [cheat sheet](cheat-sheet.md) and the
+  [room guide](room-guide.md) are the next step up; the [ledger](ledger.md) is the full walkthrough.
+
+You don't always have to ask. After four dead turns in one room — commands that fail or only get snark — the
+narrator whispers, sideways: a line about what the prophecy wanted and where that sort of thing lives. Keep
+failing and it gets plainer; keep going after that and it just tells you the room's hint. A hint you ask for resets
+the count.
 
 ## The narrator talks back
 

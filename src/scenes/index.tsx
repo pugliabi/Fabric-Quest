@@ -1,21 +1,22 @@
 import type { ReactNode } from 'react';
 import { Scene } from './kit';
-import { Cottage, Square, Mill, Fields } from './village';
+import { Cottage, Square, Mill, Fields, TownHall } from './village';
 import { Shore, DockScene, Island, Bronze, Silver, Gold, LakeHouse } from './lake';
-import { Gate, Cloister, Spark, Library } from './monastery';
+import { Gate, Cloister, Spark, Library, Sacristy } from './monastery';
 import { Bridge, Hall, Model, Throne, Studio } from './fortress';
 import { Foothills, Pass, Ledge, Shrine } from './peaks';
 import { Sheet1, DataTab, Pivot } from './excel';
 import { Pane, Gallery } from './copilot';
 import type { GameState } from '../engine/types';
+import { changedFromDefault } from '../engine/governance';
 
 type SceneFn = (s: GameState) => ReactNode;
 
 const pivot = (n: number): SceneFn => (s) => (
   <Pivot n={n} connected={!!s.flags['excel.connected']} built={!!s.flags['excel.pivot']} dim={!!s.flags['excel.dim']} measure={!!s.flags['excel.measure']} filter={!!s.flags['excel.filter']} />
 );
-/** A flag that must be a number to count (the lint's "all true" probe sets every flag to `true`). */
-const num = (v: unknown): number | undefined => (typeof v === 'number' ? v : undefined);
+/** A flag that must be a non-negative number to count (the lint's "all true" probe sets every flag to `true`; a cleared Copilot chat sets −1). */
+const num = (v: unknown): number | undefined => (typeof v === 'number' && v >= 0 ? v : undefined);
 
 /** Scene id (as returned by room.scene(state)) → drawing. Variants read flags directly for richer states. */
 export const SCENES: Record<string, SceneFn> = {
@@ -24,6 +25,7 @@ export const SCENES: Record<string, SceneFn> = {
   'village.square-calm': () => <Square calm />,
   'village.mill': (s) => <Mill empty={!!s.flags['has.credentials']} />,
   'village.fields': () => <Fields />,
+  'village.hall': (s) => <TownHall ticketTaken={!!s.flags['taken.ticket']} />,
   'lake.shore': () => <Shore />,
   'lake.dock': () => <DockScene />,
   'lake.dock-online': () => <DockScene online />,
@@ -40,6 +42,7 @@ export const SCENES: Record<string, SceneFn> = {
   'monastery.spark-fixed': () => <Spark fixed />,
   'monastery.library': () => <Library />,
   'monastery.library-open': () => <Library caseOpen />,
+  'monastery.sacristy': (s) => <Sacristy changed={changedFromDefault(s).length} />,
   'fortress.bridge': () => <Bridge />,
   'fortress.bridge-down': () => <Bridge down />,
   'fortress.hall': () => <Hall />,
@@ -61,7 +64,7 @@ export const SCENES: Record<string, SceneFn> = {
   'excel.pivot-1': pivot(1),
   'excel.pivot-2': pivot(2),
   'excel.pivot-3': pivot(3),
-  'copilot.pane': (s) => <Pane shape={num(s.flags['copilot.shape'])} rung={num(s.flags['copilot.last'])} />,
+  'copilot.pane': (s) => <Pane shape={num(s.flags['copilot.shape'])} rung={num(s.flags['copilot.last'])} measure={num(s.flags['copilot.measure'])} region={num(s.flags['copilot.region'])} />,
   'copilot.gallery': () => <Gallery />,
 };
 

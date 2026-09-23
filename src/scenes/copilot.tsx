@@ -3,7 +3,7 @@
  * Light chrome with rounded corners (R's `rx`), purple accents, and the same 320×200 chunkiness as everything else.
  */
 import { EGA, R, P, L, Label, Pedestal } from './kit';
-import { RUNG_HINTS, WIN_FIGURE, type Rung } from '../world/copilot-ladder';
+import { STAGE_HINTS, WIN_FIGURE, type Stage } from '../world/copilot-ladder';
 
 const CANVAS = '#f3f2f1';
 const PURPLE = '#6b4fbb';
@@ -18,15 +18,18 @@ export function Sparkle({ x, y, r = 10, f = PURPLE }: { x: number; y: number; r?
   return <P pts={[[x, y - r], [x + i, y - i], [x + r, y], [x + i, y + i], [x, y + r], [x - i, y + i], [x - r, y], [x - i, y - i]]} f={f} s={null} />;
 }
 
-/** The card's number, by the rung that answered with a card (see the ladder); anything else gets a dash. */
+/** The card's number, by the stage that answered with a card (see the slot model); anything else gets a dash. */
 const CARD: Partial<Record<number, [string, string]>> = {
-  4: ['Total Sales', '$4,201,377'],
-  5: ['Northeast Sales', '$2,933,012'],
-  8: ['Q4 NE Sales Amount', '$1,331,890'],
-  10: ['Q4 2025 NE Net Sales', WIN_FIGURE],
+  2: ['Sales Amount', '$4,285,337'],
+  3: ['Net Sales, all regions', '$4,201,377'],
+  4: ['Northeast Net Sales', '$2,933,012'],
+  6: ['Q4 2025 NE Net Sales', WIN_FIGURE],
 };
+/** Stage 2's card is whichever wrong measure was named (flags['copilot.measure']: 2 amount, 3 gross, 4 returns); stage 3's is the wrong region. */
+const CARD_BY_MEASURE: Partial<Record<number, [string, string]>> = { 3: ['Gross Sales', '$4,285,337'], 4: ['Returns', '$83,960'] };
+const CARD_OTHER_REGION: [string, string] = ['Net Sales, your region', '$998,101'];
 
-function Bubble({ shape, rung }: { shape: number | undefined; rung: number | undefined }) {
+function Bubble({ shape, rung, measure, region }: { shape: number | undefined; rung: number | undefined; measure?: number; region?: number }) {
   const x = 24, y = 42, w = 272, h = 96;
   return (
     <>
@@ -51,7 +54,7 @@ function Bubble({ shape, rung }: { shape: number | undefined; rung: number | und
           )))}
           {[0, 1, 2, 3, 4].map((i) => <L key={`v${i}`} pts={[[40 + i * 60, 52], [40 + i * 60, 124]]} s={LINE} sw={1} />)}
           {[0, 1, 2, 3].map((i) => <L key={`h${i}`} pts={[[40, 52 + i * 24], [280, 52 + i * 24]]} s={LINE} sw={1} />)}
-          {/* rung 9: the right number, buried in a three-page report */}
+          {/* stage 5: the right number, buried in a three-page report */}
           {shape === 5 && <Label x={280} y={132} text="Page 1 of 3" size={4} color={MUTED} anchor="end" />}
         </>
       )}
@@ -71,7 +74,7 @@ function Bubble({ shape, rung }: { shape: number | undefined; rung: number | und
         </>
       )}
       {shape === 3 && (() => {
-        const [caption, figure] = CARD[rung ?? -1] ?? ['Sales', '$—'];
+        const [caption, figure] = (rung === 2 && CARD_BY_MEASURE[measure ?? -1]) || (rung === 3 && region === 2 ? CARD_OTHER_REGION : undefined) || CARD[rung ?? -1] || ['Sales', '$—'];
         return (
           <>
             <R x={80} y={50} w={160} h={80} rx={6} f="#f5f3fb" s={PURPLE} />
@@ -85,9 +88,12 @@ function Bubble({ shape, rung }: { shape: number | undefined; rung: number | und
   );
 }
 
-/** `shape` is flags['copilot.shape'] (0 list, 1 table, 2 raw, 3 card, 4 text, 5 report) or undefined before any prompt. */
-export function Pane({ shape, rung }: { shape?: number; rung?: number }) {
-  const chip = rung === undefined ? 'Try: What are my sales?' : RUNG_HINTS[rung as Rung] || 'Copy to clipboard';
+/**
+ * `shape` is flags['copilot.shape'] (0 list, 1 table, 2 raw, 3 card, 4 text, 5 report) or undefined before any prompt (or after
+ * `start over`); `rung` is flags['copilot.last'], the stage that answered. `measure` / `region` pick the card's wrong number.
+ */
+export function Pane({ shape, rung, measure, region }: { shape?: number; rung?: number; measure?: number; region?: number }) {
+  const chip = rung === undefined || rung < 0 ? 'Try: What are my sales?' : STAGE_HINTS[rung as Stage] || 'Copy to clipboard';
   return (
     <>
       <R x={0} y={0} w={320} h={200} f={CANVAS} s={null} />
@@ -95,7 +101,7 @@ export function Pane({ shape, rung }: { shape?: number; rung?: number }) {
       <Sparkle x={30} y={8} r={4} f="#55aaff" />
       <Label x={36} y={21} text="Copilot" size={7} color={INK} />
       <L pts={[[0, 34], [320, 34]]} s={LINE} sw={2} />
-      <Bubble shape={shape} rung={rung} />
+      <Bubble shape={shape} rung={rung} measure={measure} region={region} />
       {/* suggestion chip */}
       <R x={24} y={144} w={chip.length * 4 + 14} h={14} rx={7} f={EGA.white} s={PURPLE} sw={1} />
       <Label x={31} y={154} text={chip} size={4} color={PURPLE} />

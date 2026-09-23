@@ -58,6 +58,60 @@ describe('chirps: repeating yourself', () => {
   });
 });
 
+describe('chirps: the repeat chirp only when the answer did not change (Task F4b)', () => {
+  const mugAgain = WORLD.items.mug!.again as string;
+  it('(a) get mug twice: the second answer is the mug\'s own line, and that IS the repeat joke — no generic chirp', () => {
+    const { outs } = play(['get mug', 'get mug']);
+    expect(outs[0]).toEqual(['Taken: mug.']);
+    expect(outs[1]).toEqual([mugAgain]);
+  });
+  it('(a\') the third get mug says the same words again, so the ladder is back — and the counter kept climbing', () => {
+    const { s, outs } = play(['get mug', 'get mug', 'get mug']);
+    expect(outs[2]![0]).toBe(mugAgain);
+    expect(outs[2]!.length).toBe(2);
+    expect(outs[2]![1]).toMatch(/three|third/i);
+    expect(s.recent).toMatchObject({ input: 'get mug', n: 3 });
+  });
+  it('(b) sing twice: the same answer, so the chirp is present', () => {
+    const { outs } = play(['sing', 'sing']);
+    expect(outs[1]![0]).toBe(outs[0]![0]);
+    expect(outs[1]!.length).toBe(2);
+    expect(outs[1]![1]).not.toBe(outs[0]![0]);
+  });
+  it('(c) get ye flask twice: its own nag, regardless', () => {
+    const { outs } = play(['get ye flask', 'get ye flask']);
+    expect(outs[1]!.length).toBe(outs[0]!.length + 1);
+    expect(outs[1]![outs[1]!.length - 1]).toMatch(/flask|wish/i);
+  });
+  it('(d) get mug! twice: the shout line as before, and no repeat chirp under the mug\'s line', () => {
+    const { outs } = play(['get mug!', 'get mug!']);
+    expect(outs[0]![0]).toBe('Taken: mug.');
+    expect(outs[0]!.length).toBe(2);
+    expect(outs[1]![0]).toBe(mugAgain);
+    expect(outs[1]!.length).toBe(2); // the shout reaction only
+    expect(outs[1]![1]).not.toMatch(/three|third|Same thing|slot machine|consistency|jaunty|humiliating|great time/i);
+  });
+  it('a pool that only rotated is still the same answer: the generic failure keeps its ladder', () => {
+    let rotated = 0;
+    for (let seed = 1; seed <= 24; seed++) {
+      const { outs } = play(['get sword', 'get sword'], seed);
+      if (outs[1]![0] !== outs[0]![0]) rotated++;
+      expect(outs[1]!.length, `seed ${seed}`).toBe(2);
+    }
+    expect(rotated).toBeGreaterThan(0);
+  });
+  it('a remembered second reading in a rule is not chirped; its third, verbatim, is', () => {
+    const { outs } = play(['open door', 'open door', 'open door'], 3);
+    expect(outs[1]).toEqual(["Still open. It's a door, not a dialog."]);
+    expect(outs[2]![0]).toBe(outs[1]![0]);
+    expect(outs[2]!.length).toBe(2);
+  });
+  it('the answer is remembered on the state, with the turn it was read at', () => {
+    const { s } = play(['get csv']);
+    expect(s.recent).toEqual({ input: 'get csv', room: 'village.cottage', n: 1, answer: expect.stringMatching(/csv/), at: 1 });
+  });
+});
+
 describe('chirps: the realm has a policy', () => {
   it('bodily functions are room-aware', () => {
     const at = (room: string, c: string) => step({ ...newGame(WORLD, 2), room }, c, WORLD).output[0]!;

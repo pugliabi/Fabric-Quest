@@ -18,6 +18,10 @@ describe('unwrap', () => {
     expect(unwrap('just')).toMatchObject({ command: 'just', kind: null }); // a bare wrapper is not a wrapper
     expect(unwrap('hey there')).toMatchObject({ command: 'hey there', kind: null }); // "hey" without , or ! is not a wrapper (would swallow egg.hello)
     expect(unwrap('hey, get mug')).toMatchObject({ command: 'get mug', kind: 'frustrated' });
+    expect(unwrap('what now')).toMatchObject({ command: 'what now', kind: null }); // a hint request, not a frustrated "what"
+    expect(unwrap('what now?')).toMatchObject({ command: 'what now?', kind: null });
+    expect(unwrap('ugh, what now')).toMatchObject({ command: 'what now', kind: 'frustrated' });
+    expect(unwrap('get mug now')).toMatchObject({ command: 'get mug', kind: 'frustrated' });
   });
   it('says which wrapper words it took off, front and back', () => {
     expect(unwrap('ugh get mug please')).toEqual({ command: 'get mug', kind: 'frustrated', lead: { kind: 'frustrated', word: 'ugh' }, trail: { kind: 'frustrated', word: 'please' } });

@@ -25,6 +25,14 @@ project root so the CLI reads this project's `node_modules`.
   column an anonymous caller writes to `HallOfFame` must be in its anonymous read `include` list. Both were
   learned the hard way (see `docs/building-and-deploying.md` → Troubleshooting).
 - All string columns use `@text({ max })`.
+- Every narrator line follows the peasants-quest-voice skill and draws its names from `src/world/voice.ts`
+  (`SIGNOFF`, `nick()`, `rotate()`, `MALAPROPS`, `BRUSHOFFS`, `BRANDS`, `ALLUSIONS`); deterministic variety only
+  (`vary`, `nick`, `rotate`), never `Math.random`. Voice work is add-mode: new lines join the pools, existing lines
+  stay unless a spec says otherwise.
+- Hints, nudges and gate lines never name a command the room would refuse, and never a direction through a gate a
+  setting has bricked.
+- Every setting in `src/engine/governance.ts` defaults to today's behavior; the golden path (200 in 69 turns) never
+  touches the Sacristy. Bonus (70 max) is never added to `score`.
 - Original characters and art only — it's a tribute to Peasant's Quest, not a copy. No Homestar Runner assets.
 - Public config (`.env.pages`, `public/CNAME`) is meant to be committed. `rayfin/.env` and
   `rayfin/.deployments.json` are not.

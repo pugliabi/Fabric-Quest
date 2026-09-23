@@ -93,3 +93,27 @@ export function Fields() {
     </>
   );
 }
+
+/** The Town Hall (spec2 §6): a counter, a Clerk in a cardigan, a bell, the poster in its frame, and a queue rope with nobody in it. */
+export function TownHall({ ticketTaken = false }: { ticketTaken?: boolean }) {
+  return (
+    <>
+      <Interior wall={EGA.lgray} wallDark={EGA.dgray} floor={EGA.brown} ceiling={EGA.dgray} />
+      {/* the poster in its frame */}
+      <R x={70} y={30} w={70} h={30} f={EGA.white} s={EGA.brown} sw={4} />
+      <Label x={74} y={42} text="TENANT SETTINGS" color={EGA.black} size={4} />
+      <Label x={74} y={52} text="ARE NOT SECURITY" color={EGA.black} size={4} />
+      {/* the counter, the bell, the ticket (or the clean rectangle where it was) */}
+      <R x={160} y={110} w={110} h={40} f={EGA.brown} />
+      <R x={176} y={104} w={10} h={6} f={EGA.yellow} />
+      {!ticketTaken && <R x={200} y={106} w={14} h={5} f={EGA.white} />}
+      {/* the Clerk, in a cardigan */}
+      <Person x={220} y={80} robe={EGA.dgray} hood={EGA.brown} skin={EGA.lred} />
+      {/* the queue rope, with nobody in it */}
+      <L pts={[[60, 130], [60, 160], [120, 160], [120, 130]]} s={EGA.red} sw={3} />
+      <R x={58} y={126} w={4} h={40} f={EGA.yellow} />
+      <R x={118} y={126} w={4} h={40} f={EGA.yellow} />
+      <Label x={60} y={186} text="NOW SERVING: 1" color={EGA.white} size={5} />
+    </>
+  );
+}

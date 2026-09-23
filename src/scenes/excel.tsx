@@ -100,7 +100,7 @@ export function Sheet1({ happy = false }: { happy?: boolean }) {
       <R x={176} y={142} w={6} h={6} f="#7a3d00" />
       {/* the export: A7:C8, one number, bold */}
       <R x={cx(0)} y={cy(6)} w={96} h={40} f={LGREEN} s={GREEN} sw={2} />
-      <Label x={cx(0) + 4} y={cy(6) + 12} text="Sales_export_v7" size={4} color={INK} />
+      <Label x={cx(0) + 4} y={cy(6) + 12} text="Sales_export (3).csv" size={4} color={INK} />
       <Label x={cx(0) + 4} y={cy(7) + 15} text="Total" size={5} color={INK} />
       <Label x={cx(3) - 4} y={cy(7) + 16} text="4.7M" size={9} color={EGA.black} anchor="end" bold />
     </>
@@ -164,7 +164,7 @@ export function Pivot({ n, connected, built, dim, measure, filter }: PivotProps)
       <R x={16} y={36} w={192} h={124} f={EGA.white} s={GREEN} />
       <R x={16} y={36} w={192} h={14} f={GREEN} s={null} />
       <Label x={22} y={46} text="PivotTable1" size={5} color={EGA.white} />
-      <Label x={202} y={46} text={built ? 'live model' : 'Sales_export_v7'} size={4} color={EGA.white} anchor="end" />
+      <Label x={202} y={46} text={built ? 'live model' : 'Sales_export (3).csv'} size={4} color={EGA.white} anchor="end" />
       {lines.map(([k, [v, c]], i) => (
         <g key={k}>
           <Label x={22} y={66 + i * 16} text={k} size={5} color={INK} />
@@ -206,7 +206,7 @@ function FieldPane({ connected, dim, measure, filter }: { connected: boolean; di
         ['Returns', true, INK, false],
       ]
     : [
-        ['Sales_export_v7', false, INK, false],
+        ['Sales_export (3).csv', false, INK, false],
         ['Region A', true, INK, true],
         ['Sales Amount', true, INK, true],
         ['(not connected)', false, MUTED, false],

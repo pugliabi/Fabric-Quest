@@ -35,9 +35,19 @@ describe('message box', () => {
     expect(box).toMatch(/^The three sigils blaze/);
     expect(box).toContain(r.notice!);
   });
-  it('an entrance quip alone still gets the box', () => {
+  it('the picture goes with the description, not the echo of what you typed or the delay marker (F1 fix round 1)', () => {
+    const s = at('village.cottage');
+    const r = step(s, 'look at the big shiny mug', WORLD);
+    expect(r.output[0]).toMatch(/^Listen to you\./);
+    expect(noticeFor(r, s, WORLD)).toEqual({ text: r.output[1], itemId: 'mug' });
+    const pass = { ...at('peaks.pass'), inventory: ['license'] };
+    const d = step(pass, 'look at license', WORLD);
+    expect(d.output[0]).toBe('(…interactive delay…)');
+    expect(noticeFor(d, pass, WORLD)).toEqual({ text: d.output[1], itemId: 'license' });
+  });
+  it('an entrance quip alone still gets the box (under the goal card, on a realm entry)', () => {
     const s = at('village.square');
     const r = step(s, 'show me a table', WORLD);
-    expect(noticeFor(r, s, WORLD)?.text).toBe(r.notice);
+    expect(noticeFor(r, s, WORLD)?.text).toBe(`${r.box}\n\n${r.notice}`);
   });
 });

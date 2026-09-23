@@ -43,14 +43,22 @@ rooms and puzzles.
 ```
 src/engine/    parser.ts (two-word grammar + synonyms) · step.ts (pure: step(state, input, world))
                builtins.ts (look/get/go/…) · snark.ts (seeded "I don't understand" rotation) · god.ts
+               quirks.ts (shouting, repeats, wrappers, vary()) · governance.ts (the settings: setting(),
+               defaultOf(), isFlood(), applyGovernance() — the trailing nags)
 src/world/     the content: one file per region (village, lake, monastery, fortress, peaks) + items, npcs, globals
                excel.ts / copilot.ts (the side quests' rooms) · copilot-ladder.ts (the prompt ladder, pure)
                sidequests.ts (shared entry/exit machinery) · keep-items.ts (the Semantic Model Keep's objects)
+               voice.ts (the narrator's constants: SIGNOFF, nick(), rotate(), MALAPROPS, BRUSHOFFS, BRANDS, ALLUSIONS)
+               sacristy.ts (the settings catalog: the sixteen books, flip(), read, reset) · townhall.ts (the Clerk)
+               applied-steps.ts (the Power Query Hall's seven steps) · deaths.ts (the Fabric deaths)
+               curses.ts (Calculated Column, (Blank), Jeff) · gates.ts (gate objects × the obvious verbs)
+               nudges.ts (the stuck narrator's sideways asides) · where.ts (one `where` line per room)
 src/game/      recorder.ts (telemetry queue → Fabric) · save.ts (localStorage) · sfx.ts (Web Audio chiptunes)
 src/scenes/    the 8-bit scenes, drawn in SVG with a tiny kit (EGA palette, 4:3, stretched like a CRT)
 src/ui/        SplashScreen · TitleScreen · PlayScreen · ScenePanel · MessageBox · DeathCard · FinishScreen
 rayfin/        rayfin.yml (app config) · data/*.ts (the three entities and their permissions)
-tests/         vitest suites + golden-path.json (the canonical 69-command, 200-point run)
+tests/         vitest suites + golden-path.json (the canonical 69-command, 200-point run); golden-plus-governance
+               and golden-plus-sidequests replay it with the bonuses; the voice-* suites check the narrator
 docs/          this folder, plus docs/superpowers (the original design spec and build plan)
 .github/       pages.yml (GitHub Pages mirror) · deploy-to-fabric.yml (Fabric App deploy)
 ```
@@ -215,10 +223,12 @@ line `get ye flask` whispers there. Run `npm run lint:world`.
 }
 ```
 
-`when` can match `verb`, `noun`/`noun2` (string or list), `nounMatches` (regex), `dir`, required `flags`, `has`,
+`when` can match `verb`, `noun`/`noun2` (string or list), `nounMatches`/`noun2Matches` (regexes; `noun2Matches`
+needs a noun2, so a talk rule can claim only `ask <npc> about <topic>` lines), `dir`, required `flags`, `has`,
 `notHas`, `worn`, and `verbWord` — a list of the actual typed verb *words* ("use", "apply"), for when a rule
 should only fire on one of the synonyms mapped to a verb, not all of them (Jeff's Excel uses this so `use net
-sales` places a field but `fix net sales` and `label net sales` don't). `then` can set `text`, `set` flags,
+sales` places a field but `fix net sales` and `label net sales` don't). `then` can set `text` (a string, or a
+function of the state, the world and the parsed command), `set` flags,
 `give`/`remove`/`wear` items, `moveTo`, `points` (awarded once per `pointsKey ?? id`), `death`, `win`, `sfx`, and
 two fields the side quests added: `bonus` (like `points`, but added to `GameState.bonus` instead of `score`,
 also once per `pointsKey ?? id`) and `returnTo: true` (moves the player back to the room stored in
@@ -227,6 +237,30 @@ rules are checked before global rules; the first match wins. Phrase rules (`src/
 line with a regex before parsing — that's where the easter eggs and instant deaths live; a `PhraseRule` can be
 scoped to one `room`, or to every room in one `region` (the Keep's DirectQuery/DirectLake/publish/label eggs use
 `region: 'fortress'` so they fire in all five of its rooms without repeating the rule five times).
+
+**Add an NPC.** An `Npc` in `src/world/npcs.ts` has `talk` (the first line), `talkMore(s, n)` for talks 2 and up
+(a variant, then the hint in their voice, then the nickname lines — the engine counts talks in `flags['talk.<id>']`,
+whoever answered), a `brushOff` for `ask <npc> about <something they don't know>` (the constant lives in
+`src/world/voice.ts`), and `knows`, the words they do know: `ask <npc> about <one of those>` gets the hint instead.
+A room rule that answers a talk should call `talkTo(s, world, npc, cmd?.noun2)` from `src/engine/builtins.ts` so
+the escalation and the brush-off still run.
+
+**Gate an object.** Anything that blocks progress (a shut drawbridge, a locked case, an OFFLINE ferryman) is a
+`gate({...})` in `src/world/gates.ts`: `room`, a `nouns` alternation, `when` (still shut), a `shape` (who controls
+it, what they want, where that comes from), an optional `more` (the plainer hint, added from the second try) and a
+`flavor` pool, cycled from the third try — put the old `open`/`use` lines here rather than deleting them, each
+tagged with the verbs and nouns it narrates (`{ on: /^(open|unlock)\b.*\bwindow\b/, line }`) so `kick duke` is never
+told it opened the window; when no line fits, the shape and the hint repeat. It becomes one room-scoped
+`PhraseRule` that answers `open`, `use`, `push`, `pull`, `cross`, `climb`, `lower`, `raise`, `enter`, `knock`,
+`unlock`, `break` and `kick` on those nouns, counting tries in `flags['gate.<id>']` (the quirks layer ignores those
+counters, so a try that repeats the gate's words verbatim is still chirped; a try the gate answers differently, the
+plainer hint or the next flavor line, is its own repeat joke and gets no chirp); solved, it declines and the room's
+own rules answer again. Phrase rules
+run before room rules, so a gate must never claim a command that scores in its room: `verbs` narrows the list (the
+Mill's chest keeps `open`/`unlock`/`use` for its own rules), and `tests/gates.test.ts` steps every scored rule with
+every verb synonym and noun to prove nothing is shadowed. `GATE_PHRASES` is registered in `src/world/index.ts`
+ahead of the region phrases and the global eggs (`egg.push`, `egg.kick`, `egg.climb`) it shadows. `open` lets a
+gate open itself on those verbs (the Ledge for the Worthy).
 
 **Give a room a first-impression line.** `Room.enterQuip?: (s) => string | null` shows once, in the Sierra
 message box, the first time the player steps into that room — deadpan, one line, no points. Every room in the
@@ -238,10 +272,11 @@ movement, …), so those still work normally. `line` is a `HeardLine`: the raw t
 with its wrapper words taken off (`line.command`, plus `line.lead` / `line.trail` saying which wrappers were
 there — see `unwrap()` in `src/engine/quirks.ts`). Two rooms use it: the Model View (bare relationship words
 like `single` or `both`) and `copilot.pane`, where any line that isn't a recognized command is a prompt for
-Copilot's ladder (`src/world/copilot-ladder.ts`, pure: `evaluatePrompt(text) → { rung, text, hint, shape }`). The
-pane feeds the ladder the unwrapped line, so "i want to see …" or "ugh just give me …" is judged on the question
-underneath. It's the general hook to reach for whenever a room needs to interpret free text instead of matching
-fixed nouns.
+Copilot's slot model (`src/world/copilot-ladder.ts`, pure: `parseSlots(text)` → `mergeSlots` with the slots stored
+in `copilot.*` flags → `stageOf` → `replyFor(slots, stage, …) → { text, context, hint, shape }`; the conversation
+accumulates across prompts until `start over`). The pane feeds it the unwrapped line, so "i want to see …" or
+"ugh just give me …" is judged on the question underneath. It's the general hook to reach for whenever a room needs
+to interpret free text instead of matching fixed nouns.
 
 **Keep the ledger at 200.** `tests/golden-path.test.ts` replays `tests/golden-path.json` and asserts the final
 score; if you add points, add them to the path or rebalance.
@@ -255,6 +290,38 @@ audio files, just Web Audio oscillators. Add the cue name to the `Cue` union and
 (`[freq, ms, wave?, gain?, together?]`), then reference it from a rule's `sfx`. The side quests added five:
 `sidequest` (the rising sting on entry), `sidequest-out` (the same sting, reversed, on exit), `excel-ding` (a
 field landing in the pivot), `copilot-think` (every reply), and `bonus` (the cha-ching on winning either one).
+
+### How to add a setting
+
+The Sacristy's books are data. To add one:
+
+1. Add the key to `SettingKey`, `SETTING_KEYS` and `DEFAULTS` in `src/engine/governance.ts`. The default must keep
+   today's behavior — the golden path never visits the Sacristy, and every setting at its default is the game as it
+   was before the Sacristy existed.
+2. Add its catalog entry to `SETTINGS` in `src/world/sacristy.ts`: `key`, `shelf` (`tenant` or `capacity`), `title`
+   (the real name from the admin portal / Learn), `words` (lowercase words that name the book), `read` (two
+   sentences paraphrasing Learn, ending "Here, that means: …"), `on` / `off` (the flip lines), `effect` (one line of
+   consequence), and `die` if turning it on is a death (then `on` is the death text). The book item is generated.
+3. Put the effect hook where the effect lives: a room `describe` reading `setting(s, key)`, an NPC line, a rule
+   with `flags: [{ flag: 'ts.<key>', is: false }]`, a function exit, or a trailing line in `applyGovernance()`.
+4. Test it in `tests/setting-effects.test.ts` (flip it, walk to where it bites, assert the line), and run
+   `npm run lint:world` — it checks the catalog.
+
+### The voice constants
+
+Every narrator line follows the Peasant's Quest voice and draws its names from `src/world/voice.ts`:
+
+- `SIGNOFF` — "You dead. Refresh failed." The engine appends it to every death; death text never carries it.
+- `nick(s)` / `NICKNAMES` — the narrator's names for you, seeded and strided by turn so two turns in a row never
+  share one. `rotate(s, lines)` walks a short pool by turn; `vary(s, pool)` (`src/engine/quirks.ts`) is the seeded
+  pick for "that didn't work" answers. No `Math.random`, anywhere.
+- `MALAPROPS`, `BRANDS` (`Refreshr™`, `CapacityAde`, `Dataflows Gen1 Classic`), `ALLUSIONS` (the 2000s-Microsoft
+  layer) — the house jokes. `FRUSTRATION`, `CHEAT`, `CHEAT_AGAIN` — fixed replies.
+- `BRUSHOFFS` — one line per NPC for `ask <npc> about <something they don't know>`.
+
+Voice work is add-mode: new lines join the pools, existing lines stay. Hints and nudges never name a command the
+room would refuse; the stuck narrator (`stuck` on `GameState`, asides at 4, 8 and 12 dead turns) whispers
+sideways first, then plainer, then the flask hint.
 
 ### Side quests
 

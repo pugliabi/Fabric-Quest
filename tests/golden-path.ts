@@ -5,7 +5,7 @@ export const GOLDEN_PATH: string[] = [
   // Mill (+10)
   'n', 'talk to miller', 's',
   // The Keep: SKU, moat (+10 +25) — the moat throws you back to the gate
-  'e', 'e', 'n', 'say trial', 'n', 'n', 'say select *',
+  'e', 'e', 'n', 'say trial', 'n', 'n', 'say calculated column',
   // Model View: the policy; Report Studio: stare, Big Refresh, boots (+10 +15)
   'n', 'w', 'get policy', 'e', 'e', 'look at card', 'wait', 'wait', 'use policy on refresh', 'wear boots',
   // Out the Model View's back gate to the Monastery (+10)

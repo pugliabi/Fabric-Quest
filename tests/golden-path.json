@@ -1,7 +1,7 @@
 [
  "look", "get mug", "read report", "out", "read board", "give mug to jeff",
  "n", "talk to miller", "s",
- "e", "e", "n", "say trial", "n", "n", "say select *",
+ "e", "e", "n", "say trial", "n", "n", "say calculated column",
  "n", "w", "get policy", "e", "e", "look at card", "wait", "wait", "use policy on refresh", "wear boots",
  "w", "w", "n", "wait", "wait", "wait", "n",
  "w", "give license to librarian", "read scroll", "e", "e", "use scroll on notebook", "w", "talk to abbot", "wear hoodie",

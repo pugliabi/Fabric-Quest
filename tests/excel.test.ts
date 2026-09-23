@@ -11,12 +11,11 @@ const play = (cmds: string[], start = 'village.square') => {
 const SOLVE = ['show me a table', 'n', 'use analyze in excel', 'use license on connection', 's', 'e', 'create pivot table', 'use sales region', 'use net sales', 'filter by year', 'w', 'show jeff'];
 
 describe("Jeff's Excel", () => {
-  it('Jeff explains his method one fact per ask, in order', () => {
+  it('Jeff never repeats himself: four asks, four lines, the first points at the Data tab', () => {
     const { outs } = play(['show me a table', 'ask jeff', 'ask jeff', 'ask jeff', 'ask jeff']);
-    expect(outs[1]![0]).toMatch(/Sales Amount/);
-    expect(outs[2]![0]).toMatch(/Region A/);
-    expect(outs[3]![0]).toMatch(/didn't filter/i);
-    expect(outs[4]![0]).toMatch(/that's all|nothing else/i);
+    const lines = outs.slice(1).map((o) => o[0]!);
+    expect(lines[0]).toMatch(/Data tab/);
+    expect(new Set(lines).size).toBe(4);
   });
   it('the connection needs the license; the pivot needs the connection', () => {
     const a = play(['show me a table', 'n', 'use analyze in excel']);
@@ -75,9 +74,9 @@ describe("Jeff's Excel after the Monastery (final review I1)", () => {
     expect(last[0]).toMatch(/library card here — and the card is still signed in/);
   });
   it('the Data tab flask hint never claims a license you do not have', () => {
-    const on = play(['show me a table', 'n', 'get ye flask']).last.join(' ');
-    expect(on).toMatch(/You have a license/);
-    const off = lent(['show me a table', 'n', 'get ye flask']).last.join(' ');
+    const on = play(['show me a table', 'talk to jeff', 'n', 'get ye flask']).last.join(' ');
+    expect(on).toMatch(/`analyze in excel`, then `sign in`\. You have a license/);
+    const off = lent(['show me a table', 'talk to jeff', 'n', 'get ye flask']).last.join(' ');
     expect(off).not.toMatch(/You have a license/);
     expect(off).toMatch(/at the Library/);
   });

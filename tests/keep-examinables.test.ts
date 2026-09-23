@@ -8,8 +8,8 @@ import type { GameState } from '../src/engine/types';
 // Every Keep room: anything a rule names as an object, and every item in the room, can be looked at.
 const KEEP = Object.values(WORLD.rooms).filter((r) => r.region === 'fortress');
 const OBJECT_VERBS = new Set(['look', 'get', 'use', 'give', 'open', 'close', 'talk', 'attack', 'drink', 'read', 'wear']);
-// The builtin "don't see" pool (engine/builtins.ts dontSee).
-const DONT_SEE = /don't see any|Not even a placeholder|in a room you haven't found|checks under the rug|has not been told about/;
+// The builtin "don't see" pool (engine/builtins.ts dontSee), every line of it — a new line there needs a new alternative here.
+const DONT_SEE = /don't see any|Not even a placeholder|in a room you haven't found|checks under the rug|has not been told about|misread the ledger|didn't animate one|never been a/;
 
 const list = (n: string | string[] | undefined): string[] => (n === undefined ? [] : Array.isArray(n) ? n : [n]);
 

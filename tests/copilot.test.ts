@@ -1,42 +1,13 @@
-// tests/copilot.test.ts
+// tests/copilot.test.ts — the pane as a room. The slot model itself is covered by tests/copilot-slots.test.ts.
 import { describe, expect, it } from 'vitest';
-import { evaluatePrompt } from '../src/world/copilot-ladder';
 import { newGame, step } from '../src/engine/step';
 import { WORLD } from '../src/world';
-
-describe('the ladder', () => {
-  const cases: [string, number][] = [
-    ['sales', 0],
-    ['show me the numbers', 1],
-    ['show me sales', 2],
-    ['show me sales from final2', 3],
-    ['show me sales from the certified model', 4],
-    ['show me northeast sales from the certified model', 5],
-    ['show me q4 northeast sales from the certified model', 6],
-    ['show me q4 2025 northeast sales from the certified model', 7],
-    ['total q4 2025 northeast sales from the certified model', 8],
-    ['total q4 2025 northeast net sales from the certified model by product and by day and by salesperson please', 9],
-    ['total q4 2025 northeast net sales from the certified model, just the number', 10],
-    ['q4 2025 northeast net sales certified total', 10], // ≤ 14 words counts as "one figure"
-    ['show me the latest sales', 2],
-    ['show me sales from the uncertified model', 2],
-    ['show me sales from sales_test_DO_NOT_USE', 3],
-    ['show me sales from the do not use model', 3],
-    ['show me 4th quarter northeast sales from the certified model', 6],
-    ['show me 2025q4 northeast sales from the certified model', 7],
-  ];
-  it.each(cases)('%s → rung %i', (p, rung) => expect(evaluatePrompt(p).rung).toBe(rung));
-  it('the winner has the exact figure', () => expect(evaluatePrompt('total q4 2025 northeast net sales from the certified model just the number').text).toContain('$1,247,930'));
-  it('a wrong year is assumed to be 2025 and still passes', () => expect(evaluatePrompt('total q4 2019 northeast net sales certified, just the number').text).toMatch(/assumed 2025/i));
-  it('over 30 words is summarized to rung 2', () => expect(evaluatePrompt(Array(31).fill('sales').join(' ')).rung).toBe(2));
-  it('please gets a You\'re welcome', () => expect(evaluatePrompt('show me sales please').text).toMatch(/You're welcome/));
-});
 
 describe('in the pane', () => {
   const at = (cmds: string[]) => { let s = { ...newGame(WORLD, 5), room: 'copilot.pane', flags: { 'sq.return': 1 } }; const outs: string[][] = []; for (const c of cmds) { const r = step(s, c, WORLD); s = r.state; outs.push(r.output); } return { s, outs }; };
   it('any unhandled line is a prompt; ask copilot / say / copilot prefixes are stripped', () => {
     const { outs } = at(['ask copilot show me sales', 'say show me sales', 'copilot show me sales', 'show me sales']);
-    for (const o of outs) expect(o[0]).toMatch(/fourteen|14 tables/i);
+    for (const o of outs) expect(o[0]).toMatch(/3 semantic models/);
   });
   it('look/inventory/exit still work as commands', () => {
     const { outs } = at(['look', 'inventory']);
@@ -58,13 +29,13 @@ describe('in the pane', () => {
 
 describe('in the pane: commands vs prompts (controller rulings)', () => {
   const at = (cmds: string[]) => { let s = { ...newGame(WORLD, 5), room: 'copilot.pane', flags: { 'sq.return': 1 } }; const rs = []; for (const c of cmds) { const r = step(s, c, WORLD); s = r.state; rs.push(r); } return { s, rs }; };
-  it('step ids are copilot.rung.N and copilot.win; flags record rung and shape', () => {
+  it('step ids are copilot.stage.N and copilot.win; flags record stage and shape', () => {
     const { rs } = at(['sales', 'show me sales', 'show me q4 northeast sales from the certified model', 'ask copilot for total net sales for the northeast region in q4 2025 from the certified model, just the number']);
-    expect(rs.map((r) => r.stepId)).toEqual(['copilot.rung.0', 'copilot.rung.2', 'copilot.rung.6', 'copilot.win']);
-    expect(rs[1]!.state.flags['copilot.last']).toBe(2); expect(rs[1]!.state.flags['copilot.shape']).toBe(0);
-    expect(rs[2]!.state.flags['copilot.shape']).toBe(2);
+    expect(rs.map((r) => r.stepId)).toEqual(['copilot.stage.1', 'copilot.stage.1', 'copilot.stage.2', 'copilot.win']);
+    expect(rs[1]!.state.flags['copilot.last']).toBe(1); expect(rs[1]!.state.flags['copilot.shape']).toBe(0);
+    expect(rs[2]!.state.flags['copilot.shape']).toBe(0); // the six-measures list
     expect(rs[3]!.state.room).toBe('village.square'); expect(rs[3]!.sfx).toBe('bonus');
-    expect(rs[1]!.sfx).toBe('copilot-think'); expect(rs[1]!.output[0]).toMatch(/Copilot suggests: Try: name the semantic model/);
+    expect(rs[1]!.sfx).toBe('copilot-think'); expect(rs[1]!.output[0]).toMatch(/Copilot suggests: Try: use the certified model\./);
   });
   it('the bonus is awarded once', () => {
     const win = 'total q4 2025 northeast net sales from the certified model, just the number';
@@ -73,7 +44,7 @@ describe('in the pane: commands vs prompts (controller rulings)', () => {
   });
   it('lines starting with parser verbs are still prompts (total, add, filter, what, how many, get me)', () => {
     const { rs } = at(['add sales from the certified model', 'filter sales by final2', 'what are my sales numbers', 'how many sales in the northeast', 'get me sales please', 'list sales tables']);
-    for (const r of rs) expect(r.stepId).toMatch(/^copilot\.rung\./);
+    for (const r of rs) expect(r.stepId).toMatch(/^copilot\.stage\./);
   });
   it('bare copilot in the pane is not the sourdough egg', () => {
     for (const c of ['copilot', 'ask copilot', 'talk to copilot']) expect(at([c]).rs[0]!.output[0]).toBe('Copilot is right here. Type a question.');
@@ -82,7 +53,7 @@ describe('in the pane: commands vs prompts (controller rulings)', () => {
     const { rs } = at(['get ye flask', 'get prompt', 'help', 'e']);
     expect(rs[0]!.output[0]).toMatch(/Ye cannot get ye flask/);
     expect(rs[1]!.output[0]).toMatch(/cannot take the prompt box/);
-    expect(rs[2]!.stepId).not.toMatch(/^copilot\.rung/);
+    expect(rs[2]!.stepId).not.toMatch(/^copilot\.stage/);
     expect(rs[3]!.state.room).toBe('copilot.gallery');
   });
   it('outside / go outside leave the realm like exit', () => {
@@ -102,8 +73,8 @@ describe('in the pane: commands vs prompts (controller rulings)', () => {
   });
   it('look describes the last answer; the flask names the last hint', () => {
     const { rs } = at(['show me q4 northeast sales from the certified model', 'look', 'get ye flask']);
-    expect(rs[1]!.output[0]).toMatch(/400 rows/);
-    expect(rs[2]!.output[0]).toMatch(/which year/);
+    expect(rs[1]!.output[0]).toMatch(/is a list/);
+    expect(rs[2]!.output[0]).toMatch(/net sales/);
   });
   it('in the gallery, bare model and copilot are answered by the room', () => {
     const { rs } = at(['e', 'look at model', 'copilot', 'look at certified']);
@@ -148,7 +119,7 @@ describe('Copilot: final review fixes', () => {
     const r = step(home(), 'ask copilot for q4 sales', WORLD);
     expect(r.state.room).toBe('copilot.pane');
     expect(r.sfx).toBe('sidequest');
-    expect(r.stepId).toMatch(/^copilot\.rung\./);
+    expect(r.stepId).toMatch(/^copilot\.stage\./);
     const text = r.output.join('\n');
     expect(text).toMatch(/COPILOT PANE/);
     expect(r.output[r.output.length - 1]).toMatch(/^Copilot: /);
@@ -159,7 +130,7 @@ describe('Copilot: final review fixes', () => {
   it.each(['ask copilot what are my sales numbers', 'hey copilot, show me sales', 'copilot, show me sales', 'talk to copilot about my sales numbers'])('%s: enters with a prompt', (cmd) => {
     const r = step(home(), cmd, WORLD);
     expect(r.state.room).toBe('copilot.pane');
-    expect(r.stepId).toBe('copilot.rung.2');
+    expect(r.stepId).toBe('copilot.stage.1');
   });
   it.each(['ask copilot', 'copilot', 'hey copilot', 'open copilot'])('%s: just enters', (cmd) => {
     const r = step(home(), cmd, WORLD);
@@ -182,10 +153,10 @@ describe('Copilot: final review fixes', () => {
     const text = step(home(), 'copilot', WORLD).output.join('\n');
     expect(text.match(/It would like that very much/g)).toHaveLength(1);
   });
-  it('M2: after rung 9 the pane does not claim a wrong model', () => {
+  it('M2: after stage 5 the pane does not claim a wrong model', () => {
     let s = pane();
     s = step(s, 'total q4 2025 northeast net sales from the certified model by product and by day and by salesperson and by week and by store and by hour', WORLD).state;
-    expect(s.flags['copilot.last']).toBe(9);
+    expect(s.flags['copilot.last']).toBe(5);
     const look = step(s, 'look', WORLD).output[0]!;
     expect(look).not.toMatch(/wrong model/);
     expect(look).toMatch(/three pages/);

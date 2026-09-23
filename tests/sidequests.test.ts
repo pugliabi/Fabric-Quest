@@ -119,7 +119,7 @@ describe("Jeff's door and Excel's small gaps (final review M6)", () => {
   it('ask jeff what did you use is ask jeff', () => {
     const r = step(inExcel(), 'ask jeff what did you use', WORLD);
     expect(r.stepId).toBe('excel.ask-jeff');
-    expect(r.output[0]).toMatch(/Sales Amount/);
+    expect(r.output[0]).toMatch(/Data tab/);
   });
   it('bare no filter gets Jeff\'s approving nod', () => {
     expect(step(inExcel(), 'no filter', WORLD).output[0]).toMatch(/nods approvingly/);
@@ -151,9 +151,9 @@ describe('leaving a realm is discoverable, and QUIT does not end the run (final 
   });
   it('help inside a realm says how to leave it', () => {
     const e = step(excel().state, 'help', WORLD).output;
-    expect(e[e.length - 1]).toBe("Type EXIT to leave Jeff's Excel; you return where you were.");
+    expect(e[e.length - 1]).toBe("Type EXIT to leave Jeff's Excel; you return where you were. GOAL repeats the objective; GET YE FLASK says the next step.");
     const c = step(copilot().state, 'help', WORLD).output;
-    expect(c[c.length - 1]).toBe('Type EXIT to leave Copilot; you return where you were.');
+    expect(c[c.length - 1]).toBe('Type EXIT to leave Copilot; you return where you were. GOAL repeats the objective; GET YE FLASK says the next step.');
     expect(step(from('village.square'), 'help', WORLD).output.join(' ')).not.toMatch(/Type EXIT/);
   });
   it.each([
@@ -174,16 +174,26 @@ describe('leaving a realm is discoverable, and QUIT does not end the run (final 
     expect(r.state.room).toBe('village.square');
     expect(r.outcome).toBe('move');
   });
-  it('restart inside a realm is the ordinary restart (M10)', () => {
-    for (const s of [excel().state, copilot().state, step(copilot().state, 'e', WORLD).state]) {
-      const r = step(s, 'restart', WORLD);
-      expect(r.parsed.verb).toBe('restart'); // App.tsx sees the verb and starts a fresh game
-      expect(r.outcome).toBe('meta');
-      expect(r.stepId).not.toMatch(/^copilot\.(rung|win)|^sq\./); // not a prompt, not an exit
-    }
+  it('restart inside Excel is the ordinary restart (M10)', () => {
+    const r = step(excel().state, 'restart', WORLD);
+    expect(r.parsed.verb).toBe('restart'); // App.tsx sees the verb (and outcome meta) and starts a fresh game
+    expect(r.outcome).toBe('meta');
+    expect(r.stepId).not.toMatch(/^copilot\.(stage|win)|^sq\./); // not a prompt, not an exit
     const fresh = newGame(WORLD, 3);
     expect(fresh.room).toBe(WORLD.start);
     expect(fresh.flags['sq.return']).toBeUndefined();
     expect(fresh.bonus).toBe(0);
+  });
+  it('restart inside Copilot asks first (the chat has a reset of its own); restart again is the ordinary restart', () => {
+    for (const s of [copilot().state, step(copilot().state, 'e', WORLD).state]) {
+      const once = step(s, 'restart', WORLD);
+      expect(once.stepId).toBe('copilot.restart');
+      expect(once.outcome).not.toBe('meta'); // App.tsx only restarts the run on the builtin's 'meta'
+      expect(once.output[0]).toBe('Restart the whole quest, or the chat? Say NEW CHAT for the chat. Say RESTART again for the quest.');
+      const twice = step(once.state, 'restart', WORLD);
+      expect(twice.parsed.verb).toBe('restart'); expect(twice.outcome).toBe('meta');
+      const chat = step(once.state, 'new chat', WORLD);
+      expect(chat.stepId).toBe('copilot.clear'); expect(chat.state.room).toBe(s.room);
+    }
   });
 });

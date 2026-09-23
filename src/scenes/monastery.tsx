@@ -80,6 +80,44 @@ export function Spark({ fixed = false }: { fixed?: boolean }) {
   );
 }
 
+/** The Admin Portal, in stone: sixteen thin books with a toggle for a spine (green at default, red once changed), a sign, the ledger on a lectern, the stair down. */
+export function Sacristy({ changed = 0 }: { changed?: number }) {
+  return (
+    <>
+      <Interior wall={EGA.lgray} wallDark={EGA.dgray} floor="#8a8a8a" ceiling={EGA.dgray} />
+      {/* the bookcase: two rows of eight */}
+      <R x={52} y={24} w={140} h={96} f={EGA.brown} />
+      {[0, 1].map((row) => <R key={row} x={56} y={28 + row * 46} w={132} h={40} f={EGA.dgray} s={null} />)}
+      {Array.from({ length: 16 }, (_, i) => {
+        const x = 60 + (i % 8) * 16;
+        const y = 30 + Math.floor(i / 8) * 46;
+        const flipped = i < changed;
+        return (
+          <g key={i}>
+            <R x={x} y={y} w={10} h={36} f={EGA.white} sw={1} />
+            <rect x={x + 3} y={y + 6} width={4} height={14} fill={EGA.black} />
+            <rect x={x + 3} y={flipped ? y + 6 : y + 14} width={4} height={6} fill={flipped ? EGA.lred : EGA.lgreen} />
+          </g>
+        );
+      })}
+      <Label x={58} y={132} text="TENANT SETTINGS" color={EGA.yellow} size={5} />
+      {/* the sign: FABRIC ADMINISTRATORS ONLY, and the smaller print nobody enforces */}
+      <R x={204} y={26} w={62} h={24} f={EGA.white} />
+      <Label x={208} y={36} text="ADMINS" color={EGA.red} size={5} />
+      <Label x={208} y={46} text="ONLY" color={EGA.red} size={5} />
+      {/* the lectern, the ledger open on it */}
+      <R x={228} y={96} w={16} h={40} f={EGA.dgray} />
+      <P pts={[[212, 96], [260, 96], [256, 86], [216, 86]]} f={EGA.brown} />
+      <P pts={[[216, 86], [236, 84], [256, 86], [254, 80], [236, 78], [218, 80]]} f={EGA.white} />
+      <L pts={[[236, 78], [236, 84]]} sw={1} />
+      <Label x={216} y={150} text="LEDGER" color={EGA.white} size={5} />
+      {/* the spiral stair, down and out of frame */}
+      <P pts={[[0, 200], [64, 200], [64, 150], [50, 150], [50, 166], [36, 166], [36, 182], [20, 182], [20, 200]]} f={EGA.dgray} />
+      <L pts={[[64, 150], [50, 150], [50, 166], [36, 166], [36, 182], [20, 182]]} s={EGA.black} />
+    </>
+  );
+}
+
 export function Library({ caseOpen = false }: { caseOpen?: boolean }) {
   return (
     <>

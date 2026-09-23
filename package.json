@@ -19,6 +19,7 @@
     "rayfin:up": "rayfin up",
     "lint:world": "tsx scripts/lint-world.ts",
     "replay": "tsx scripts/replay.ts",
+    "cheat-sheet": "tsx scripts/cheat-sheet.ts",
     "e2e": "playwright test",
     "test:all": "npm test && npm run lint:world && npm run e2e",
     "build:pages": "vite build --mode pages"

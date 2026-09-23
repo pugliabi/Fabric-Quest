@@ -1,6 +1,10 @@
 import type { PhraseRule, Rule, World } from './types';
 import type { GameState } from '../engine/types';
 import { sigilStatus } from './items';
+import { CHEAT, CHEAT_AGAIN, FRUSTRATION, nick } from './voice';
+import { whereText } from './where';
+import { CURSE_GLOBAL_RULES } from './curses';
+import { ADE, ADE_DEATH } from './deaths';
 
 /**
  * Matched against raw lowercase input BEFORE parsing. First match wins.
@@ -8,13 +12,14 @@ import { sigilStatus } from './items';
  */
 export const PHRASE_RULES: PhraseRule[] = [
   // ---- Instant deaths (Press X to die) ----
-  { id: 'death.die', test: /^(die|kill me|kill myself|end it|perish)$/, text: 'You die. Just like that. No dragon required. The realm makes a note of your efficiency.', death: 'death.die' },
-  { id: 'death.attack-self', test: /^(attack|hit|punch|fight|stab|kill)\s+(me|myself|self|yourself)$/, text: 'You attack yourself. Nobody in the realm tries to stop you. It works. Efficient, if bleak.', death: 'death.attack-self' },
-  { id: 'death.delete-workspace', test: /^(delete|drop|remove|nuke)\b.*workspace/, text: 'You delete the workspace. You were in it.', death: 'death.delete-workspace' },
-  { id: 'death.rm-rf', test: /rm -rf|format c:|drop database/, text: "You run it. The realm, to its credit, had a backup. You did not.", death: 'death.rm-rf' },
-  { id: 'death.paginated', test: /paginated.*jeff|jeff.*paginated/, text: "You offer Jeff a paginated report. Jeff's eyes go dark. He was not built for this. Neither were you.", death: 'death.paginated' },
-  { id: 'death.import', test: /^import\b.*(lake|onelake)|^(use|get|take|open)\b(?!.*\b(pebble|stone)\b).*(the )?(onelake|lake)$/, room: 'lake.shore', text: 'You attempt to Import the OneLake into Power BI Desktop. Your laptop becomes a small sun.', death: 'death.import' },
-  { id: 'death.swim-moat', test: /^(swim|dive|jump)\b.*(moat|in)?/, room: 'fortress.bridge', text: 'You dive into the Moat of T-SQL. It is deeper than it looks and made entirely of nested subqueries. You are still in there. You will always be in there.', death: 'death.swim-moat' },
+  // The skill's death shape (spec1 §5.4): the kill sentence, then the blame sentence; the engine appends the sign-off.
+  { id: 'death.die', test: /^(die|kill me|kill myself|end it|perish)$/, text: 'You die. Just like that. No dragon required. The realm makes a note of your efficiency. Your mom told you this game had a dragon in it and you did this instead.', death: 'death.die' },
+  { id: 'death.attack-self', test: /^(attack|hit|punch|fight|stab|kill)\s+(me|myself|self|yourself)$/, text: "You attack yourself. Nobody in the realm tries to stop you; the art budget didn't cover a bystander. It works. Efficient, if bleak.", death: 'death.attack-self' },
+  { id: 'death.delete-workspace', test: /^(delete|drop|remove|nuke)\b.*workspace/, text: "You delete the workspace. You were in it. Somewhere a director's bookmark breaks and a Teams message begins composing itself.", death: 'death.delete-workspace' },
+  { id: 'death.rm-rf', test: /rm -rf|format c:|drop database/, text: 'You run it. The realm, to its credit, had a backup. You did not. You typed it with feeling, too.', death: 'death.rm-rf' },
+  { id: 'death.paginated', test: /paginated.*jeff|jeff.*paginated/, text: "You offer Jeff a paginated report. Jeff's eyes go dark. He was not built for this. Neither were you. Dumb, dumb, dumb.", death: 'death.paginated' },
+  { id: 'death.import', test: /^import\b.*(lake|onelake)|^(use|get|take|open)\b(?!.*\b(pebble|stone)\b).*(the )?(onelake|lake)$/, room: 'lake.shore', text: 'You attempt to Import the OneLake into Power BI Desktop. Your laptop becomes a small sun. Nice one, Import Mode Ishmael.', death: 'death.import' },
+  { id: 'death.swim-moat', test: /^(swim|dive|jump)\b.*(moat|in)?/, room: 'fortress.bridge', text: "You dive into the Moat of T-SQL. It is deeper than it looks and made entirely of nested subqueries. You are still in there. You will always be in there. Report Builders can't swim. Like, it's in the license.", death: 'death.swim-moat' },
 
   // ---- Classic verbs the parser was always going to be asked ----
   // ---- Greetings from another realm (triggers only; the lines are ours) ----
@@ -59,7 +64,7 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.xyzzy', test: /^(xyzzy|plugh|plover)$/, text: "A hollow voice says: 'Direct Lake.'" },
   { id: 'egg.refresh', test: /^refresh\b/, text: 'You refresh. Nothing changes, but it feels productive.' },
   { id: 'egg.dax', test: /^(dax|write dax|write a measure|measure)\b/, text: 'You write a measure. It returns BLANK(). It always returns BLANK(). You are beginning to suspect the problem is you.' },
-  { id: 'egg.select-star', test: /^select \*/, text: (s) => (s.room === 'fortress.throne' ? 'The Duke did not hear you. Say it louder.' : 'Not here. The Duke would hear you, and there is no moat nearby to land in.') },
+  { id: 'egg.select-star', test: /^select \*/, text: (s) => (s.room === 'fortress.throne' ? 'The Duke did not hear you. Say it louder.' : 'Not here. This is not even a Warehouse. Say it to the Duke and get corrected.') },
   { id: 'egg.dance', test: /^(dance|boogie|jig)\b/, text: 'You dance. Your Pro license does not include dancing. You dance anyway, poorly, in a way that will be discussed at standup.' },
   { id: 'egg.sing', test: /^(sing|hum|whistle)\b/, text: 'You sing the DAX song. It has one verse, and the verse is CALCULATE. Birds leave.' },
   { id: 'egg.jump', test: /^(jump|hop|leap)\b/, text: 'You jump. Owing to interactive delay, you land next Tuesday.' },
@@ -85,19 +90,29 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.kick', test: /^(kick|stomp|smash|break)\b/, text: 'You kick it. The realm logs a Sev 2. You are the Sev 2.' },
   { id: 'egg.throw', test: /^(throw|toss|hurl|chuck)\b/, text: 'You wind up to throw it, then remember you are a Report Builder. You put it down gently and apologize to it.' },
   { id: 'egg.buy', test: /^(buy|pay|sell|purchase|bribe|tip)\b/, text: 'The realm accepts only Capacity Units. You have a Pro license and, possibly, a mug. Neither is legal tender.' },
-  { id: 'egg.cheat', test: /^(cheat|hack|god mode|iddqd|idkfa|konami)\b/, text: "You attempt to cheat. A hollow voice says: 'Nice try. This is logged.' It is. It is literally in a table." },
+  {
+    id: 'egg.cheat', test: /^(cheat|hack|god mode|iddqd|idkfa|konami)\b/, text: '',
+    then: { text: (s) => ((Number(s.flags['cheat.count']) || 0) === 0 ? CHEAT : CHEAT_AGAIN), set: { 'cheat.count': (v) => (Number(v) || 0) + 1 }, outcome: 'snark' },
+  },
   { id: 'egg.win', test: /^(win|beat game|finish|skip to end|end game)\b/, text: 'You cannot simply win. You must be Worthy. Have you read the notice board? You have not read the notice board.' },
   { id: 'egg.undo', test: /^(undo|ctrl z|go back|rewind)\b/, text: "There is no undo. There is only 'restore', and it only works if you saved, which — look at you." },
   { id: 'egg.laugh', test: /^(lol|haha|lmao|rofl|hehe)\b/, text: 'The realm does not laugh. The realm is a governed tenant.' },
-  { id: 'egg.self', test: /^(look at (me|myself|self)|who am i|examine (me|self|myself)|x me)$/, text: (s) => {
+  // 'yourself' / 'you' too: the curses' undo takes the policy "on yourself" (curses.ts), and anything a rule names can be looked at.
+  { id: 'egg.self', test: /^(look at (me|myself|self|yourself|you)|who am i|examine (me|self|myself|yourself|you)|x me)$/, text: (s) => {
+    // The curses (curses.ts, fix round 1) show in the mirror too.
+    const cursed = s.flags['curse.column'] ? 'Also a calculated column: computed at refresh, stored in every row, and still not a measure.'
+      : s.flags['curse.blank'] ? 'Or you would be, if there were anything to look at. You are (Blank). The Card would know.'
+      : s.flags['curse.jeff'] ? 'Also Jeff. You look at yourself and Jeff looks back, and he would like an export.'
+      : '';
     const bits = [
       'You look at yourself. A Report Builder from the Village of Pro.',
+      cursed,
       s.worn.includes('hoodie') ? 'You are wearing a hoodie you did not earn by writing code.' : 'No hoodie. You look like someone who imports CSVs.',
       s.flags['trial.moat'] ? 'You smell of the Moat, permanently.' : 'You smell fine, which is a problem.',
       s.worn.includes('boots') ? 'Your boots are bursting.' : 'Your shoes are Pro-tier.',
       "You look like someone who has typed 'export to excel' at least once. You have.",
     ];
-    return bits.join(' ');
+    return bits.filter(Boolean).join(' ');
   } },
   { id: 'egg.fly', test: /^(fly|flap|soar|levitate)\b/, text: 'You flap. You are not a Dataflow. You do not flow. You do not fly.' },
   { id: 'egg.lick', test: /^(lick|taste)\b/, text: 'You lick it. It tastes of stale metadata. Please stop.' },
@@ -107,11 +122,14 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.hello', test: /^(hello|hi|hey|yo|sup|greetings)\b/, text: 'The realm does not say hello back. The realm is busy refreshing.' },
   { id: 'egg.thanks', test: /^(thanks|thank you|ty)\b/, text: 'You are welcome. This is the first gratitude the realm has received since 2019. It does not know what to do with it.' },
   { id: 'egg.sorry', test: /^(sorry|apologize|my bad)\b/, text: 'Apology logged. Outcome: no change. Same as every retrospective.' },
-  { id: 'egg.swear', test: /\b(damn|hell|crap|wtf|ffs|fuck|shit)\b/, text: 'Language, peasant. This is a governed tenant. The narrator has a certification and would like to keep it.' },
+  // Profanity anywhere in the line, or a bare interjection as the whole line ("ugh", "argh", "dammit", "seriously"): the
+  // one unchanging line. (A leading "ugh " is a wrapper the chirps strip first; a bare "ugh" reaches here.)
+  { id: 'egg.swear', test: /\b(damn|hell|crap|wtf|ffs|fuck|shit)\b|^(ugh+|argh+|dammit|damn it|seriously|jeez|grr+|bah|hmph|omg)$/, text: FRUSTRATION },
   { id: 'egg.please', test: /^please\b/, text: 'Manners will not help you here. Two words. Verb, noun.' },
   { id: 'egg.what', test: /^(what|huh|wat|what now|what do i do)\??$/, text: "What indeed. Try 'look'. Try 'help'. Try, as a last resort, 'get ye flask'." },
   { id: 'egg.plot', test: /^(plot|graph|chart|visualize|make a chart)\b/, text: 'You make a chart. It is a pie chart. It has 31 slices. The realm looks away.' },
-  { id: 'egg.publish', test: /^(publish|deploy|ship)\b/, text: 'You publish. A dialog asks: "Replace existing?" You have never been more afraid of a Yes button.' },
+  // Publishing happens from Desktop, which is My Workspace (WORKSPACE_PHRASES, village.ts); the Keep has its own line.
+  { id: 'egg.publish', test: /^(publish|deploy|ship)\b/, text: 'Publish from where? You are not in Desktop.' },
   { id: 'egg.git', test: /^git\b/, text: "The realm does not have version control. The realm has 'Sales_v3_FINAL_final2.pbix'." },
   { id: 'egg.dragon-name', test: /^trogdor\b/, text: 'A different dragon. A different realm. This one only throttles.' },
   { id: 'egg.boo', test: /^(boo|scare|spook)\b/, text: 'Boo. Nobody is scared. The realm has seen a 400-column table.' },
@@ -136,6 +154,31 @@ const yeFlask: Rule = {
   },
 };
 
+const HINT_TEST = /^(hint|hints|clue|what now|what next|i'?m stuck|i am stuck|stuck|help me)\??$/;
+const hollow = (s: GameState, w: World): string => `A hollow voice adds: "${w.rooms[s.room]!.flaskHint(s)}"`;
+/**
+ * `hint` and friends: the flask hint without the flask (spec1 §3.4). Registered right after GOAL_PHRASES (world/index.ts),
+ * so `what now` reaches the hint before egg.what does. The pane copy is needed because a prompt room skips global phrases.
+ * The engine treats a `hint.*` turn as the hint delivered: it resets the narrator's stuck counter (step.ts, finish() 8).
+ */
+export const HINT_PHRASES: PhraseRule[] = [
+  { id: 'hint.pane', room: 'copilot.pane', test: HINT_TEST, text: hollow },
+  { id: 'hint.main', test: HINT_TEST, text: hollow },
+];
+
+const WHERE_TEST = /^(where|where am i|where is this|where are we|location|what room is this)\??$/;
+const whereLine = (s: GameState, w: World): string => whereText(s, s.room) ?? `You're hanging out in ${w.rooms[s.room]!.name}.`;
+/**
+ * `where` and bare `why` (spec1 §5.2). Registered right before PHRASE_RULES (world/index.ts): `egg.why-bare` must beat
+ * `egg.why` (which keeps "why me" / "but why"), and the pane copy of `where` is needed because a prompt room skips global
+ * phrases. `where` is the player's word; god mode's search stays `locate`.
+ */
+export const VOICE_PHRASES: PhraseRule[] = [
+  { id: 'where.pane', room: 'copilot.pane', test: WHERE_TEST, text: whereLine },
+  { id: 'where.main', test: WHERE_TEST, text: whereLine },
+  { id: 'egg.why-bare', test: /^why\??$/, text: 'I wish I knew.' },
+];
+
 const JEFF = ['jeff', 'jeff from finance', 'finance', 'man'];
 
 const SQUEEZES = [
@@ -156,7 +199,8 @@ export const GLOBAL_RULES: Rule[] = [
     id: 'global.wear-hoodie',
     when: { verb: 'wear', noun: ['hoodie', 'hoodie of spark', 'spark hoodie', 'black hoodie'], has: ['hoodie'], flags: [{ flag: 'trial.hoodie', not: true }] },
     then: {
-      text: 'You pull on the Hoodie of Spark. You look like a Data Engineer. You have never written a notebook in your life. Nobody can tell.',
+      // The milestone names you (spec1 §5.2, Task F3): the canon "Now you're lookin like a serious peasant" shape, with a nickname.
+      text: (s) => `You pull on the Hoodie of Spark. You look like a Data Engineer. You have never written a notebook in your life. Nobody can tell. Now you're lookin' like a serious Engineer, ${nick(s)}.`,
       set: { 'trial.hoodie': true }, wear: ['hoodie'], sfx: 'item',
     },
   },
@@ -209,11 +253,15 @@ export const GLOBAL_RULES: Rule[] = [
     when: { verb: 'look', noun: ['sigils', 'sigil'] },
     then: { text: (s) => (s.room === 'peaks.ledge' ? sigilStatus(s) : 'There are no sigils here. Sigils are a Peaks thing.'), outcome: 'success' },
   },
+  // The curses' undo lines (curses.ts): the policy on yourself, and `say star schema` while (Blank), ahead of the plain star line.
+  ...CURSE_GLOBAL_RULES,
   {
     id: 'global.say-star-elsewhere',
     when: { verb: 'say', noun: ['star schema', 'a star schema', 'the star schema'] },
     then: { text: 'You say "star schema" to no one in particular. A nearby table quietly normalizes itself.', outcome: 'snark' },
   },
+  // The CapacityAde kills you anywhere you carry it (deaths.ts); on the Pass, the room's own rule answers first.
+  { id: 'death.capacityade-carried', when: { verb: 'drink', noun: ADE, has: ['capacityade'] }, then: { text: ADE_DEATH, death: 'death.capacityade' } },
   {
     id: 'global.drink-mug',
     when: { verb: 'drink', noun: ['coffee', 'mug'] },
@@ -237,7 +285,8 @@ export const GLOBAL_RULES: Rule[] = [
   {
     id: 'global.talk-dragon-elsewhere',
     when: { verb: 'talk', noun: ['dragon', 'throttlor'] },
-    then: { text: (s) => (s.room === 'peaks.shrine' ? 'He is right there.' : 'You address the dragon. The dragon is on a mountain. You are not. This is, for now, the best arrangement.'), outcome: 'snark' },
+    // At the Shrine the room's own talk rule (peaks.talk-dragon) answers first while he is there.
+    then: { text: 'You address the dragon. The dragon is on a mountain. You are not. This is, for now, the best arrangement.', outcome: 'snark' },
   },
   {
     id: 'global.open-anything',
@@ -269,6 +318,11 @@ export const SNARK: string[] = [
   'I understood the verb. I understood the noun. I am choosing not to.',
   'That is a feature request. It has been added to the backlog, which is also a swamp.',
   'The narrator has seen many peasants try that. None of them are narrators now.',
+  // The voice pass (spec1 §5.2): the same narrator, less patient.
+  "I don't understand. Type HELP, or open a ticket like a real professional.",
+  'Two words, Ctrl-Shift-Enter. Verb, then the thing. Like a measure, but shorter.',
+  'Naw.',
+  'Listen to you. What kinda gaming is that? Two words.',
 ];
 
 export const HELP_TEXT =

@@ -106,13 +106,15 @@ export default function App({ recorder }: { recorder: Recorder }) {
 
     // Meta verbs that the UI owns.
     const v = r.parsed.verb;
-    if (v === 'restore') {
+    // The Sacristy's `restore defaults` / `reset` put the tenant settings back (outcome success/snark); the builtin restore is 'meta'.
+    if (v === 'restore' && r.outcome === 'meta') {
       const b = load();
       if (b && b.questId === session.questId && !b.state.dead) { restoreGame(); sfx('success'); }
       else { setLog([...lines, 'No saved game for this quest.']); setState(r.state); sfx('fail'); }
       return;
     }
-    if (v === 'restart') { setState(r.state); setLog(lines); restartGame(); return; }
+    // A restart typed inside Copilot is first a question ("the quest, or the chat?", outcome 'snark'); the builtin restart is 'meta'.
+    if (v === 'restart' && r.outcome === 'meta') { setState(r.state); setLog(lines); restartGame(); return; }
     // A quit typed inside a side realm only leaves the realm (outcome 'move'); the builtin quit is 'meta'.
     if (v === 'quit' && r.outcome === 'meta') {
       // Retire: the run ends here, but the score can still be posted to the Hall of Fame.
@@ -213,6 +215,7 @@ export default function App({ recorder }: { recorder: Recorder }) {
     <>
       <PlayScreen
         state={state}
+        playerName={session.playerName}
         score={statusScore}
         maxScore={MAX_SCORE}
         log={log}

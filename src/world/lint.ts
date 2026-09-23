@@ -1,6 +1,9 @@
-import type { World } from './types';
+import { SIDE_REGIONS, type World } from './types';
 import { SIDEQUEST_ENTRY } from './sidequests';
 import type { GameState } from '../engine/types';
+import { SETTING_KEYS } from '../engine/governance';
+import { SETTINGS } from './sacristy';
+import { WHERE } from './where';
 
 /** Static checks over the world: dangling references, duplicate ids, unreachable rooms. */
 export function lintWorld(world: World): string[] {
@@ -62,5 +65,37 @@ export function lintWorld(world: World): string[] {
     else sources.set(key, p.id);
   }
   for (const id of rooms) if (!reachable.has(id)) problems.push(`room ${id} is unreachable`);
+  // Spec1 §5.2: `where` has a line for every room (world/where.ts). The fixture worlds in tests/step.test.ts never run the lint.
+  for (const id of rooms) if (!WHERE[id]) problems.push(`${id}: no WHERE line`);
+
+  // Spec1 §6, spec2 §9: every NPC brushes off unknown topics; the settings catalog is complete and every book is an item in the Sacristy.
+  for (const n of Object.values(world.npcs)) if (!n.brushOff) problems.push(`npc ${n.id}: missing brushOff`);
+  // Spec1 §5.2 (Task F3): every item has an inventory blurb (god mode can summon any of them); every gettable item
+  // remembers being taken when you `get` it again.
+  for (const it of Object.values(world.items)) {
+    if (!it.blurb) problems.push(`item ${it.id}: missing blurb`);
+    if (it.takeable && !it.again) problems.push(`item ${it.id}: missing again`);
+  }
+  const sacristy = world.rooms['monastery.sacristy'];
+  for (const key of SETTING_KEYS) {
+    const book = SETTINGS.find((b) => b.key === key);
+    if (!book) { problems.push(`setting ${key}: missing catalog entry`); continue; }
+    for (const f of ['title', 'read', 'on', 'off', 'effect'] as const) if (!book[f]) problems.push(`setting ${key}: empty ${f}`);
+    if (sacristy && !sacristy.items.includes(`book-${key}`)) problems.push(`setting ${key}: no book item in the Sacristy`);
+  }
   return [...new Set(problems)];
+}
+
+/**
+ * Advisory checks: what `npm run lint:world` prints but does not fail on. A main-realm room without a `nudge` (Task B4)
+ * still works — the narrator whispers its flask hint at every tier — it just whispers it straight, which is the thing
+ * the nudge exists to avoid. Side realms hint in their own voice and are not expected to carry one.
+ */
+export function lintWarnings(world: World): string[] {
+  const warnings: string[] = [];
+  for (const room of Object.values(world.rooms)) {
+    if (SIDE_REGIONS.has(room.region)) continue;
+    if (!room.nudge?.oblique) warnings.push(`${room.id}: no nudge (the flask hint whispers at every tier)`);
+  }
+  return warnings;
 }

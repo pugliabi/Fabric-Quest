@@ -1,5 +1,7 @@
 import { describeRoom } from './builtins';
+import { SETTING_KEYS, flagOf } from './governance';
 import type { GameState, ParsedCommand, StepResult } from './types';
+import { settingByKey, settingsListing } from '../world/sacristy';
 import type { Rule, RuleWhen, World } from '../world/types';
 
 /**
@@ -24,12 +26,14 @@ const GOD_HELP = [
   '  summon <item>         put any item in your inventory',
   '  locate <thing>        who wants it, where it is, what to say (e.g. locate sku, locate key)',
   '  flags                 dump the story flags',
+  '  settings              both settings shelves, wherever you are',
+  '  set <key> on|off      flip a setting directly (no death, no bonus), e.g. set xmla off',
   '  godhelp               this list',
   '  burninate             back to being a peasant',
 ].join('\n');
 
 function prep(w: RuleWhen): string {
-  return w.verb === 'give' ? 'to' : w.verb === 'use' ? 'on' : 'with';
+  return w.verb === 'give' ? 'to' : w.verb === 'use' ? 'on' : w.verb === 'talk' ? 'about' : 'with';
 }
 
 function nounText(n: string | string[] | undefined): string {
@@ -44,7 +48,8 @@ export function promptFor(r: Rule): string {
   if (w.verb === 'talk') parts.push('to');
   if (w.nounMatches) parts.push(`<${w.nounMatches.source}>`);
   else if (w.noun) parts.push(nounText(w.noun));
-  if (w.noun2) parts.push(prep(w), nounText(w.noun2));
+  if (w.noun2Matches) parts.push(prep(w), w.noun2Matches.source.startsWith('^(?!') ? '<anything else>' : `<${w.noun2Matches.source}>`);
+  else if (w.noun2) parts.push(prep(w), nounText(w.noun2));
   return parts.join(' ');
 }
 
@@ -151,6 +156,8 @@ function whereIs(world: World, q: string): string {
     for (const r of Object.values(world.rooms)) if (r.items.includes(it.id)) push('item', [`item '${it.name}' lives in ${r.id} — ${r.name}`]);
     for (const r of Object.values(world.rooms)) for (const rule of r.rules) if (rule.then.give?.includes(it.id) && fresh(rule)) push('item', [`${r.id} — ${r.name}: > ${promptFor(rule)} gives ${it.name}${needsText(rule)}`], awards(rule.then));
   }
+  // The settings live in one room; `locate settings` (or tenant/capacity settings) points there (spec2 §3.6).
+  if (/^(tenant |capacity )?settings?$/.test(needle)) push('room', ['room monastery.sacristy — The Sacristy (monastery): the tenant settings shelf and the capacity ledger; up from the Cloister']);
   // Rooms by name
   for (const r of Object.values(world.rooms)) if (hit(r.name) || hit(r.id)) push('room', [`room ${r.id} — ${r.name} (${r.region})`]);
 
@@ -236,6 +243,22 @@ export function godStep(base: GameState, lower: string, world: World, parsed: Pa
       const q = cleanArticle(m[3]!);
       if (!q) return meta(base, ['locate what?'], 'god.locate', parsed);
       return meta(base, [whereIs(world, q)], 'god.locate', parsed);
+    }
+    // The Sacristy's shelves, from anywhere (spec2 §3.6). Inside the Sacristy the room's own `settings` phrase never
+    // runs while god mode is on: this one prints both shelves instead of the tenant shelf alone, which is a superset.
+    case 'settings':
+      return meta(base, [settingsListing(base)], 'god.settings', parsed);
+    // Flip a setting's flag directly: no death, no bonus, no FIFTEEN line, and no `gov.touched` — that flag records a
+    // Sacristy flip (the +5 governance-restored bonus), and a god-mode flip is not governance (E3).
+    case 'set': {
+      const m = /^(\S+)\s+(on|off)$/.exec(arg);
+      if (!arg) return meta(base, [`set <key> on|off — keys: ${SETTING_KEYS.join(', ')}`], 'god.set', parsed);
+      if (!m) return null; // "set it to both" in the Model View is the room's, not ours
+      const key = SETTING_KEYS.find((k) => k.toLowerCase() === m[1]!.toLowerCase());
+      if (!key) return meta(base, [`No such setting: "${m[1]}". Keys: ${SETTING_KEYS.join(', ')}`], 'god.set', parsed);
+      const want = m[2] === 'on';
+      const state = { ...base, flags: { ...base.flags, [flagOf(key)]: want } };
+      return meta(state, [`${settingByKey(key).title}: ${want ? 'ON' : 'OFF'}. (God mode: no death, no bonus, no 15 minutes.)`], 'god.set', parsed);
     }
     default:
       return null;

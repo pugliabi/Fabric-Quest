@@ -127,7 +127,8 @@ describe('step', () => {
     r = step(r.state, 'wait', fixture);
     expect(r.output[0]).toBe('Second wait.');
     r = step(r.state, 'wait', fixture);
-    expect(r.output[0]).toBe('Time passes.');
+    // Third `wait` in a row: the builtin's second line of the pair (recent.n is 3 by now).
+    expect(r.output[0]).toBe("Still waiting. You're getting a pretty sweet workout for your patience muscles.");
   });
   it('supports regex noun matching', () => {
     expect(step(newGame(fixture, 1), 'say select a, b from t', fixture).output[0]).toBe('Column list.');

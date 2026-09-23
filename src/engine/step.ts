@@ -3,13 +3,21 @@ import { pickSnark } from './snark';
 import * as B from './builtins';
 import { GOD_FLAG, godStep } from './god';
 import { applyQuirks, nextRecent, normalize, unwrap, type QuirkOptions } from './quirks';
+import { applyGovernance, isFlood, setting } from './governance';
 import type { GameState, HeardLine, Outcome, ParsedCommand, StepResult, Verb } from './types';
-import type { PhraseRule, Rule, World } from '../world/types';
+import type { NudgeText, PhraseRule, Room, Rule, RuleThen, World } from '../world/types';
 import { RETURN_FLAG, SIDE_REALM_NAME, SIDE_REGIONS } from '../world/types';
-import { EXIT_THEN, NESTED_TEXT, NO_DEATH, copilotPromptIn, enterThen, quitInRealmText, type Realm } from '../world/sidequests';
+import { EXIT_THEN, NESTED_TEXT, NO_DEATH, copilotPromptIn, enterThen, quitInRealmText, realmBlocked, type Realm } from '../world/sidequests';
+import { SIGNOFF } from '../world/voice';
 
 export { MAX_SCORE, describeRoom } from './builtins';
 export { RETURN_FLAG } from '../world/types';
+
+/** The interactive-delay marker, first line of a delayed turn. The message box skips it (game/notice.ts). */
+export const DELAY_LINE = '(…interactive delay…)';
+/** The boredom escalation (spec1 §5.2), and the quirk-layer scolds that say the same thing; one of these per turn is plenty. */
+const BOREDOM = ["Let's get moving, here, people.", 'Are you THAT bored? Do some questing already!', 'You are an incredibly boring person.'] as const;
+const SCOLDS = [...BOREDOM, 'Shut up.', "You're really hurtin' for puzzle solutions, huh?"];
 
 /** Verbs a prompt room (catchAll + region 'copilot') leaves to the builtins; every other verb there is a prompt. */
 const NAV_VERBS: ReadonlySet<Verb> = new Set<Verb>(['go', 'look', 'inventory', 'score', 'help', 'save', 'restore', 'restart', 'quit', 'wait', 'get', 'drop', 'read']);
@@ -63,13 +71,27 @@ function ruleMatches(s: GameState, parsed: ParsedCommand, r: Rule): boolean {
   if (!nounMatch(w.noun, parsed.noun)) return false;
   if (!nounMatch(w.noun2, parsed.noun2)) return false;
   if (w.nounMatches && !(parsed.noun !== undefined && w.nounMatches.test(parsed.noun))) return false;
+  if (w.noun2Matches && !(parsed.noun2 !== undefined && w.noun2Matches.test(parsed.noun2))) return false;
   return condOk(s, r);
+}
+
+/**
+ * The aside's tier (Task B4): `nudge.oblique` at 4 dead turns, `nudge.plainer` at 8 (the flask hint when the room has
+ * none, or its function says ''), the flask hint verbatim from 12 on. A room without `nudge` whispers its flask hint at
+ * every tier, as before.
+ */
+function nudgeLine(room: Room, s: GameState, stuck: number): string {
+  const line = (l: NudgeText | undefined): string => (typeof l === 'function' ? l(s) : l ?? '');
+  const flask = room.flaskHint(s);
+  if (!room.nudge || stuck >= 12) return flask;
+  if (stuck === 8) return line(room.nudge.plainer) || flask;
+  return line(room.nudge.oblique) || flask;
 }
 
 function applyRule(s: GameState, r: Rule, world: World, parsed: ParsedCommand): StepResult {
   const state: GameState = { ...s, flags: { ...s.flags }, inventory: [...s.inventory], worn: [...s.worn] };
   const t = r.then;
-  const output = [typeof t.text === 'function' ? t.text(state, world) : t.text];
+  const output = [typeof t.text === 'function' ? t.text(state, world, parsed) : t.text];
   let points = 0;
   const key = `pts.${t.pointsKey ?? r.id}`;
   if (t.points && !state.flags[key]) {
@@ -78,7 +100,8 @@ function applyRule(s: GameState, r: Rule, world: World, parsed: ParsedCommand): 
     state.flags[key] = true;
   }
   if (t.set) {
-    for (const [k, v] of Object.entries(t.set)) state.flags[k] = typeof v === 'function' ? v(state.flags[k]) : v;
+    // Setters see `s`, the untouched input state, so a counter can ask "what stage were we at before this rule".
+    for (const [k, v] of Object.entries(t.set)) state.flags[k] = typeof v === 'function' ? v(state.flags[k], s) : v;
   }
   if (t.give) for (const i of t.give) if (!state.inventory.includes(i)) { state.inventory.push(i); state.flags[`taken.${i}`] = true; }
   if (t.remove) {
@@ -116,7 +139,8 @@ function applyRule(s: GameState, r: Rule, world: World, parsed: ParsedCommand): 
     state.won = true;
     outcome = 'win';
   }
-  return { state, output, outcome, stepId: r.id, pointsAwarded: points, bonusAwarded: bonus, parsed, deathCause, sfx: t.sfx };
+  const box = typeof t.box === 'function' ? t.box(state, world) : t.box;
+  return { state, output, outcome, stepId: r.id, pointsAwarded: points, bonusAwarded: bonus, parsed, deathCause, sfx: t.sfx, box };
 }
 
 /** The whole game, one turn at a time. Pure: no I/O, no randomness beyond state.seed. */
@@ -153,11 +177,28 @@ export function step(prev: GameState, rawInput: string, world: World): StepResul
   const insideRealm = SIDE_REGIONS.has(hereRegion);
 
   // The shared tail: every path below (phrase, dynamic side-quest, rule, catchAll, builtin, snark) flows through here.
-  const finish = (res: StepResult, quirkOpts: QuirkOptions = {}): StepResult => {
+  // `answer` is what the rules said, before anything here is added: the next repeat of this command is compared against it.
+  const finish = (res: StepResult, quirkOpts: QuirkOptions, answer: string): StepResult => {
     let result = res;
     // 3a. Nobody dies in a side realm (spec §2): whatever would have killed you there gets the realm's shrug instead.
     if (insideRealm && result.state.dead && !base.dead) {
       result = { state: base, output: [NO_DEATH[hereRegion as Realm]], outcome: 'snark', stepId: 'sq.no-death', pointsAwarded: 0, parsed: result.parsed };
+    }
+    // 3a'. Every death ends on the catchphrase (spec1 §5.1). Appended once, to the last line.
+    if (result.state.dead && !base.dead && result.output.length) {
+      const out = [...result.output];
+      const i = out.length - 1;
+      if (!out[i]!.endsWith(SIGNOFF)) out[i] = `${out[i]} ${SIGNOFF}`;
+      result = { ...result, output: out };
+    }
+    // 3d. Per-NPC talk counter (spec1 §3.1): a talk aimed at an NPC who is here counts, whoever answered it.
+    //     People before things (resolveNpc): "talk to card" in the Studio is the Card, not the license card you carry.
+    if (parsedEarly.verb === 'talk' && parsedEarly.noun && !result.state.dead) {
+      const who = B.resolveNpc(base, world, parsedEarly.noun);
+      if (who) {
+        const k = `talk.${who.id}`;
+        result = { ...result, state: { ...result.state, flags: { ...result.state.flags, [k]: (Number(result.state.flags[k]) || 0) + 1 } } };
+      }
     }
     // 3b. First entry into a room: the narrator's quip goes to the text and to the message box.
     if (result.state.room !== prev.room && !result.state.dead) {
@@ -170,101 +211,185 @@ export function step(prev: GameState, rawInput: string, world: World): StepResul
       }
     }
 
-    // 4. Interactive delay on the Peaks without the Bursting Boots.
+    // 4. Interactive delay: the Peaks without the Bursting Boots (unless Autoscale), or the flood everywhere (spec2 §3.4–3.5).
     const r = result.state;
     const inSide = SIDE_REGIONS.has(world.rooms[result.state.room]!.region);
-    if (!inSide && (r.room === 'peaks.pass' || r.room === 'peaks.ledge') && !r.worn.includes('boots') && !r.dead && !r.won) {
-      result = { ...result, state: { ...r, turns: r.turns + 2 }, output: ['(…interactive delay…)', ...result.output] };
+    const onPeaks = r.room === 'peaks.pass' || r.room === 'peaks.ledge';
+    const delayed = (onPeaks && !r.worn.includes('boots') && !setting(r, 'autoscale')) || isFlood(r);
+    if (!inSide && delayed && !r.dead && !r.won) {
+      result = { ...result, state: { ...r, turns: r.turns + 2 }, output: [DELAY_LINE, ...result.output] };
     }
     // 5. Chirps: shouting and repeating yourself.
     result = applyQuirks(base, command, result, recent, kind, quirkOpts);
+    // 5b. The settings that nag (spec2 §3.3–3.4): survey, usage and bill lines, after the chirps.
+    result = applyGovernance(base, result, world);
     // 6. Ambient interjections (Jeff, mostly).
     if (!inSide && !result.state.dead && !result.state.won && world.ambient) {
       const extra = world.ambient(result.state);
       if (extra) result = { ...result, output: [...result.output, extra] };
     }
     // 7. Keep the visible-in-flags bonus counter in sync (telemetry / quirks compare flags).
-    return { ...result, state: { ...result.state, flags: { ...result.state.flags, bonus: result.state.bonus } } };
+    //    And remember the answer (Task F4b): the same command next turn is a repeat only if the game says the same thing.
+    result = { ...result, state: { ...result.state, flags: { ...result.state.flags, bonus: result.state.bonus }, recent: { ...recent, answer, at: base.turns } } };
+    // 8. Stuck (spec1 §3.3), bored (spec1 §5.2) and fishing (five scenery looks): three counters, one place, and at most
+    //    one aside per turn.
+    //    Stuck: after four dead turns in one room, a trailing aside; again at 8, 12… A dead turn is a fail or snark that
+    //    moved nothing (same room, no points, no bonus). Anything else, including entering a room, resets the count. A
+    //    turn that already carried the flask hint (`get ye flask`, `hint`) resets it too: the hint was asked for, so it
+    //    is not whispered again under the same answer. Not in god mode and not in Copilot's pane, which hints in its own
+    //    voice. The aside is tiered (Task B4): nobody asked, so it starts sideways.
+    //    Bored: turns in one room without progress, whatever the outcome (inventory, look, wait all count). Progress is
+    //    a move, points, bonus, or a success that changed what you carry or wear. Lines at 10, 15, then every 5; not in
+    //    god mode, a side realm, or once dead or won. Boredom yields to the nudge (the nudge is the helpful one) and to
+    //    a quirk-layer scold already on the turn (the third repeat's "Are you THAT bored?"): the same sentence is never said twice.
+    //    Fishing: consecutive looks the builtin answered at pure scenery (B.isScenery: nothing here can do anything with
+    //    it, and the flask hint doesn't name it); the fifth gets the puzzles line and resets.
+    const r8 = result.state;
+    const hinted = result.stepId === 'egg.flask' || result.stepId.startsWith('hint.');
+    const deadTurn = (result.outcome === 'fail' || result.outcome === 'snark') && r8.room === base.room
+      && result.pointsAwarded === 0 && !(result.bonusAwarded ?? 0) && !hinted;
+    const stuck = deadTurn ? (base.stuck ?? 0) + 1 : 0;
+    const progressed = r8.room !== base.room || result.pointsAwarded > 0 || (result.bonusAwarded ?? 0) > 0
+      || (result.outcome === 'success' && (r8.inventory.length !== base.inventory.length || r8.worn.length !== base.worn.length));
+    const idle = progressed ? 0 : (base.idle ?? 0) + 1;
+    const lookedAtScenery = parsedEarly.verb === 'look' && !!parsedEarly.noun && result.outcome === 'success' && result.stepId === base.room && (() => {
+      const x = B.resolveNoun(base, world, parsedEarly.noun);
+      return !!x && x.kind === 'item' && B.isScenery(base, world, x.item);
+    })();
+    let looks = lookedAtScenery ? (base.looks ?? 0) + 1 : 0;
+    const extra: string[] = [];
+    const quiet = !!r8.flags[GOD_FLAG] || r8.dead || r8.won || SIDE_REGIONS.has(world.rooms[r8.room]!.region);
+    const scolded = result.output.some((l) => SCOLDS.some((b) => l.endsWith(b)));
+    if (stuck > 0 && stuck % 4 === 0 && !r8.flags[GOD_FLAG] && r8.room !== 'copilot.pane' && !r8.dead) {
+      const hint = nudgeLine(world.rooms[r8.room]!, r8, stuck) || 'Look around. Talk to people. Read things.';
+      // A hint that already carries a bracketed aside (the hall's "(`look at steps`.)") is whispered unwrapped, so brackets never nest.
+      extra.push(/\(.*\)/.test(hint) ? `Psst. ${hint}` : `(Psst. ${hint})`);
+    } else if (!quiet && looks >= 5) {
+      extra.push("For what? Now you're just making up puzzles to solve.");
+    } else if (!quiet && !scolded && idle === 10) extra.push(BOREDOM[0]);
+    else if (!quiet && !scolded && idle === 15) extra.push(BOREDOM[1]);
+    else if (!quiet && !scolded && idle >= 20 && idle % 5 === 0) extra.push(BOREDOM[2]);
+    if (looks >= 5) looks = 0;
+    result = { ...result, state: { ...r8, stuck, idle, looks }, output: extra.length ? [...result.output, ...extra] : result.output };
+    return result;
   };
 
-  // 1. Phrase rules (easter eggs / deaths that don't fit the verb-noun grammar).
-  //    Side-quest hooks (`dynamic`) that don't apply here are skipped as if they had not matched:
-  //    an exit word outside a realm keeps its normal meaning ("exit" is a direction), a trigger for the realm you are
-  //    already in is left for that realm to interpret (Copilot prompts), and nobody enters a realm dead.
-  const applies = (d: PhraseRule['dynamic']): boolean => {
-    if (!d) return true;
-    if (d === 'exit') return insideRealm;
-    if (d === hereRegion) return false;
-    return insideRealm || !base.dead;
-  };
   // In a prompt room (Copilot's pane) every line is a question for the room, so the global eggs stand aside:
   // only side-quest hooks and phrases scoped to this room are considered ("ask copilot how many…" is a prompt, not egg.count).
   const here = world.rooms[base.room]!;
   const promptRoom = !!here.catchAll && hereRegion === 'copilot';
-  const phrase = world.phraseRules.find((p) => (p.room ? p.room === base.room : p.region ? p.region === hereRegion : !promptRoom || !!p.dynamic) && applies(p.dynamic) && (!p.after || p.after(prev)) && p.test.test(lower));
   const parsed = parsedEarly;
-  if (phrase?.dynamic) {
-    if (phrase.dynamic === 'exit') return finish(applyRule(base, { id: 'sq.exit', when: { verb: 'unknown' }, then: EXIT_THEN }, world, parsed));
-    if (insideRealm) return finish({ state: base, output: [NESTED_TEXT], outcome: 'snark', stepId: 'sq.nested', pointsAwarded: 0, parsed });
-    const entered = applyRule(base, { id: phrase.id, when: { verb: 'unknown' }, then: enterThen(phrase.dynamic, world, base) }, world, parsed);
-    const prompt = phrase.dynamic === 'copilot' ? copilotPromptIn(lower) : '';
-    const pane = world.rooms[entered.state.room]!;
-    if (!prompt || !pane.catchAll) return finish(entered);
-    // "ask copilot for q4 sales" from the main realm: enter, then the rest of the line is the pane's first prompt.
-    // The entrance quip goes between the two here (finish() would append it after the answer).
-    let state = entered.state;
-    const output = [...entered.output];
-    let notice: string | undefined;
-    const seenKey = `seen.${pane.id}`;
-    if (!state.flags[seenKey]) {
-      notice = pane.enterQuip?.(state) ?? undefined;
-      state = { ...state, flags: { ...state.flags, [seenKey]: true } };
-      if (notice) output.push(notice);
+
+  /**
+   * The answer: phrase rules, side-quest hooks, room and global rules, the catch-all, the builtins, the snark. Pure in
+   * `b`, which is `base` for the turn itself and, on a repeat, `base` at the previous turn's number (see below).
+   */
+  const resolve = (b: GameState): { res: StepResult; opts?: QuirkOptions } => {
+    // 1. Phrase rules (easter eggs / deaths that don't fit the verb-noun grammar).
+    //    Side-quest hooks (`dynamic`) that don't apply here are skipped as if they had not matched:
+    //    an exit word outside a realm keeps its normal meaning ("exit" is a direction), a trigger for the realm you are
+    //    already in is left for that realm to interpret (Copilot prompts), and nobody enters a realm dead.
+    const applies = (d: PhraseRule['dynamic']): boolean => {
+      if (!d) return true;
+      if (d === 'exit') return insideRealm;
+      if (d === hereRegion) return false;
+      return insideRealm || !b.dead;
+    };
+    let phrase: PhraseRule | undefined;
+    let phraseThen: { then: RuleThen; id?: string } | undefined;
+    for (const p of world.phraseRules) {
+      const inScope = p.room ? p.room === b.room : p.region ? p.region === hereRegion : !promptRoom || !!p.dynamic;
+      if (!inScope || !applies(p.dynamic) || (p.after && !p.after(prev)) || !p.test.test(lower)) continue;
+      if (p.then) {
+        const resolved = typeof p.then === 'function' ? p.then(b, world, lower, heard) : { then: p.then };
+        if (resolved === null) continue; // the handler declined: keep looking
+        phrase = p; phraseThen = resolved; break;
+      }
+      phrase = p; break;
     }
-    const ans = pane.catchAll(state, heard);
-    if (!ans) return finish(entered);
-    const replied = applyRule(state, { id: ans.id ?? `${pane.id}.catchall`, when: { verb: 'unknown' }, then: ans.then }, world, parsed);
-    const won = (replied.bonusAwarded ?? 0) > 0;
-    // A win on the way in: the message box carries the answer, not just "the screen dims".
-    if (won) notice = [notice, replied.output[0]].filter(Boolean).join('\n\n');
-    return finish({ ...replied, output: [...output, ...replied.output], notice, sfx: won ? replied.sfx : 'sidequest', outcome: won ? replied.outcome : 'move' }, { suppressWrapAndRepeat: true });
-  }
-  if (phrase) {
-    const state = { ...base, dead: base.dead || !!phrase.death };
-    return finish({
-      state,
-      output: [typeof phrase.text === 'function' ? phrase.text(state, world) : phrase.text],
-      outcome: phrase.death ? 'death' : 'snark',
-      stepId: phrase.id,
-      pointsAwarded: 0,
-      parsed,
-      deathCause: phrase.death,
-      sfx: phrase.sfx,
-    });
-  }
-  // 1b. Inside a realm, any other way of saying "out" ("outside", "go outside", "walk out") leaves it too.
-  if (insideRealm && parsed.verb === 'go' && parsed.dir === 'out') return finish(applyRule(base, { id: 'sq.exit', when: { verb: 'unknown' }, then: EXIT_THEN }, world, parsed));
-  // 1c. QUIT inside a realm leaves the realm, not the quest (the UI retires the run only on the builtin's 'meta' quit).
-  if (insideRealm && parsed.verb === 'quit') {
-    const left = applyRule(base, { id: 'sq.exit.quit', when: { verb: 'unknown' }, then: EXIT_THEN }, world, parsed);
-    return finish({ ...left, output: [left.output[0]!, quitInRealmText(SIDE_REALM_NAME[hereRegion]!), ...left.output.slice(1)] });
-  }
-  // 2. Room rules, then global rules — first match wins.
-  const room = here;
-  const rule = room.rules.find((r) => ruleMatches(base, parsed, r)) ?? world.globalRules.find((r) => ruleMatches(base, parsed, r));
-  if (rule) return finish(applyRule(base, rule, world, parsed));
-  // A prompt room hears every line except navigation, meta and item handling; elsewhere only say / unknown / "talk … copilot".
-  // get / drop / read stay commands only when their noun is something here ("get prompt box"); "get me q4 sales" is a prompt.
-  const wantsCatchAll = promptRoom
-    ? !NAV_VERBS.has(parsed.verb) || (ITEM_VERBS.has(parsed.verb) && !B.resolveNoun(base, world, parsed.noun))
-    : parsed.verb === 'say' || parsed.verb === 'unknown' || (parsed.verb === 'talk' && /copilot/.test(lower));
-  const catchAll = wantsCatchAll ? room.catchAll?.(base, heard) : undefined;
-  // A prompt room answers wrappers and repeats in its own voice, so the chirps keep only their shout lines.
-  if (catchAll) return finish(applyRule(base, { id: catchAll.id ?? `${base.room}.catchall`, when: { verb: 'unknown' }, then: catchAll.then }, world, parsed), { suppressWrapAndRepeat: promptRoom });
-  // 3. Built-in verbs.
-  const built = B.handle(base, parsed, world);
-  if (built) return finish({ ...built, parsed, pointsAwarded: 0, stepId: built.stepId ?? base.room });
-  return finish({ state: base, output: [pickSnark(base.seed, base.turns, world.snark)], outcome: 'snark', stepId: base.room, pointsAwarded: 0, parsed });
+    if (phrase?.dynamic) {
+      if (phrase.dynamic === 'exit') return { res: applyRule(b, { id: 'sq.exit', when: { verb: 'unknown' }, then: EXIT_THEN }, world, parsed) };
+      if (insideRealm) return { res: { state: b, output: [NESTED_TEXT], outcome: 'snark', stepId: 'sq.nested', pointsAwarded: 0, parsed } };
+      // A tenant setting can keep the door shut (spec2 §3.3): the line, no move, no goal card.
+      const blocked = realmBlocked(phrase.dynamic, b);
+      if (blocked) return { res: { state: b, output: [blocked], outcome: 'fail', stepId: `sq.blocked.${phrase.dynamic}`, pointsAwarded: 0, parsed } };
+      const entered = applyRule(b, { id: phrase.id, when: { verb: 'unknown' }, then: enterThen(phrase.dynamic, world, b) }, world, parsed);
+      const prompt = phrase.dynamic === 'copilot' ? copilotPromptIn(lower) : '';
+      const pane = world.rooms[entered.state.room]!;
+      if (!prompt || !pane.catchAll) return { res: entered };
+      // "ask copilot for q4 sales" from the main realm: enter, then the rest of the line is the pane's first prompt.
+      // The entrance quip goes between the two here (finish() would append it after the answer).
+      let state = entered.state;
+      const output = [...entered.output];
+      let notice: string | undefined;
+      const seenKey = `seen.${pane.id}`;
+      if (!state.flags[seenKey]) {
+        notice = pane.enterQuip?.(state) ?? undefined;
+        state = { ...state, flags: { ...state.flags, [seenKey]: true } };
+        if (notice) output.push(notice);
+      }
+      const ans = pane.catchAll(state, heard);
+      if (!ans) return { res: entered };
+      const replied = applyRule(state, { id: ans.id ?? `${pane.id}.catchall`, when: { verb: 'unknown' }, then: ans.then }, world, parsed);
+      const won = (replied.bonusAwarded ?? 0) > 0;
+      // A win on the way in: the message box carries the answer, not just "the screen dims".
+      if (won) notice = [notice, replied.output[0]].filter(Boolean).join('\n\n');
+      return { res: { ...replied, output: [...output, ...replied.output], notice, box: entered.box, sfx: won ? replied.sfx : 'sidequest', outcome: won ? replied.outcome : 'move' }, opts: { suppressWrapAndRepeat: true } };
+    }
+    // A phrase with effects (`then`) is a rule keyed on the raw line: flags, moves, bonus and death all apply.
+    // In a prompt room a phrase ("start over", "thanks") is the pane answering, so the chirps keep only their shout
+    // lines, as for a prompt: no "not a slot machine" under a second `start over`, no wrapper line under `ugh start over`.
+    const quiet = { suppressWrapAndRepeat: promptRoom };
+    if (phrase && phraseThen) return { res: applyRule(b, { id: phraseThen.id ?? phrase.id, when: { verb: 'unknown' }, then: phraseThen.then }, world, parsed), opts: quiet };
+    if (phrase) {
+      const state = { ...b, dead: b.dead || !!phrase.death };
+      return { res: {
+        state,
+        output: [typeof phrase.text === 'function' ? phrase.text(state, world) : phrase.text],
+        outcome: phrase.death ? 'death' : 'snark',
+        stepId: phrase.id,
+        pointsAwarded: 0,
+        parsed,
+        deathCause: phrase.death,
+        sfx: phrase.sfx,
+      }, opts: quiet };
+    }
+    // 1b. Inside a realm, any other way of saying "out" ("outside", "go outside", "walk out") leaves it too.
+    if (insideRealm && parsed.verb === 'go' && parsed.dir === 'out') return { res: applyRule(b, { id: 'sq.exit', when: { verb: 'unknown' }, then: EXIT_THEN }, world, parsed) };
+    // 1c. QUIT inside a realm leaves the realm, not the quest (the UI retires the run only on the builtin's 'meta' quit).
+    if (insideRealm && parsed.verb === 'quit') {
+      const left = applyRule(b, { id: 'sq.exit.quit', when: { verb: 'unknown' }, then: EXIT_THEN }, world, parsed);
+      return { res: { ...left, output: [left.output[0]!, quitInRealmText(SIDE_REALM_NAME[hereRegion]!), ...left.output.slice(1)] } };
+    }
+    // 2. Room rules, then global rules — first match wins.
+    const room = here;
+    const rule = room.rules.find((r) => ruleMatches(b, parsed, r)) ?? world.globalRules.find((r) => ruleMatches(b, parsed, r));
+    if (rule) return { res: applyRule(b, rule, world, parsed) };
+    // A prompt room hears every line except navigation, meta and item handling; elsewhere only say / unknown / "talk … copilot".
+    // get / drop / read stay commands only when their noun is something here ("get prompt box"); "get me q4 sales" is a prompt.
+    const wantsCatchAll = promptRoom
+      ? !NAV_VERBS.has(parsed.verb) || (ITEM_VERBS.has(parsed.verb) && !B.resolveNoun(b, world, parsed.noun))
+      : parsed.verb === 'say' || parsed.verb === 'unknown' || (parsed.verb === 'talk' && /copilot/.test(lower));
+    const catchAll = wantsCatchAll ? room.catchAll?.(b, heard) : undefined;
+    // A prompt room answers wrappers and repeats in its own voice, so the chirps keep only their shout lines.
+    if (catchAll) return { res: applyRule(b, { id: catchAll.id ?? `${b.room}.catchall`, when: { verb: 'unknown' }, then: catchAll.then }, world, parsed), opts: { suppressWrapAndRepeat: promptRoom } };
+    // 3. Built-in verbs.
+    const built = B.handle(b, parsed, world);
+    if (built) return { res: { ...built, parsed, pointsAwarded: 0, stepId: built.stepId ?? b.room } };
+    return { res: { state: b, output: [pickSnark(b.seed, b.turns, world.snark)], outcome: 'snark', stepId: b.room, pointsAwarded: 0, parsed } };
+  };
+
+  const { res, opts } = resolve(base);
+  // The repeat chirp only when the answer didn't change (Task F4b). A remembered line (an item's `again`, a rule's
+  // second reading, an NPC's next variant, a gate's plainer hint) IS the repeat joke; the chirp under it would make the
+  // joke twice. The answer is what the rules said, before finish() adds any aside. A pool that merely rotated (vary,
+  // nick, rotate, the snark: all keyed on `turns`) is not the world remembering, so a changed answer is read once more
+  // at the previous turn's number: if that gives last turn's answer verbatim, only the pick moved, and the chirp stands.
+  const answer = res.output.join('\n');
+  const last = prev.recent;
+  const answerChanged = recent.n >= 2 && last?.answer !== undefined && last.at !== undefined && answer !== last.answer
+    && resolve({ ...base, turns: last.at }).res.output.join('\n') !== last.answer;
+  return finish(res, { ...opts, answerChanged }, answer);
 }
 
 /** Test-only: apply one rule directly. */
