@@ -1,0 +1,1021 @@
+Every unique string extracted from peasantsquest61.swf (homestarrunner.com/disk4of12), from ActionScript constant pools and push literals.
+
+GAME-FACING TEXT AND PARSER VOCABULARY (943 strings)
+
+Error - gSpecial is active but no matching state
+You've come across some kind of shooting gallery. There's a depressed looking archer at the desk there.
+Hey, they had those same targets at Peasant Scout Camp!
+No. Those will fall on you and more than likely kill you.
+They have "RANGE" printed on them, so it would be kind of embarassing to have to shoot around with them. Also, that guy over there is giving you the evil eye.
+"Oh man, there was this one time when I came THIS close to having Trogdor ARROWED!" says Dongolev.
+"Hey shut up! That was me!" interrupts Mendelev, "YOU almost arrowed that blue baby!" says Dongolev.
+"We wouldn't know. We only wear archer clothes. You just can't arch real well in a robe, y'know?"
+"Trogdor just burned down some idiot peasant's cottage. You should ask him," says Mendelev.
+"Yeah, this jerk goes on vacation to some prancey lake and..."
+They see you staring daggers at them and turning bright red.
+"Oh. Nevermind," says Dongolev. "Um, yeah. What's a fire?" adds Mendelwhatever.
+"That giant pig running around sure smells. Maybe talk to him."
+"That guy creeps us out. In fact, shut up about him."
+"Either we don't know anything about that, or you're real boring."
+You've come across some kind of shooting gallery. A pair of twin brothers seem to be running the place.
+"Go away!" says Dongolev. "We're arguing about who's hotter," adds Mendelev.
+"Haldo again!" say the brothers. "Get 3 bullseyes this time and you'll win yourself an SuperTime FunBow"
+"The ARROW KEYS aim left and right and the SPACE BAR operates the bow. You'll need to press it a couple of times to get a nice shot off but we don't give lessons so you're on your own."
+"Haldo!" say the brothers. "Test your skill! Give us the right super item from your inventory and you can give it as many tries as you need!"
+You already gave them the trinket. Fortunately, you have an open invitation to humiliate yourself at the range.
+"That'll work," says Mendelev. Just hit 3 bullseyes and you win the SuperTime FunBow TM!"
+The gallery's not open and you got no bow or arrows, Cupid.
+He looks depressed. Jeez, who invited the fun sponge?
+"Tell my bro I said 'haldo' if you see him," he says and goes back to pouting.
+He looks depressed. He keeps sighing all obviously like he wants you to ask about it.
+"Oh, hi. I'm Mendelev," says the archer. "I used to run a shooting range here with my brother Dongolev. But we don't talk so much anymore. I haven't seen him in a Jhonka's age. If you ever run into him, tell him I said 'haldo'.
+"Oh, um. No. Shut up. I said 'haldo' and I meant 'haldo.' Tell him I said 'haldo.'"
+Why don't you saddle up to the front of the table there, cowboy?
+There's a really generic well here. Oh, and apparently it's autumn on this screen.
+It's dark and welly in there. Smell like stank too. 
+You can just make out something floating in the water down there. 
+Pretty average. You're not a big well person. You're more into bridges. It does have a cute little bucket though. Your dad liked buckets. Oh, and there's a metal crank, too. Meemaw loved cranks.
+You can just make out something floating in the water down there.
+An empty wooden bucket hangs on a rope in the well.
+This isn't that kind of well. This is a plaguewater well.
+You yell into the well and enjoy the echo. Keep in mind there are no stereos yet.
+It's a hideous monster maskus, for wearing on your face, framed attractively by the rim of an old oaken bucket. Gripping!
+You grab up the scary monster maskus. Man, this thing could scare a horse!
+You can't, it's tied to a rope and you're terrible with knots.
+That is a bonafide crank.  It seems to work now.
+Li'l tyke seems to enjoy the ride, but - thin or not - we've got a plot to advance here.
+Okay, Father of the Year. You put a baby in a bucket and it quickly descends deep into the well. Yours is a black, black heart.
+You're not that keen a shot. Try standing a little closer.
+Hmmmm... A baby, eh? You check your sundial. Babies-R-Us is probably closed by now.
+Jeez man! At least put the poor little guy in the bucket! Give him a fighting chance!
+It won't budge. Maybe if there was something heavy in that bucket...
+The crank seems to have loosened and you haul the bucket back up. What's this? Why there's a monster maskus in there! No doubt leftover from some pagan ritual. Silly pagans.
+You haul the bucket back up. Lucky for you, the baby is still in it and appears to be unscathed. As a bonus, it looks like he found a Meatball sub down there. Score! You take the sub.
+The drama grips you, but the bucket is empty. On the bright side, you're getting a pretty sweet workout for your Deltoidus Rex muscles.
+You got a short reach to match your short pants. Try standing closer to that crank.
+What do you propose to do with them?  Discuss.
+Find some pebbles first and you might have the makings of a good idea.  About time.
+Then it'd be tough to get them back.  You never go ANYwhere without your rocks
+We've already been through this exercise and it went pretty well, ya?
+You plunk all your pebbles into the bucket. The weight causes it to descend to the bottom of the well with a quickness!
+That's not heavy enough to weigh down the bucket.
+You're really hurtin' for puzzle solutions, huh?
+You see a cottage in the distance. You hold your fingers up to one eye and pretend to squash it.
+There's a run-of-the-mill, non-burninated thatched-roof cottage here. Its stonework looks a little shoddy.
+No, you have business to attend to here in Peasantry.
+A standard peasant fence. Trogdor makes milk's meat outta these things.
+A run-of-the-mill, non-burninated thatched-roof cottage here. Its stonework looks a little shoddy.
+Some jerk removed a loose stone from the back of the cottage.
+There appears to be a loose stone towards the back of the cottage.
+You've already moved the stone out of the way to reveal a less-than peasant-sized hole.
+You slide the stone over to reveal a little hole. If only you could cut off your arms, legs, and head you might be able to squeeze through!
+If only you could cut off your arms, legs, and head you might be able to squeeze through!
+Very funny. You have trouble cutting out coupons in the weekly 'Peasant Penny-Pincher' circular. I'd like to see you try.
+Okay, fine. You try to cut off your hard-earned extremities. It doesn't work. You dead. Thanks for nothing.
+There is no baby here, but there's an open door on the other side of the room.  If you could only get to it somehow!
+You peer into the tiny opening. The cottage appears to be empty.
+It's already open. Since this is an adventure game we're gonna proffer you adventure yourself on in there.
+You can't. That baby really wrenched it open good.
+You could knock until your knuckles bleed. Nobody's home.
+You done that already. A great time was had by all.
+You knock for about 4 hours until your knuckles are raw and bloody. That was fun!
+Li'l P.B. has moved on, and the door seems to be open... I can't see why we'd go through this all over again.
+Use the baby where? You haven't anywhere inconsiderate to stuff'm.
+Way to go, baby! It got the cottage door opened and headed off to a new life. He becomes Valedictorian of his graduating class, goes to Scalding Lake State, gets a degree in Advanced Peasantry and lands a job at Thatch-Pro: building better cottages for a better tomorrow.
+You grow apart and the letters from him become fewer and fewer. He develops a severe mead problem and blames you for never being there.
+Swell idea, but is you ain't my baby?  I.e. you ain't got one?
+With a new determination you dig your fingers into the cliff face and begin to haul yourself up the mountain like you were in a sports drink commercial.
+The mountain starts rumbling and big loose boulders start tumblin down. You'd best avoid thems.
+You're at the base of a very climbable cliff that leads right up to Trogdor's lair. This cliff is huge - the kind where rocks start falling down the minute you try to climb it.
+They don't show how the sports-drink people get down from the cliff. You've no idea how to start.
+Wow! It sure gets creepy fast around here! What with all the lightning and the scary cave entrances.
+The cave entrance beckons to you like a hot mutton sandwich might.
+You can't be sure but you think those are dead person bones.
+There are 3 openings with a little cliff in front of each. A beaded curtain hangs in a doorway on the far wall.
+They're mysterious and out of reach. Like girls were to you in high school.
+That thing's awesome. You always wanted one for your dorm room but your roommate was a total drag and said no.
+This must be one of the mysterious Keepers of Trogdor! High school dropouts, most of them.
+Better not. There's an engraved plaque on it that says, "Do Not Remove Under Penalty of 'You Die'."
+You have enough of that on your browning, rotten peasant teeth already.
+Wrong game, Mispeller Jones. Try the little button to the left of the 'W'.
+A burning signal lantern hangs from a severely burninated tree.
+Severely burninated. They could probably use some salve.
+It's lit! Musta been a Trogdor sighting tonight.
+You don't need to get IT. Just let IT get YOU.
+You're already on fire! What? You want to be MORE on fire?
+There aren't enough footholds and you don't have any carabeaners on you.
+A signal lantern of some kind hangs from a severely burninated tree.
+It's unlit at the moment. That fancy pants royal knight probably lights it on nights when Troggie's on the prowl.
+Oh OH! Poor Gary is starving and lunch just walked into his glen!
+Now, even though he doesn't know it, Gary has a taste for man-flesh. He begins a mad rampage across the countryside, terrorizing peasants for ages. Way to go. You dead. Thanks for playing.
+A particularly rickety peasant-issue fence. Trogdor uses bits of these as toothpicks.
+It's got a big ol' hole in it. For walking through.
+More like you should walk through that gaping hole in it. Just an idea.
+You run out of ideas as to what to do next, and stare at the stump.
+A cloud of buttflies fly around the horse's butt.
+You nasty. Besides, they wouldn't survive a minute away from that horse's butt.
+Those flies and that horse's butt have a symbiotic relationship. You have no right to disrupt that.
+Naw, snapping horse spines just doesn't seem as cool as it did in high school.
+There's a good chance that horse has NEVER eaten. I doubt he'll start now.
+This bag o' bones looks like he's headed for the glue factory. He's got the name 'Poor Gary' branded onto his hide.
+Your attempts at conversation are met with horse grunts and tail flaps. Which is better than you do at conversation with most people.
+Aww, that's sweet. Poor Gary tries in vain to bite your arm off.
+Well, according to these graphics, I'd say the tree was 2 years old.
+You attempt to cause Poor Gary harm for no good reason other than you kinda suck at this game.
+WOW! For a decrepit old horse, Poor Gary still packs a mean whallop. You dead. Thanks for playing.
+You tell Gary about how much cholesterol is in hay and how his arteries are probably all black and clogged. He shrugs it off.
+You tell Gary the "THE CALLS ARE COMING FROM INSIDE THE HOUSE!!" one but he doesn't act very scared. He's probably heard it before.
+You tell Gary the story about the kid who pops this big zit he has and all these baby spiders come out. It doesn't phase him.
+You scared the crap outta Poor Gary! He broke on through to the other side!
+Well, looky here! A hidden glen! You LOVE hidden glens. This one has some kinda archer in it.
+You're in a hidden glen. There's a tree with a zillion arrows in it.
+Dude, and then the elf, like, totally climbed up it. It was awesome!
+There's some thick 'ol bushes up in this hidden glen.
+Naw, you'd probably figure out some way to kill yourself doing that.
+Somebody call a tree doctor. Them puppies are stuck in there like a, um, er... stuck pig.
+He refuses to speak with you. He just keeps firing arrows into that tree and grumbling, "stupid Mendelev, grumble mumble."
+He sure looks miffed at that tree. He's emptied 5 good quivers' worth into that poor thing.
+You grab yet another arrow from the tree hoping to get some bonus points.
+You pick out a really good one and yank it from the tree. Hooray! Now you have an arrow!
+It wasn't a good time. Hey, my mom's making peasant-kabobs for dinner TOO!
+Right. Anyway. You dead. Thanks for playing, and try not to die.
+You're pretty much all set on the arrow front. They are kinda cool, though.
+The archer stops arching and turns to you. "My brother told you to tell me haldo? He must want to start the old business back up!"
+"What'd you read that in the PQ Stragedy Guide? Go talk to my brother first."
+It's that sticky mud. Y'know, the kind pigs like.
+You've already gotten an heapin' helpin' all up on yo'self.
+You can't get the mud so much. More like the mud'll get you.
+There's a dried out mud puddle.  It's all caked and cracked like the kind that rock stars are always standing on.
+You don't want any. It'll ruin your awesome "Scalding Lake" T-shirt.
+The remains of your thatched-roof cottage lie burninated before you. You swear revenge against Trogdor.
+Hey, it's your old fireproof map to Peasantry.
+All your baubles and trinkets, your flasks and scrolls, your goblets and staffs! BURNINATED!!
+Looks like there's a piece of unburninated paper on the ground.
+You tuck it nice-like into your short, short pants. Type MAP at nearly any time to check the map.
+Those rocks appear to be part of a cave off to the west there.
+Nothing special here except for that weird wavy tree.
+Trees can't talk but a breeze picks up and you swear the leaves whisper the words "Naked Ned." Weird.
+A fairly naked man is peering out from behind that tree.
+"Never speak of this meeting!" says the nudie and he disappears.
+That's probably how the first baby got here. Forget it.
+"You wanna be a part of this family? GO GET US THOSE RICHES!!" she shrieks.
+"That nasty thing killed my husband and took my riches!!"
+"I thought Trogdor killed your husband," you interject.
+"Oh, right. Yeah. That's what I said. Trogband killed my husbdor."
+"Don't talk about that pervert in front of the baby here."
+"I hope you kill that stupid dragon. My 'Wives of Squished Peasants' support group would bake you a Poor Gary pie if you did."
+"This little guy's all I got left. If only someone would go steal all our riches back from that filthy Jhonka."
+"You can't have mine, pervert! I'm not a nudist peasant like that weirdo over in west peasantry!"
+"You need fire? A couple trees over near the waterfall used to be on fire. But now there's like a signal lantern there or something.
+"So I should ask that signal lantern?" you ask.
+"What smells is junior here's drawers! I gotta quit feeding him so much horse."
+"And don't start asking me for his diapers, sicko!"
+What a depressing little cottage. It reeks of single parent.
+One of those self-rocking kind. Not bad for a brown-collar peasant-type. Must be trickle-down in action.
+No. There's a big bag of something in it. Oh, that's the baby lady.
+There's a huge bale a couple of screens over from here. Why bother stealing?
+You don't have anywhere to use it and it is rather bulky, so you leave it.
+Typical pasty peasant woman, overbearing and judgemental. Obsessed with goods and land.
+I can't believe you thought you had a chance with her!
+Peasant babies are pretty freaking adorable. This little guy's no exception.
+You don't need that crap. You're cooler without it.
+"Did you find that thing in my yard?" she asks. "I got that free in a box of Plaguezees. I need some FOR REAL riches!"
+"Why are you holding your hand out?" she asks. "I told you I need riches, so I can't give em away"
+You don't have a trinket to give, you realize.
+She's done left you. And she ain't coming back. No how, no never.
+"My riches!!" she screams and snatches up every last gold coin. "Thanks, sucker! Here you go!" she shoves the baby into your hands and bolts out the door.
+You later learn that she does this all the time and is wanted throughout the countryside. Those riches probably WERE the Jhonka's and who knows whose baby that is. Well, it's yours now.
+"That's right," she whines. "Find my riches, and give here."
+We did that already and it was sort of humiliating.
+You used to eat this stuff like crazy when you were a kid and your parents weren't watching (which was all too often). You grab several large handfuls.
+You don't need any more. It might give rise to old temptations.
+"Hello, I'm-" you start but the lady cuts you off.
+"Okay, here's why I let you in here," she explains. "My husband got squished by Trogdor. And to make matters worse, the insurance riches I got were stolen by the Jhonka. Go steal them back for us and I'll give you something great."
+"Prove to me you're a REAL peasant. Go get our riches back from the Jhonka."
+You'd call out her name and let it ring through the empty room, enveloping you in sorrow, but you don't actually know her name.
+You say some cute, stupid stuff and the baby just blows snot bubbles.
+You need to get out of there before that smelly octogenarian gets back.
+You're not touching that thing. Too many questionable stains on it.
+Maybe that used to be a magic carpet. But it's sure a cat pee-stained carpet now.
+Is that just a fitted sheet over a slab of concrete?
+If you sleep in that bed, you're NOT putting your head on that nasty pillow.
+Not a chance. There's even more questionable stains on that pillow than there are on that rug.
+There's a broken bell and a piece of parchment on there.
+Naw, it might be important to that wrinkly old loon.
+You can't. It looks like it's been somehow olded to the desk.
+Instead of ringing or dinging, it just goes 'DUNG.'
+It's a painting of dogs playing 'Magic: The Nerdening.'
+Weird. It's actually just painted right onto the wall. Like, the frame and everything.
+"Are you talking about that young, green boy that lives up the street? He's always tearing my roof off and eating my customers."
+"I wear my robe hood-down so it's easier to trim my ear hairs. If you need a robe, maybe find someone that's not using theirs."
+"I've always preferred being on fire at night. Looks prettier and keeps the buttflies away."
+"Well, if you don't stink, maybe find something that does and wear it. Like a dead carcass or summat."
+"He used to be such a nice, clothed young man. Wonder what he's done with all his old clothes?"
+"I don't know nothing about no whatever you just said."
+What a dump! Only one bed and no minibar? The Innkeeper stands behind a desk and there's a door that's closed.
+He's an older peasant with big cotton swabs stuffed up his nose. Oh wait. Those are nose hairs. Grody.
+"That's the pantry," says the Innkeeper. "Employees Only."
+"If you're interested in staying the night, just type 'get a room.'"
+You already milked that fogey for all the pills he's worth.
+"Well lookit that little guy!" says the Innkeeper. "You want a treat, do ya? What do babies like?" He fishes around in his pockets.
+"Um, how bout my medication!" You grab the bottle of pills before he can force them on the baby. "Hey, those were for him!"
+You probably ought to talk to that stinky old guy over there about that.
+\oard of Peasant Health says I can't serve any folk that's on fire. Nothing personal. Well, I mean, I don't like you much anyway."
+"Okay, youngster," says the decrepit old person. "Just bed on down for the night and I'm sure I'll remember to collect the fee come morning."
+Night falls like a bad power point presentation
+What an uncomfortable bed! You sleep for maybe 20 minutes before the extreme pain in your spine forces you to get up.
+"I only serve peasants here, fancypants!" barks the old guy. "Where's your robe?"
+It seems like you should be able to do that, doesn't it? Sorry. No dice.
+It's still dark out. The grimey old Innkeeper is gone and he's left the pantry open.
+ The only thing of interest is a big black pot of horse grease up on the top shelf.
+It's full of horse grease. I guess that sounds useful.
+The pot of horse grease is gone now. Off to a better place I guess.
+Oh great! Now you can't see a thing and your head is covered in highly flammable horse grease. You better get out of here before that disgusting old man comes back.
+You already have a nice greasy swab of it on the corner of your hood.
+There's definitely half a lake here with a sandy shore.
+It extends onto the next screen and has a sandy shore.
+Don't worry about that bush. Yeah, there's red berries on it but never you mind.
+Not in this game, Swimmer Dan! In this game, you drown.
+There's a bunch of fairly substantial pebbles in the sand.
+You grab up a handful of fairly substantial pebbles. You make sure to get an even mix of sedentary, igneous, and, um, sureptitious rocks.
+You do your best Mr. Fantastic impersonation but you can't reach from here.
+Remember those pebbles on the beach? Man, those were good times.
+You've always been terrible at skipping stones. And you're even worse at just plain throwing rocks in lakes. You decide to save yourself the embarrassment.
+Maybe try again from the center of the lake. Looks deeper there.
+Something tells you this is a good idea and you lob the little one into the lake.
+You won't be arrested after all! The little guy has resurfaced safely, carrying an old bottle of soda. You take the soda and stow your swaddling buddy for takeoff.
+Baby Dashing is a little waterlogged from the last toss, and you read his soft gurgling to mean that there's no more soda left.
+I think you misread the walkthrough on GameFAQs. You gotta get the baby first.
+Yecch. I wouldn't touch that unless it was, like, an important quest item or something.
+Look, it didn't work for Strongbad and it's not gonna work for you either.
+The kerrek is a teetotaller and is offended by your offer. You've really cheesed him off now.
+Well, he does smell real bad. But he's a bit too big to fit in your pocket.
+"Me llamo Julio," you begin... It seems only to further anger the already tempramental Kerrek. That stupid "Learn Kerrek in 3 Weeks" cassette did nothing for you!
+ARROWED!! Nice shot. You smote the Kerrek! He lay there stinking.
+A light rain heralds the washing free of the Kerrek's grip on the land. You're feeling pretty good, though, so the artless symbolism doesn't bug you.
+With what?! You gonna throw that arrow at him?
+With what?! You got no weapons except your butter-knife wit. 
+Good idea. But you kinda need the actual Kerrek to be here for that to work.
+Yeah. You smote the Kerrek. You deserve a trophy full of Mutton-ums.
+There are large hoof prints in the the grass here. And it smells like a public latrine.
+There are large hoof prints in the the grass here. 
+Part of the ground looks just like a rotting kerrek.
+Looks like someone left their spare bones here.
+There is a large Kerrek-shaped mound on the grass.
+He wasn't fat, he was just big boned! Poor pig-man.
+ You didn't think he could have smelled any worse? Well, guess what: He smells worse.
+ He wasn't fat, he was just big boned! Poor pig-man.
+ And the only thing of value on him is his stinky belt buckle.
+Eww! No way. That thing's got some serious Kerrek-Brand kooties on it now.
+You strap the Kerrek's belt buckle around your waist. Oh boy. You sure stink now.
+You totally got the belt already, as evidenced by the rancid cloud of odor that follows you like a shadow.
+If you weren't a simpleton you might think these were Kerrek prints. But since you are a simpleton, you just go, "Yay! Piggies!"
+The ages have worn this rock down. It is a rock of ages. Still a-rollin.
+For what? Now you're just making up puzzles to solve.
+It was loaned out to the Fishing Challenge videogame.
+One million three hundred thousand seventy-four hundred and sixty two... One million three hundred thousand seventy-four hundred and sixty three...
+An older peasant sits silently in a boat with his line in the water.
+You holler at the old man about Trogdor, but he just grumbles about the fish not biting. "Must be using the wrong bait..." he says, suggestively.
+He DEFINITELY can't here you from here.  He's in the INN.
+You already fed the fish.  Let's get moving, here, people!
+You toss the feed into the lake. You shed a tear for each one. "Goodbye, Monty" you sniff. "Bye Delga, Rasputin. Farewell, Combledon!" and so forth.
+Woah! That crotchety old man just caught a pantload of fish! "Now I can get back to running the inn," he says and rows to shore and hauls his boat out and cleans, guts, and filets all the fish and a buncha other stuff we didn't animate.
+You have nothing with which to do that ... with.
+"Well, heck.  That might work.  Throw it on in and see what happens."
+"That isn't gonna work for bait!" the old man screams, at a needlessly harsh volume.
+There's a ranch-style thatched roof cottage here. There are also what appear to be four crunch berry bushes but you can't be sure.
+You suspect they might be crunch berry bushes.
+You had a cottage once. A lot like this one. *sniff* Trogdor will pay!
+" What kinda gaming is that? It's a door and it's closed.
+No way you're falling for that. You didn't get that merit badge in outdoor survival eating strange berries at the drop of a hat.
+"It's open," says a female voice from inside. Um, it's NOT open, but you get her drift.
+No one answers. That crazy lady took off. How ever will you get past this closed door now?
+You already searched that bush. It was okay. Nothing to write home about... oh, wait... you don't have a home.  My b.
+You reach into the bush to snag you some berries but instead find a Super Trinket! These things are awesome! You have a sneaking suspicion that SOMEONE in this game will need this thing.
+You reach into the bush to snag you some berries but they all just squish in your hand.
+Man, nothing in this bush but squished berries either.
+Too bad you don't want any squished berries, cuz hey: jackpot!
+You've searched your fill of berry bushes for this game. If you want to search more press 'reload' on the browser
+There's a little cave with a little door with a little note on it.
+It's been magically sealed to the door with a wondrously whimsical spell.
+It's locked. With one o' them SCHLAGE deadbolts, too. Those things are hard core.
+"Don't need nothing from no filthy peasantses!!"
+There's a disgusting little Jhonka hopping around outside a small cave.
+The Jhonka is gray and grody. He's got a cromagnon forehead and jaw with a pair of wicked incisors. He sports an old loin-cheese cloth and carries either a big club or one of those roasted turkey legs you get at the Ren Fest.
+"All hail Burninator! Trogdor Number One! Beat Peasant Tech!" says the grimy Jhonka.
+Turkey leg or no, it looks like the Jhonka's been gnawing on it.
+Now there's a surefire way to get yourself killed.
+The Jhonka will see you! And rip out your jugular with his teeth or something equally horrible.
+Oh OH! A stiff breeze blew all the hay and, surprisingly, the mud off of you! "You take my riches?!" growls the Jhonka.
+No way! Jhonka's are born scrappers. He may be little, but he'll crawl ya.
+"Kerrek smell! Now Kerrek dead!" screeches the Jhonka. So can you infer from this that all smells are dead? You always sucked at the analytical questions.
+"Burninator make fire! Barbecue all peasants!"
+"Filthy naked peasant! Stay away from my cave-hole!" Who's he calling naked? HE'S the one wearing the string bikini.
+"The Kerrek is dead!" he cries and hops around some more. You wonder how someone this primitive could have made that much dough.
+Drat. The winds are heavy on all but a couple of key screens... looks like you're no longer in stealth mode.
+Hey, nice disguise! The Jhonka doesn't seem to notice you.
+naked ned decided not to come out.  Check again in 
+The beaded curtain slams shut behind you. There's no turning back now.
+Phew! You discard the big black pot and wipe the horse grease from your eyes. The hood of your robe is still covered in highly flammable horse grease, though.
+Your mom always told you not to take head poundings from strange Kerreks. And NOW look what's happened. You dead. Thanks for playing.
+Club or turkey leg, the Jhonka sure just beat you senseless with whatever he was holding. You dead. Thanks for playing!
+Congratulations! You've won! No one can kill Trogdor but you came closer than anybody ever! Way to go!
+Peasants are bound to talk about you for years and years. You'll be a legend! Maybe they'll even make a statue of you one day! Congratulations!
+Nice try. Ditch the baby at the bottom of the well, eh? Thought you'd be able to just walk away and it's nothing but mead and wenches from now on, huh? Well guess what? You dead. Thanks for playing.
+The baby lady calls after you, "Hey, you're on some quest right? Well, the little squirt here lost something of mine in the yard the other day. It's yours if you can find it."
+Foolish peasant! How dare you enter this fairly sacred chamber!
+You explain that you're here to smote Trogdor and if he doesn't get outta your way, him too!
+You cannot vanquish Trogdor! Only the Three Keepers of Trogdor hold the tools with which to destroy the Burninator. The Trog-Shield, the Trog-Helmet, and the Trog-Sword.
+And the only way we'll give them up is if you answer the three Trog-Trivia questions correctly.
+Unless you happen to have something to eat on ya. Then we could forego my question.
+Hold, peasant! You must answer the second dreaded Trog-Trivia question!
+Or we could call it even if I had an ice cold drink right now.
+Think you're pretty hot stuff, eh? Let's see you answer the deadly and pretty impossible THIRD TROG-TRIVIA QUESTION!
+That is, unless you've got something for my lower back. Man, it's killin me!
+Yow. Looks like you got a little too close. You dead. Maybe next time don't get too close.
+Please insert floppy disk 2 into Drive B and press enter.
+Disk read error. Please insert floppy disk 2 into Drive B and press enter.
+Now you've done it! You're covered in sticky, albeit fine smelling, mud. Your "Scalding Lake" T-shirt is all soiled, too.  You just washed it last harvest!
+Hopefully this guy will have some sense and not shoot you.
+Dumb, dumb, dumb. Nice one, William Tell. You dead. Thanks for playing.
+Whoa! The horse grease on your robe caught fire! You're a for-real peasant now.
+"Okay. Lemme know if you see riches anywhere," he grunts and goes back to his hopping. You smooth talker, you.
+loadGame: gameSaves for this number was undefined
+You can't be fumbling with a floppy while the Kerrek is bearing down on you.
+Como se dice 'huh?' You can save up to five games by typing "save 1" or "save 2" or "save 3" ... stop me when you catch on.
+Sorry, I'm not picking up what you're putting down. To load a game type "load 1" for game saves 1-5
+finishedEvent - remove event from queue and rerun displaytext
+How many berry bushes are there in the whole kingdom of Peasantry?
+Which way does the river that runs through Peasantry flow?
+To whom did the robe you're wearing originally belong?
+What color are the leaves on the tree that grows by the well?
+"Ah crap! You're right. Here, take this stupid Trog-Shield!"
+"That's right. Oh. This sucks. Guess I have to give you this Trog-Helmet. Dang."
+"Uh oh. You got it right. Trogdor's gonna kill me. Okay, you can have the Trog-Sword. Just promise not to kill any Trogdor's with it, kay?"
+"Okay fine! You can have the dumb thing anyways. Trogdor's through the beaded curtain over there."
+The fabled Trog-Sword is yours. You now have the means to strike down Trogdor. Good luck, peasant.
+"Sorry peasant! You fail! And as punishment, you will be turned into...RON CUMBERDALE!!"
+"Just this kid from 4th grade that I really hated. But he was a BIG LOSER and HE SMELLED!"
+Well, you not exactly dead. But there's no way you could defeat Trogdor as Ron Cumberdale. Your quest ends here. Thanks for playing.
+"WRONG! You are hereby cursed to write corny folk songs for the rest of eternity! The kind that only OLD PEOPLE LIKE!!"
+Well, you not exactly dead. But you certainly can't face Trogdor after writing 'Wheat Grows Sweet, But My Gal's Sweeter'. Your quest ends here. Thanks for playing.
+YES! I was hoping you'd get mine wrong. No Trog-Sword for you. In fact, no skin for you either!
+Wow. You sure dead. You had a good run, though. Thanks for playin.
+You shake off the Keeper of Trogdor's request. Seriously - this guy should get a job.
+No way! I was just kidding but you've really got a meatball sub. This rules! Here, you can have the Trog-Shield.
+Sweet deal, peasant. I underestimated you. Wear this Trog-Helmet with style.
+Whoa! Where'd you find this stuff? I don't think this is even legal anymore. These babies'll definitely smote LUMBAGO the, um, LOWER BACKINATOR!!
+I think he wants something from your inventory. Or you could just tell him "take the quiz"
+You're in a giant cavern which houses a giant dragon. You didn't shrink or anything.
+Holy crap! Trogdor's way bigger in person than he looks in most tapestries you've seen. All of the sudden, losing your cottage doesn't seem so bad anymore.
+Trogdor is looming menacingly over you with a tiny wee sword stuck in his belly. He looks like he's gonna kill you really soon.
+You scream that your name is Rather Dashing and that Trogdor burninated your cottage and you're here for revenge!
+"Sup, mortal," booms Trogdor. "I really appreciate you making the effort to come all the way up here and vanquish me and all. But, I'm kinda indestructible."
+"Yeah, I can't be killed. I'm surprised nobody mentioned that to you. I'll admit though, you've gotten farther than anybody else ever has. I bet they'll make a statue or something in honor of you somewheres.
+"I can honestly say it'll be a pleasure and an honor to burninate you, Rather Dashing."
+You yell some choice expletives at Trogdor but he doesn't wake up. There's a cool echo, though.
+"Troggie...," you murmur. "Troggie, wake up it's time for Burnination school." He's not budging.
+This is it! You hurl the Trog-Sword with all your might at the sleeping Burninator.
+Now you've done it! Trogdor's awake and the Trog-Sword doesn't seem to be doing a whole lot.
+Your legs lock in fear, your eyes glaze over and you wish for some Depeasant adult undergarments. But you think you hear Trogdor whimpering!
+Aw crap, that's you whimpering. At least your voice still works, I guess.
+Trogdor is awake and a couple seconds from a Rather Dashing BBQ. Might as well say your peace with him.
+You've totally got one of those! Check your INVENTORY to give'r a serious looksee.
+You used to have one, before the great item blight of 402. Check your INVENTORY to read about it.
+This hay is stuck to you and you can't shake it. Like that kid Philo from art school.
+We are neither confirming nor denying the presence of a map in this game, but irridisregardless, you don't have one.
+You don't even have two babies to rub together.
+You're already wearing it. Too bad you smell like the trash barge off Peasant Isle.
+Come now. We've been through this jaunty little bit before.  You took them from the half lake screen with the cattail and stuff.
+Not on this screen. You've got your image to think about. Actually, you might want to start deliberating on that right now.
+You're already in the old skool robe. Represent.
+You slip into the vintage robe. It smells like grampa's lap. Now you're lookin like a serious peasant.
+You don't have anything but your 'Scalding Lake' t-shirt.
+It's a hideous monster maskus, for wearing on your face.
+Dan's still okay. Got a place on Dekalb with Rick and his wife. Slimmed up a bit and looking towards the future.
+You are part of the Whig party. They are making gangrene-awareness their number one campaign priority.
+Use the arrow keys, pal. Just like a joypad only more like your day job.
+It's sad when you have to make up people to talk to.
+Type LOOK to see your surroundings. Type INVENTORY or INV to see your stuff. Type WHERE to see the name of the place you're in. Type SAVE or LOAD to save or load your game.
+Type MAP to read and maybe print your map of Peasantry
+You'd rather just stand here and soak in the scene.
+Well, there's that big bale of hay over there.
+You search and search through the haystack. Nope. No needles.
+It reminds you of a warm, safe place where as a child you'd hide.
+Who do you think you are? Some kind of Thy Dungeonman? You don't need any hay.
+To every thing, turn, turn, turn. There is a season, turn, turn, turn.
+You've not known much better than a roll in the hay alone.
+You leap in the hay like a two years old boy. Uh oh. The hay sticks to your muddy body. You're a walking hay bale! Just like that one guy from that one show!
+Who do you think you are, MJ? Try from a little closer.
+Not right now, man. You're feeling fairly clean given you just bathed 3 fortnights ago.
+There's a beautiful, magical waterfall cascading down the cliff side.
+Upon closer inspection, you discover it's not magical. That's just mist, not magic sparkles or anything.
+You see some trees in the distance. You hold your fingers up to one eye and pretend to squash it.
+That waterfall would probably churn you into one of those weight-gain protein smoothies.
+This place could use some serious sprucing of the 'up' variety. There's a dresser over there and a broom kind of silhouetted all mysterious like.
+This dresser needs a good wipe down with new Indenture(tm), the dust busting miracle spray. 
+There is an especially enticing top drawer that is currently closed.
+You already closed it, which was nice, and so we gave you some points. Let sleeping drawers lie.
+Yeah, totally! Except it's already open you moron.
+There's a vintage peasant robe in there! Just like grampa used to wear.
+There used to be a robe in there but now... well, let's just say there's not a robe in there.
+You get a hernia from lifting it. -2 Movement points, -10 Constitution. Don't do that again.
+You reach into the closed drawer and nearly break your hand slamming it. Just like a bird on a pane of glass minus the blamelessness.
+You still remember the time when you took them. Oh, the times have changed ... but the robes?
+A riddle: What can be closed that is already closed? (hint: not this drawer)
+Right, right. Wouldn't want to leave the robes out where any old guy trying to beat an adventure game could take them.
+Aww, how thoughtful and boring of you. Break into this peasant's home, steal his clothes, but remember to tidy up after yourself. You're a real saint.
+The broom is all black and artistic, implying perhaps that it is closer to the viewer's eye but unlit to avoid emphasis.
+No, no. The broom is in the foreground and you can't take things from the foreground. You don't see me all typing "get browser window", do you?
+There's a giant Inn here. It takes up, like, the entire screen.
+Looks okay from out here. But do they have a free breakfast buffet?
+If you can't read that sign, you need to quit playing this game.
+It says, "Gone Fishin" just like that grog coozie your cousin got you.
+What that sign there? That sign says 'Trogdor.'
+I know it's labeled 'Trogdor,' but it's really just a sign, silly. I mean, attack it if you want...
+I was being facetious, Mr. Smarty-short-pants. No sign attacking for you.
+"Since the Kerrek showed up, we don't see the Jhonka so much anymore. He lives in that little cave over in west Peasantry."
+"That weirdo used to live over in west Peasantry but now I guess he just prances around the forest in his birthday suit."
+"If I had a gold coin for every whining peasant's cottage that freaking dragon burninated, I'd be rich as a jhonka."
+"I call him Big Stinky. He's slow and stupid, but he'll pound you into milks meat without a second thought."
+"Peasants wear those brown robes. You know, with the rope around the waist. Get yourself one of those."
+"Well, whenever I see peasants, they seem to be on fire. So get yourself on fire. I hear horse grease gives a nice, controlled burn."
+"I never met a peasant that didn't stink. If you wanna smell bad, get the Kerrek involved. That thing reeks!"
+"I don't know anything about that, short pants."
+You explain your situation to the knight. That Trogdor burninated your cottage and you've sworn revenge. You ask for passage up the mountain to settle your score. 
+(Press RETURN to advance through conversations)
+"Hang on there, Trogdorkilla," says the knight."I can only allow actual peasants up the mountain pass to face Trogdor. And you CLEARLY are not one."
+"Be sure to LOOK around lots. TALK to everyone you see and ASK ABOUT stuff. Type HELP if you get confused and INVENTORY to see your worldly stuff. Type SAVE or LOAD to save or load your game. Duh."
+Lookin good, Mr. Peasant. Good luck with ol' Beefy Arm up there.
+This is it! You can finally get revenge on Trogdor! Nice work so far, stupid!
+"My dear Adso, you are dressed well but you don't STINK and you're not ON FIRE. Let us instead exercise our brains and try to solve this tantalizing conundrum."
+"And you're definitely not ON FIRE like a peasant."
+"Once you're those 3 things, come back and maybe we can talk."
+"Frankly, Matthew Broderick, you sure stink like a peasant. But you still don't DRESS like a peasant and you're not ON FIRE like a peasant."
+"Almost there, Dirk the Daring. You stink like a peasant and you dress like one too. But you're clearly still not ON FIRE."
+Well fine Boring Sanders! Hope you saved your game cause it is OVER between us!!
+For simplicity's sake you are immune to hunger and thirst in this game. So you got that going for you.
+I don't understand. Type HELP for assistances.
+Boy, you sure know how to pick em! This arrow's kinda pointy even!!
+Awww! Peasant babies are adorable. No wonder they fetch such a pretty penny on the black market.
+Phew! This thing stinks like all getout. Why couldn't the Kerrek have kidnapped a hot wench or something that you coulda saved?
+Woah! Gold nuggets! Oh wait...This is just chicken feed. Crap.
+This is a pretty fancy bow. You're surprised those shady archers give away such decent prizes. You half-expected gold fish in a bag.
+Man, those pagans sure can make a freaky lookin mask when they want to. It's like those theatre masks' evil uncle or something.
+Woah! Gray chicken feed! Oh wait... those are just pebbles. Heavier than they look, though.
+The innkeeper's medication says it's supposed to treat "general oldness. May cause checkers playing, hiked-up pants, and overall pee smell."
+Riches, dude. Riches. That peasant lady totally has to share some of this with you, right? At least that shiny, clawed sceptre thing.
+A propa peasant robe. It smells freshly washed and has the initials 'N.N.' sewn onto the tag.
+A piping hot meatball sub fresh from the bottom of a dingy old well. All you need is a bag of chips and you've got a combo meal!
+This super trinket is weird. It looks like it could either kill you or make you the hit of your Christmas party.
+The TrogHelmet is not screwing around. It's a serious helmet. It also protects against harmful UV rays.
+Behold the TrogShield! No seriously, behold it. There's no way Trogdor's fire breath can penetrate this thing.
+The TrogSword is for real. Hands-down the coolest item in this whole game. You can't wait to lop off that beefy arm of Trogdor's with this guy.
+What's brown and brown and read all over? This map!
+This has got to be your favorite T-Shirt ever. Oh, the times you had at Scalding Lake. Canoeing, fishing, stoning heathens. What a Blast!
+Your game face must be on back-order. Maybe come back when your shipment comes in.
+"But since you gave us this trinket, and you obviously don't have a prayer of winning, you can play again whenever you want."
+ hits." Says Mendelev. "Here's your prize!" You got the SuperTime FunBow TM! We don't sell ammo, so you'll have to find your own arrows for it.
+Nice jorb climbing the cliff. You have a real way with those arrow keys.
+Oops! You climbed real bad. You knew that you were AVOIDING the rocks right? Not collecting them. Anyways, nice try. You dead. Thanks for playing.
+Wait, there's an event here!!!
+Right now, you see a bunch of hay.
+It says 'archery' on it. My wife's drunk.
+mendelev says haldo
+tell Dongolev haldo
+tell the archer haldo
+tell archer haldo
+say haldo
+tell man haldo
+tell guy haldo
+tell the man haldo
+tell the guy haldo
+"Haldo!!!"
+"Did not!"
+"Did so!"
+(You see where this is going.)
+play again
+try the game again
+try game again
+play game again
+play the game again
+play the game
+play game
+trinket to archers
+trinket to the archers
+trinket to archer
+trinket to the archer
+trinket to brothers
+trinket to guys
+trinket to men
+You're flyin' trinket-free right now.
+about it
+evaluating text (not talked to Mendelev
+"You mean 'hello,'" you ask?
+look in
+look inside
+look down
+The bucket is currently down.
+That's one orange tree alright.
+There's a monster maskus in there!
+get in
+climb in
+Your butt is too big.
+go down
+No go. Your insurance doesn't cover that.
+make a wish
+make wish
+It looks rusted in place.
+deploy baby
+deploy q-baby
+baby in bucket
+baby in the bucket
+Throw it where?
+Like where?
+baby in well
+baby in the well
+You can't reach from there.
+Oh, and the baby. You take the baby.
+Down she goes!  You could do this all day!
+use pebbles!
+stones in well
+rocks in well
+pebbles in well
+Riiight, right.  Which ones?
+fill bucket
+fill the bucket
+stones in bucket
+rocks in bucket
+pebbles in bucket
+Where you wanna toss em?
+With what?
+in bucket
+Kerrek Prints at the River
+Rushing river b/w yellow tree.
+It's Arbor Day, Charlie Brown!
+arms off
+legs off
+head off
+It doesn't budge, man.
+open door
+open the door
+How? There's no knob.
+Already done. That was easy!
+Violence is not the answer.
+knock until knuckles bleed
+knock until your knuckles bleed
+knock til knuckles bleed
+knock door until knuckles bleed
+drop baby
+drop the baby
+use baby
+put baby in hole
+use the baby
+shove baby in hole
+Deploying Q-Baby...
+go up
+Looks pretty climbable to me.
+Scary. Like Auntie Gerelda's crow's feet.
+Eww. No. Grody. You're grody. No. Eww.
+Nope. It's too sheer.
+They're just outcroppings really.
+A wicked beaded curtain hangs in the doorway.
+NOT a good place to sit.
+Already lit, moron.
+You're just not flammable enough.
+With what? Your red-hot intellect?
+Hey! There's a rotten ol' horse over there!
+use chicken feed
+given chicken feed
+use feed
+give feed
+Are you THAT bored? Do some questing already!
+rings on tree
+Gary's gone now. Let go. Just let go.
+Let go!
+You slip on the hideous monster maskus.
+put on
+Wow! There's a hole in it on THIS side too!
+Something tells you now's not a good time.
+"Haldo?." you call out... "Hadloooooo" 
+Not going to dignify that with a response.
+That rock's not doin' a whole lot for me.
+Not much to see. 'Sides that big mud puddle.
+mud puddle
+The bone-dry mud puddle is cracked and caked.
+inside house
+inside hut
+inside cottage
+Yeah but like you already map the took, guy!
+It's off to the west there.
+It's weird and wavy.
+No. Just no.
+You don't climb wavy trees.
+You startled him and he disappears!
+lie down
+baby lady
+"I dunno man! Whattaya want from me?"
+"I dunno what you're talking about."
+ A lady rocks her baby in a chair.
+ There is one of those self-rocking chairs.
+ A mostly empty shelf sits against one wall.
+Cool Ranch. Your old favorite.
+No. Too big for pants.
+Hay is for horses!
+Swedish foam. Your favorite.
+Nothing but a bag of chicken feed.
+Dork!
+Which foodstuffs?
+trinket to lady
+trinket to peasant
+trinket to woman
+trinket to baby
+trinket to the lady
+trinket to the peasant
+trinket to the woman
+trinket to the baby
+riches to lady
+riches to woman
+"We don't need that mess," she says.
+Um, that's chicken feed.
+"You wanna help us? Go get my riches back!"
+You've already done far too much.
+ And some crazy old guy behind it.
+It says, "Note to self: Wave arms wildly!"
+Tis broked.
+Check it out! There's a Peasantry out there!
+old man
+You have no baby nor any immediate prospects.
+get a room
+get room
+That candle's not at all on fire.
+He gone.
+Naw. That's dumb. Do better.
+You disgust me.
+You reach way up to the top shelf.
+Shut up.
+NO MAN! JEEZ!
+jump in
+baby in lake
+make friends
+buy the kerrek
+buy kerrek
+buy the kerreck
+buy kerreck
+cold one
+It's the Kerrek, you moron! Get outta here!
+Here goes nothin', Kid Icarus
+With what?! You got no arrow, fool!
+He dead.
+Not much to see. River's got a rock in it.
+Got a rock in it.
+Peasants can't swim. Like, it's illegal.
+Why it's half a lake.
+With a fisherman in it. And he's fishing!
+"Keep your eyes off my dinghy!"
+Drat! You lost count again.
+I think he went to open the INN.
+feed fish
+feed in water
+feed in the water
+feed in the lake
+feed in lake
+Crunch berries maybe.
+Listen to you, "
+go through door
+go through the door
+You open er up and head on in.
+search bush
+reach in bush
+look door
+look at door
+There's a little note on it.
+It says "scared of kerrek. go way. -j"
+SCHLAGED.
+A gravelly voice inside yells, 
+JUST US CHICKENS
+GAVE AT OFFICE
+I GIVE LAST YEAR!
+GO WAY!
+NO FOR RENT!
+"
+Just a door, nothing more.
+A fat pile of riches lies next to him.
+That's one fat pile of riches alright.
+Not now! You'll blow your cover!
+"Jhonka don't know nothing bout that!"
+Just a little cave. Calm down.
+pick up
+ask about
+talk about
+ask 
+ about
+talk 
+talk to 
+talk to the 
+ask the 
+:
+!
+.
+'
+;
+,
+Man, screens sure get light fast around here.
+The bucket is down! 
+Jumping in the hay!
+Tossing the bebe!
+walking to well
+Walking to pebbles
+Taking pebbles
+"I KILL YOU!!" screams the Jhonka.
+Just answer him, you fool!
+Hugging tree!
+This place is dead anyway.
+trigger hit for trogkeepers
+That guy has no sense. He shot you.
+Just answer him, yes or no, you fool!
+saveGame : gameSaves was undefined
+saveGame : gameSaves was defined
+saveGame: not object returnTogameX = 
+saveGame: new object returntogameX = 
+loadGame: gameSaves was undefined
+The game files you have are: 
+Save Slot #
+: 
+/
+0
+save 1
+save 2
+save 3
+save 4
+save 5
+Game saved to slot 
+. To load it again type "load 
+Game save to slot 
+ failed.
+load 1
+load 2
+load 3
+load 4
+load 5
+Game loaded from slot 
+Game load from slot 
+Empty slot
+Full slot
+points = 
+ - 
+ pt
+ failed. Make sure you have cookies enabled.
+._name
+leaving the area!
+walkTo has not arrived yet
+executing keyMove and playerMove
+changing scene to outside cottage
+change scene
+setting stuff to false
+got it
+calling correctPlayerLocation here.
+calling correctPlayerLocation was cancelled.
+moving to: 
+printasbitmap:
+startQuiz(
+Okay here goes. 
+What is the only creature the Jhonka fears?
+A. Poor Gary
+B. The Baby
+C. The Kerrek
+What does Mendelev have you tell Dongolev?
+A. Haldo
+B. Hallo
+C. Allo
+What did you win from the Archery game?
+A. SuperBow FunTime TM
+B. SuperTime FunBow TM
+C. SuperFun BowTime TM
+Listen careful now. 
+A. 4
+B. 5
+C. 6
+What was the Innkeeper's pantry full of?
+A. Epsom Salts
+B. Epson Printers
+C. Old Man Rub
+Which one of these letters is the letter C?
+A. B
+B. C
+C. A
+Riddle me this. 
+A. West to East
+B. Northwest to South
+C. Northeast to Southwest
+A. Nobleman Nicholas
+B. Nina Neverawesome
+C. Naked Ned
+A. Orange
+B. Green
+C. Yellow
+Peasant fool! Choose A, B, or C!
+You just stare at the Keeper blankly.
+You ask who the crap Ron Cumberdale is.
+take the quiz
+take quiz
+pre-give clause
+hand over
+Aw that sure was nice of him!
+Like how?
+sword at trogdor
+sword at dragon
+sword at burninator
+sword at monster
+walkToThrowSwordAtTrogdor
+playSound 
+Score : 
+ of 150
+???
+Press return for description
+Press ESC or Backspace to exit
+Press ESC or Backspace to exit
+Hit return to go back to list
+shake off
+That's totally not Dongolev.
+You peep the map.
+throw baby
+throw the baby
+Hmm. Maybe try someplace else.
+Quit tryin to ditch the baby!
+You are an incredibly boring person.
+But then your hands would get all sappy.
+And pants. Forgot to mention the pants.
+Meh.
+Smells like a computer game.
+what the fuck
+give me a break
+Come now. Don't get discouraged.
+go 
+get 
+take 
+You probably WISH you could get that.
+Ask about what?
+You don't need to give that now.
+You don't need to use that now.
+Right, right.  Wait, what?
+You're hanging out in 
+look 
+look at
+You don't need to look at that.
+That wasn't very smart. You dead.
+~peasantsquest/
+No. No. No. No. No. Maybe. Wait, No.
+I don't understand. Type HELP for assistance.
+hide in
+There is a drawer open
+, but it's empty.
+and there are some brown lumpy clothes in it.
+open drawer
+close drawer
+empty drawer
+empty dresser
+Yeah! Get that robe!
+Check it out! There's an INN in there.
+Just a door. A door with a note on it.
+Just a door.
+The note is gone.
+What is it with you and notes?! No!!
+You open the door and step inside the inn.
+It's locked fast!
+Just open it, man!
+No answer.
+He looks way cooler than you.
+"Look, Dragonheart..."
+"You don't STINK like a peasant."
+"You don't DRESS like a peasant."
+is it quit?: 
+I wish I knew.
+Scared me.
+this sucks
+Which is nice.
+-
++
+~
+Hidden glen
+Poor Gary's glen
+Kerrek tracks 1
+Old well
+Yellow tree
+That hay bale
+That mud puddle
+Archery range
+River and stone
+Mountain pass
+Cliff base
+Jhonka's cave
+Your burninated cottage
+Pebble lake west
+Outside giant inn
+Outside mysterious cottage
+Wavy tree
+Kerrek tracks 2
+Outside baby lady cottage
+Burninated trees
+Baby lady cottage
+Inside giant inn
+Mysterious cottage
+Cliffland heights
+Trogdor's outer sanctum
+Trogdor's posh lair
+kerrek belt
+chicken feed
+SuperTime FunBow TM
+monster maskus
+A full bottle of popular soda.
+meatball sub
+super trinket
+You no longer has this item.
+Got to hay jump
+Got to naked ned cutaway
+gary wants to know the pl name
+telling pl to get arrowed
+reset pressed
+ and 
+"Sorry!" says Dongolev.
+"Only 1 hit. 
+"Only 2 hits. 
+"Not a single hit. 
+"Nice shootin! 
+end game
+Hit by a rock!
+Hit by a bird
+
+--- DEVELOPER/DEBUG TRACE STRINGS LEFT IN THE SHIPPED BUILD (71) ---
+
+Shelves and shelves of something called "Old Man Rub."
+preParse(pS): illegal character in preParse - remove 
+correctPlayerLocation() found a hit with one of the blocks, I guess
+You've reached the mountain pass that leads to Trogdor's lair. A royal knight blocks the entrance.
+hugTree: _parent._parent.playerStates[_parent._parent.player.state]
+displayText(): called 
+parseForInventoryItem(pS) returned true
+isObjL(): objL.length 
+preParse(pS): string in: 
+preParse(pS): string out: 
+initRoom (): initializing room: 
+initRoom (): save game 1 mapHistory = 
+updateKerreck(): getting killed
+removeRiches called 
+babylady.wav
+babyNedCottage(): 
+trogTimerTick(): called, timer = 
+playDiskSound called
+leaveRoom(): called for room 0,3
+gameState.keeper
+scene_mc.keeper
+triggerHit(): Leaving cottage
+triggerHit(): Leaving inn
+triggerHit(): sleepfire!
+triggerHit(): Leaving ned's cottage
+triggerHit(): Entering ned's cottage
+triggerHit(): Loading next screen
+triggerHit(): Slip in mud
+triggerHit(): getting killed
+triggerHit(): lighting afire
+saveGame called: 
+map_mc.mapSq at save 
+map_mc.mapSq at load 
+loadGame(): returnToGameX 
+fileMenu_mc.savebox
+fileMenu_mc.playerIcon_mc
+playerStates: 
+returnToGame() reached
+returnToGame(): returnToGameX 
+Trigger added to array
+scene_mc.
+scene_mc.hotSpot
+scene_mc.obj
+error in playerMove() - invalid direction
+walkTo(): pl.targetFrame  = 
+Here's the result of isScene(5,3) : 
+Here's the result of isScene(5,4) : 
+Autocorrected pl coord to be: 
+setDebugger(): called
+applyDebugger(): called
+debugger_mc.debugPropPair
+printMapOut(): called
+) called
+map_mc.head
+map_mc.mapSq
+addInventoryItem(): 
+inventoryHistory[Inventory.propNames[i]]
+inv_key() : called
+newInventoryPage(): 
+parseAnyRoom() called
++ key pressed
+- key pressed
+takeBelt pl reached
+burncrisp reached
+stageCollides["obj"][2]._name = 
+nightCoverup_mc attempting to end event
+this._name:
+ar_updateWind(): New wind direction chosen 
+bird_mc popped
+clm_step(): moving to 
+clm_doneDying(): called
