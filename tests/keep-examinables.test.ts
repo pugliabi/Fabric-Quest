@@ -31,10 +31,18 @@ describe('Keep examinables', () => {
         const out = step(s, `look at ${noun}`, WORLD).output.join(' ');
         if (DONT_SEE.test(out)) misses.push(`${noun}: ${out}`);
       };
+      // A rule noun counts once it can be looked at in the state of any rule that names it: a "you have none" fallback
+      // (fortress.give-table-none) names the date table precisely because it is not in hand, and its scoring twin holds it.
+      const seen = new Map<string, string | null>();
       for (const rule of room.rules) {
         if (!OBJECT_VERBS.has(rule.when.verb)) continue;
-        for (const noun of [...list(rule.when.noun), ...list(rule.when.noun2)]) probe(noun, stateFor(room.id, rule));
+        for (const noun of [...list(rule.when.noun), ...list(rule.when.noun2)]) {
+          if (seen.get(noun) === null) continue;
+          const out = step(stateFor(room.id, rule), `look at ${noun}`, WORLD).output.join(' ');
+          seen.set(noun, DONT_SEE.test(out) ? `${noun}: ${out}` : null);
+        }
       }
+      for (const miss of seen.values()) if (miss) misses.push(miss);
       for (const id of [...room.items, ...room.npcs]) probe(id, stateFor(room.id));
       expect(misses).toEqual([]);
     });

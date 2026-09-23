@@ -59,7 +59,7 @@ describe('god mode (burninate)', () => {
   });
 
   it('locate finds the guard, the key, jeff and the hoodie', () => {
-    expect(run(['burninate', 'locate sku']).last).toMatch(/fortress\.bridge[\s\S]*use trial[^\n]*\+10/);
+    expect(run(['burninate', 'locate sku']).last).toMatch(/fortress\.bridge[\s\S]*say trial[\s\S]*\+10/);
     expect(run(['burninate', 'locate key']).last).toMatch(/lake\.island[\s\S]*get standard key/);
     expect(run(['burninate', 'locate jeff']).last).toMatch(/village\.square[\s\S]*Jeff/);
     expect(run(['burninate', 'what do i say to the guard']).last).toMatch(/say trial/);

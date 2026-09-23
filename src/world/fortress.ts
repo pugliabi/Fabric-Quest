@@ -23,24 +23,7 @@ const room = (r: Room): [string, Room] => [r.id, r];
 const POLICY = ['policy', 'incremental refresh policy', 'incremental refresh', 'refresh policy', 'incremental'];
 const REFRESH = ['refresh', 'big refresh', 'progress bar', 'refresh bar'];
 const CARD = ['card', 'card visual', 'blank'];
-/** The Studio's Card puzzle (Task 4): a measure on the Card, twice; the first one never counts. */
-const MEASURE = ['measure', 'a measure', 'net sales', 'sales', 'total sales', 'the measure', 'measures', 'value', 'a value', 'field'];
-const CARD_NOUN2 = [...CARD, 'the card'];
-/** The Card has its measure: the second drop set it, and the Duke's spinner (stare.done off) does not take it back. */
-const measured = (s: GameState): boolean => !!s.flags['stare.done'] || s.flags['card.measure'] === 2;
-const PIE = ['pie', 'pie chart', 'chart', 'visual', 'bar chart', 'bar', 'the pie', 'column chart', 'slices'];
-const MEASURE_1: RuleThen = { text: 'You drop Net Sales on the Card. It shows (Blank). It looked at you the whole time. Every one of us has done this: the first one never counts. Do it again.', set: { 'card.measure': 1 }, outcome: 'fail' };
-const MEASURE_2: RuleThen = { text: 'You drop Net Sales on the Card again. $4,213,908. The Card blinks first. It has never done that.', set: { 'stare.done': true, 'card.measure': 2 }, points: 10, pointsKey: 'fortress.stare', sfx: 'item' };
-const MEASURE_MORE: RuleThen = { text: "It shows $4,213,908. It will keep showing it. That's what a measure is.", set: { 'stare.done': true }, outcome: 'snark' };
-/** The three stages of a measure on the Card, for one phrasing (`add net sales`, `drop net sales on card`). */
-const measureRules = (id: string, when: Rule['when']): Rule[] => [
-  { id: `${id}-1`, when: { ...when, flags: [{ flag: 'card.measure', not: true }] }, then: MEASURE_1 },
-  { id: `${id}-2`, when: { ...when, flags: [{ flag: 'card.measure', is: 1 }] }, then: MEASURE_2 },
-  { id: `${id}-more`, when: { ...when, flags: [{ flag: 'card.measure', is: 2 }] }, then: MEASURE_MORE },
-];
-/** The pie becomes a bar and the Big Refresh finishes (+15): the rule and the `make it a bar chart` phrase share it. */
-const PIE_TO_BAR: RuleThen = { text: 'You select the pie. Thirty-one slices tense up. Visualizations pane: clustered bar. The slices unroll into bars, longest first, and for the first time you can read December. In the corner, the Big Refresh, which has been chewing on a 31-slice pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots.', set: { 'refresh.done': true }, give: ['boots'], points: 15, pointsKey: 'fortress.refresh-done', sfx: 'item' };
-const PIE_AGAIN: RuleThen = { text: "It's a bar chart. It's been a bar chart for a minute. Leave it.", outcome: 'fail' };
+const PIE_NOUNS = ['pie', 'pie chart', 'chart', 'slices', 'the pie', 'bar chart'];
 const GUARD = ['guard', 'guards', 'bridge guard'];
 const DUKE = ['duke', 'duke of dax', 'duke of warehouse'];
 const CARDINALITY = ['sir cardinality', 'cardinality', 'knight', 'sir'];
@@ -53,40 +36,24 @@ const BRIDGE = ['bridge', 'm2m bridge', 'wobbly bridge', 'm2m'];
 /** The XMLA endpoint is Off (spec2 §3.4): the explicit flag, so nothing here fires at default. */
 const XMLA_OFF = { flag: 'ts.xmla', is: false };
 
-// ---- The Desktop Gate (actions-that-fit §1.1): the trial is a link you click, not a word you say. ----
-/** The SKU words the guard used to take as an answer. Said now, they only get you a nudge toward the link. */
-const TRIAL_SKU = ['trial', 'trial capacity', 'f trial', 'fabric trial', 'free trial', 'ftrial', 'trial sku'];
-/** Everything you can use, click, start or download to take the trial: the SKU words, the link, Desktop itself. */
-const TRIAL = [...TRIAL_SKU, 'try free', 'link', 'try free link', 'the link', 'desktop', 'power bi desktop'];
-/** +10, the bridge down. The `use` rule and the `try free` phrase share it, and its key (fortress.sku, the ledger row). */
-const TRIAL_THEN: RuleThen = {
-  text: "You click Try free. 'Sixty days,' says the guard, reading over your shoulder. 'Come in. Quickly.' The splash screen finishes updating (3 of 3). The drawbridge crashes down.",
-  set: { 'bridge.down': true }, points: 10, pointsKey: 'fortress.sku', sfx: 'door',
-};
-
 // ---- The Duke's sin (spec1 §4.1): the modeling shortcut every DAX lord despises. Not SQL; that only gets you corrected. ----
 const SIN = ['calculated column', 'calculated columns', 'a calculated column', 'use a calculated column', 'add a calculated column', 'make a calculated column', 'just use a calculated column',
   'i will use a calculated column', "i'll use a calculated column", 'i will just use a calculated column', "i'll just use a calculated column"];
-export const MOAT_TEXT = "The Duke rises. 'IN. MY. MODEL?' Two guards seize you by the arms and hurl you from the window into the Moat of T-SQL below — the Warehouse this whole Keep was built on. You surface, sputtering, covered in semicolons and something that might be a CROSS APPLY. You climb out. You will never not smell like this.";
+const DATE_TABLE = ['date table', 'calendar', 'dates', 'date', 'calendar table', 'the date table'];
+const MOAT_BODY = "The Duke rises. 'IN. MY. MODEL?' Two guards seize you by the arms and hurl you from the window into the Moat of T-SQL below — the Warehouse this whole Keep was built on. You surface, sputtering, covered in semicolons and something that might be a CROSS APPLY. You climb out. You will never not smell like this.";
+export const MOAT_TEXT = `'A CALCULATED COLUMN?' ${MOAT_BODY}`;
+/** The other way in (actions-that-fit, simplified): hand him the date table. Unmarked, or marked and therefore CALENDARAUTO. Same moat, same 25. */
+const MOAT_TABLE_TEXT = (s: GameState): string => (s.flags['model.date']
+  ? `The Duke takes the table. 'Marked,' he says, almost pleased. Then he sees how. 'CALENDARAUTO?' ${MOAT_BODY}`
+  : `The Duke takes the table. Turns it over. 'A date table,' he says. 'UNMARKED?' ${MOAT_BODY}`);
 /**
- * Trial 2 (+20, `trial.moat`, actions-that-fit §1.3): the Duke wants to SEE the sin, not hear it, so the date table goes
- * on his desk and you go out the window. The id and key are unchanged; the 5 points it gave up went to the Model View's
- * relationship (+10 there, the Monastery Gate's wait gave up 5). The moat also washes the Duke's curse off (curses.ts),
- * and his count with it: a calculated column that finally gets thrown is a measure again.
+ * Trial 2 (+25, `trial.moat`): the id, key and points are unchanged from the SQL days, so the ledger still sums to 200.
+ * The moat also washes the Duke's curse off (curses.ts), and his count with it: a calculated column that finally says
+ * the sin is a measure again.
  */
-export const MOAT_THEN: RuleThen = { text: MOAT_TEXT, set: { 'trial.moat': true, 'curse.column': false, 'duke.wrong': 0 }, points: 20, pointsKey: 'fortress.moat', moveTo: 'fortress.bridge', sfx: 'death' };
-/** Everything you might call the date table when you hand it over (§1.3). */
-const DATE_TABLE = ['date table', 'table', 'calendar', 'dates', 'date', 'calendar table', 'the date table', 'my date table'];
-const MOAT_UNMARKED = "The Duke takes the table. Turns it over. 'A date table,' he says. 'UNMARKED.' The room goes quiet. 'You built time intelligence on a table you never marked as a date table.' He does not finish the sentence. He finishes you. ";
-const MOAT_MARKED = "The Duke takes the table. 'Marked,' he says, almost pleased. He reads the M. There is no M. 'CALENDARAUTO.' He says it like a diagnosis. 'You made your date table in DAX. In the model. A calculated table.' The window is already open. ";
-/** The table, then the window: +20, the table stays on his desk (he marks it himself). */
-const MOAT_GIVE: RuleThen = {
-  ...MOAT_THEN,
-  text: (s) => `${s.flags['model.date'] ? MOAT_MARKED : MOAT_UNMARKED}${MOAT_TEXT}`,
-  remove: ['date-table'],
-  set: { ...MOAT_THEN.set, 'model.date': true },
-};
-const MOAT_AGAIN: RuleThen = { text: "'Calculated column,' says the Duke. He does not look up. 'You smell like my basement. Say what you like.' He points at the window anyway. You take the stairs.", outcome: 'snark' };
+export const MOAT_THEN: RuleThen = { text: MOAT_TEXT, set: { 'trial.moat': true, 'curse.column': false, 'duke.wrong': 0 }, points: 25, pointsKey: 'fortress.moat', moveTo: 'fortress.bridge', sfx: 'death' };
+const MOAT_TABLE_THEN: RuleThen = { ...MOAT_THEN, text: MOAT_TABLE_TEXT, remove: ['date-table'], set: { 'trial.moat': true, 'curse.column': false, 'duke.wrong': 0, 'model.date': true } };
+const MOAT_AGAIN: RuleThen = { text: "'Another?' The Duke does not rise this time. 'Once was instructive. Twice is a habit.' He points at the window. You take the stairs.", outcome: 'snark' };
 
 /**
  * The Duke's patience (spec1 §5.4, fix round 1): a WRONG answer is a `say` about DAX or the model that is not the sin
@@ -111,10 +78,6 @@ const wrong = (then: RuleThen): RuleThen => ({
   text: (s, w, cmd) => `${typeof then.text === 'function' ? then.text(s, w, cmd) : then.text} ${strike(s)}`.trim(),
   set: { ...then.set, ...WRONG },
 });
-/** The fourth wrong answer (curses.ts): you are a CALCULATED COLUMN. */
-const CURSE_COLUMN_THEN: RuleThen = { text: CURSE_COLUMN_TEXT, set: { 'curse.column': true, 'duke.wrong': 0 }, outcome: 'snark', sfx: 'curse' };
-/** The sin, said (§1.3): a wrong answer like the rest, and the pointer at the table. */
-const SIN_STRIKE: RuleThen = wrong({ text: "'Calculated column,' says the Duke. 'You'd say that.' He looks at your hands. 'Show me one. Bring me a table and I'll show you the moat.'", outcome: 'snark' });
 
 /** Studio: the seventh stare at the Card after the contest is won makes you (Blank) (fortress.curse-blank). */
 const STARES: FlagPatch = { 'card.stares': (v) => Math.min(6, (Number(v) || 0) + 1) };
@@ -153,11 +116,8 @@ const keepToMonksAside = (s: GameState): string => (setting(s, 'xmla')
 
 /** The hall's business once its query runs (Task B4), sideways: the Duke, the policy, the refresh, the monks, then out. */
 const hallRestAside = (s: GameState): string =>
-  !s.flags['trial.moat'] ? (s.flags['taken.date']
-    ? "The Duke is north of here, and lately he throws people out of windows for what they carry in. You're carrying something with every day in it."
-    : "West, one line in a diagram has been dashed since 2021, and one table is related to nothing because of it. The Duke, north, has opinions about that table.") :
-  !measured(s) && !s.flags['refresh.done'] ? 'East, a Card on the canvas says Blank, and Blank is what a Card says when nobody has given it anything.' :
-  !s.flags['refresh.done'] ? 'East, a progress bar has been at 97% since 2019, and the thing it chokes on is the roundest thing on the canvas.' :
+  !s.flags['trial.moat'] ? 'The Duke is north of here and he throws people out of windows for one sentence. The prophecy needs you to smell like where you would land.' :
+  !s.flags['refresh.done'] ? 'East, a progress bar has been at 97% since 2019, chewing on a pie with thirty-one slices.' :
   !s.flags['trial.hoodie'] ? keepToMonksAside(s) :
   "The Keep's done with you. The moat, south of the gate, would like a second go, and won't get one.";
 
@@ -176,27 +136,6 @@ const AMBIGUOUS: RuleThen = { text: 'An ambiguous path between tables was detect
 const SINGLE: RuleThen = { text: 'Single direction, one to many. Sir Cardinality nods once. It is the only time he will nod.', set: { 'model.m2m': false }, outcome: 'success' };
 const M2M_WORDS = ['many to many', 'bidirectional', 'both directions', 'both', 'm2m', 'cross filter both', 'set to both'];
 const SINGLE_WORDS = ['single direction', 'one to many', 'single', 'set to single'];
-/** The date table by name, for taking it (§1.2). */
-const DATE_WORDS = ['date table', 'calendar', 'dates', 'date', 'calendar table', 'table', 'the date table'];
-const MARK_NOUNS = ['date table', 'as date table', 'calendar', 'date', 'dates', 'calendar table'];
-/** `use date table` marks it: in the Model View, and anywhere while carried (globals.ts spreads these with `has`). */
-export const MARK_DATE_AGAIN: Rule = {
-  id: 'fortress.date-table-again',
-  when: { verb: 'use', noun: MARK_NOUNS, flags: [{ flag: 'model.date' }] },
-  then: { text: 'It is already marked. You mark it again. Time intelligence sighs: "I heard you the first time."', outcome: 'fail' },
-};
-export const MARK_DATE: Rule = {
-  id: 'fortress.date-table',
-  when: { verb: 'use', noun: MARK_NOUNS },
-  then: { text: `You mark the date table as a date table. Time intelligence, which had been sulking, starts working. No points. It should have been done already. Time intelligence feels ${MALAPROPS.refreshered}.`, set: { 'model.date': true } },
-};
-/** The dashed Date→Sales line, and every way of naming it (actions-that-fit §1.2). */
-const RELATE = ['relationship', 'relationships', 'relationship lines', 'lines', 'line', 'dashed line', 'inactive relationship', 'date relationship', 'single direction', 'a relationship', 'the relationship'];
-/** +10, `model.related`: the date table can leave the diagram now. The rule and the `set single direction` phrase share it. */
-const RELATE_THEN: RuleThen = {
-  text: 'You double-click the dashed line. Date[Date] to Sales[OrderDate]. Active: on. Cross-filter: single. Cardinality: one to many. Sir Cardinality nods once. It is the only time he will nod. The date table, which has been related to nothing since 2021, sits up.',
-  set: { 'model.related': true }, points: 10, pointsKey: 'fortress.relate', sfx: 'item',
-};
 
 /** The Model View hears "many to many" / "one to many" as settings, not as verbs it doesn't know. */
 function modelLine(s: GameState, { raw }: HeardLine): { then: RuleThen; id: string } | null {
@@ -214,42 +153,44 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     describe: (s) =>
       s.flags['bridge.down']
         ? 'The gate of the Semantic Model Keep. The splash screen has finished; the drawbridge is down and Power Query Hall yawns north. Below, the Moat of T-SQL — the Warehouse the Keep was built on — glitters with semicolons. The foothills are south.'
-        : 'The gate of the Semantic Model Keep. The drawbridge is a splash screen: "Power BI Desktop is updating (1 of 3)". A guard leans over the battlements. Below, the Moat of T-SQL — the Warehouse the Keep was built on — glitters with semicolons. The foothills are south. Under the update dialog, a link: Try free.',
+        : 'The gate of the Semantic Model Keep. The drawbridge is a splash screen: "Power BI Desktop is updating (1 of 3)". A guard leans over the battlements. Below, the Moat of T-SQL — the Warehouse the Keep was built on — glitters with semicolons. The foothills are south.',
     exits: { s: 'peaks.foothills', n: (s) => (s.flags['bridge.down'] ? 'fortress.hall' : null) },
     items: ['drawbridge', 'moat', 'splash', 'battlements', 'update-dialog'],
     npcs: ['guard'],
     scene: (s) => (s.flags['bridge.down'] ? 'fortress.bridge-down' : 'fortress.bridge'),
     flaskHint: (s) =>
-      !s.flags['bridge.down'] ? 'The guard wants a SKU. You cannot afford a real one. There is a free one, for sixty days, and a link under the dialog that starts it.' :
-      !s.flags['trial.moat'] ? (s.flags['taken.date'] ? 'North to the hall, and the Duke is north of that. Show him the date table.'
-        : 'North, then west. The Model View has a dashed line and a table that wants relating. Then the Duke, north of the hall.') :
-      !measured(s) && !s.flags['refresh.done'] ? 'North, then east. The Report Studio has a Card showing (Blank). Put a measure on it.' :
-      !s.flags['refresh.done'] ? 'North, then east. The Big Refresh in the Studio is stuck on the pie. Change the pie to a bar chart.' :
+      !s.flags['bridge.down'] ? 'The guard wants a SKU. You cannot afford a real one. There is a free one, for sixty days. Say it, or use it.' :
+      !s.flags['trial.moat'] ? `North, then north again. The Duke hates one shortcut above all others. Say it to him${s.flags['taken.date'] ? ', or hand him that date table' : ', or bring him the date table from the Model View, west of the hall'}.` :
+      !s.flags['refresh.done'] ? 'North, then east. The Report Studio has a pie chart with thirty-one slices and a refresh that hates it.' :
       !s.flags['trial.hoodie'] ? (setting(s, 'xmla') ? "North, west, then north again: the Model View's back gate opens onto the Monastery." : xmlaRouteFrom('fortress.bridge')) :
       'The Keep is done with you, and you with it. South, to the Foothills.',
     // The aside (Task B4), the tier ladder the plan spells out for this gate: sideways at 4, a rhyme at 8, the flask hint at 12.
     nudge: {
       oblique: (s) =>
         !s.flags['bridge.down'] ? "The guard's been asked for one thing all day and it wasn't your name." :
-        !s.flags['trial.moat'] ? (s.flags['taken.date']
-          ? "The Duke throws people in the moat for what they bring him, and the prophecy needs you to smell like the moat. You're carrying the evidence."
-          : "Somewhere inside, a diagram has one dashed line and one lonely table, and the Duke upstairs wants to see that table. The prophecy needs you to smell like the moat. You can see where this is going.") :
-        !measured(s) && !s.flags['refresh.done'] ? 'The Studio inside has a Card that says Blank, and Blank means nobody has put anything on it.' :
-        !s.flags['refresh.done'] ? 'The Studio inside has a progress bar stuck at 97% since 2019, and the thing it chokes on is the roundest thing on the canvas.' :
+        !s.flags['trial.moat'] ? 'The Duke throws people in the moat for exactly one sentence, and the prophecy needs you to smell like the moat. You can see where this is going.' :
+        !s.flags['refresh.done'] ? "The Studio inside has a progress bar stuck at 97% since 2019, and the thing it's stuck on is round and has thirty-one slices." :
         !s.flags['trial.hoodie'] ? keepToMonksAside(s) :
         "The Keep is finished with you. So is the moat, though it'd take you back.",
-      plainer: (s) => (!s.flags['bridge.down'] ? "He wants a SKU. There's a free one. It's a link, under the dialog, and it rhymes with denial." : ''),
+      plainer: (s) => (!s.flags['bridge.down'] ? "He wants a SKU. There's a free one. It rhymes with denial." : ''),
     },
     rules: [
       { id: 'fortress.guard-moat', when: { verb: 'talk', noun: GUARD, noun2: ['moat', 'the moat', 'warehouse', 'water'] }, then: { text: "'The moat?' The guard looks down. 'That's the Warehouse. We built the Keep on it. Don't tell the Duke I said Warehouse.' He tells the Duke himself, later, in the log.", outcome: 'success' } },
-      // Ahead of fortress.update, which keeps `use installer` / `use update` / `use dialog` (no noun in common).
-      // `install desktop` reaches this through the fortress.try-free phrase, since fortress.update-words takes `install …`.
-      { id: 'fortress.sku', when: { verb: 'use', noun: TRIAL, flags: [{ flag: 'bridge.down', not: true }] }, then: TRIAL_THEN },
-      // The old answer, said out loud: one scoring route per puzzle, so this is a nudge toward the link. Bridge down, the snark.
       {
-        id: 'fortress.say-trial',
-        when: { verb: 'say', noun: TRIAL_SKU, flags: [{ flag: 'bridge.down', not: true }] },
-        then: { text: "'Trial,' the guard repeats. 'I've heard of it. Everyone's heard of it. Show me.' There's a link under the dialog.", outcome: 'fail' },
+        id: 'fortress.sku',
+        when: { verb: 'say', noun: ['trial', 'trial capacity', 'f trial', 'fabric trial', 'free trial', 'ftrial', 'trial sku'], flags: [{ flag: 'bridge.down', not: true }] },
+        then: { text: "'Trial capacity, eh,' says the guard. 'Sixty days. Come in. Quickly.' The splash screen finishes updating (3 of 3). The drawbridge crashes down.", set: { 'bridge.down': true }, points: 10, sfx: 'door' },
+      },
+      {
+        id: 'fortress.sku-use-done',
+        when: { verb: 'use', noun: ['trial', 'trial capacity', 'f trial', 'fabric trial', 'free trial', 'ftrial', 'trial sku', 'try free'], flags: [{ flag: 'bridge.down' }] },
+        then: { text: "You're in. The trial is sixty days and you have used four minutes of it. Go north before it notices.", outcome: 'fail' },
+      },
+      // `use trial` (Tommy: it's a thing you start, not a thing you say). Same key, so it pays once either way.
+      {
+        id: 'fortress.sku-use',
+        when: { verb: 'use', noun: ['trial', 'trial capacity', 'f trial', 'fabric trial', 'free trial', 'ftrial', 'trial sku', 'try free'], flags: [{ flag: 'bridge.down', not: true }] },
+        then: { text: "You start the trial. 'Sixty days,' says the guard, reading over your shoulder. 'Come in. Quickly.' The splash screen finishes updating (3 of 3). The drawbridge crashes down.", set: { 'bridge.down': true }, points: 10, pointsKey: 'fortress.sku', sfx: 'door' },
       },
       {
         id: 'fortress.sku-f64',
@@ -363,11 +304,8 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     // While the query is broken (spec2 §8) the hint leads with the step it broke at, then the Keep's own business.
     flaskHint: (s) => {
       const rest =
-        !s.flags['trial.moat'] ? (s.flags['taken.date'] ? 'North. Show the Duke the date table and he will do the rest.'
-          : s.flags['model.related'] ? 'West, in the Model View, the date table is free to leave. Take it to the Duke, north.'
-          : 'West, in the Model View, one line is dashed and a date table is related to nothing. Double-click the line, take the table, show the Duke, north.') :
-        !measured(s) && !s.flags['refresh.done'] ? 'East. The Report Studio has a Card showing (Blank). Put a measure on it. Twice; the first one never counts.' :
-        !s.flags['refresh.done'] ? 'East. The Big Refresh in the Studio is stuck on the pie. Change the pie to a bar chart.' :
+        !s.flags['trial.moat'] ? `North. Insult the Duke properly and he will do the rest. He hates one shortcut above all others${s.flags['taken.date'] ? ', and he will want a look at that date table' : '. Or bring him the date table from the Model View, west'}.` :
+        !s.flags['refresh.done'] ? 'East. The Report Studio has a Card that needs out-staring and a pie chart that needs to be something else.' :
         !s.flags['trial.hoodie'] ? (setting(s, 'xmla') ? 'West, then north: the Model View has a back gate onto the Monastery.' : xmlaRouteFrom('fortress.hall')) :
         'The Keep is done with you. South, through the gate. Mind the moat; it remembers you.';
       const k = pqStep(s);
@@ -431,7 +369,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     id: 'fortress.model', name: 'The Model View', region: 'fortress',
     enterQuip: () => 'Tables float on plinths, joined by lines. One line wobbles. Everyone pretends not to see it.',
     describe: (s) =>
-      `The Model View. Tables float on plinths, joined by relationship lines. ${s.flags['model.related'] ? 'Date to Sales is solid now. Single direction. One to many. Sir Cardinality has stopped sighing.' : 'One line is dashed: Date to Sales, inactive since a meeting in 2021.'} One many-to-many bridge wobbles. ${s.flags['taken.date'] ? 'Where the date table sat, a gap in the star.' : s.flags['model.date'] ? 'A date table sits, marked.' : 'A date table sits unmarked.'} Sir Cardinality guards the diagram${s.flags['taken.policy'] ? '' : '. On a lectern: an incremental refresh policy'}. The hall is east; a back gate, north, ${setting(s, 'xmla') ? 'opens onto the Monastery' : 'has been bricked up. It says XMLA on the bricks'}.`,
+      `The Model View. Tables float on plinths, joined by relationship lines. One many-to-many bridge wobbles. ${s.flags['taken.date'] ? 'Where the date table sat, a gap in the star. ' : 'A date table sits unmarked. '}Sir Cardinality guards the diagram${s.flags['taken.policy'] ? '' : '. On a lectern: an incremental refresh policy'}. The hall is east; a back gate, north, ${setting(s, 'xmla') ? 'opens onto the Monastery' : 'has been bricked up. It says XMLA on the bricks'}.`,
     // The back gate is the XMLA endpoint (spec2 §3.4): Read Write by default; Off, and it is a wall.
     exits: { e: 'fortress.hall', n: (s) => (setting(s, 'xmla') ? 'monastery.gate' : null) },
     // Most specific first: 'date table' and 'bridge table' must not fall to the plinths' 'table'.
@@ -442,34 +380,25 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     // then says "north"; after the hoodie the monks are done with you, so it does not send you to them at all (round 2, N2).
     flaskHint: (s) => {
       const xmla = setting(s, 'xmla');
-      if (s.flags['trial.hoodie'] && s.flags['refresh.done']) {
+      if (s.flags['trial.hoodie'] && s.flags['trial.moat'] && s.flags['refresh.done']) {
         return xmla ? 'The monks are done with you and so is the Keep. East to the hall, then south, out the gate.'
           : 'The back gate is closed (XMLA endpoint: Off), and the monks are done with you, so let it be. East to the hall, then south, out the gate.';
       }
-      const stage = !s.flags['trial.moat'] && !s.flags['model.related'] ? 'One line in the diagram is dashed. Double-click it.' :
-        !s.flags['trial.moat'] && !s.flags['taken.date'] ? 'The date table is free to leave now. Take it; the Duke will want to see it.' :
-        !s.flags['trial.moat'] ? "East to the hall, then north: the Duke. Show him what you're carrying." :
-        !measured(s) && !s.flags['refresh.done'] ? 'East, then east: the Studio. The Card there wants a measure.' :
-        !s.flags['refresh.done'] ? 'East, then east: the Big Refresh in the Studio is stuck on the pie. Change it to a bar chart.' :
+      const stage = !s.flags['trial.moat'] ? (s.flags['taken.date'] ? 'The Duke, north of the hall, will want a look at that date table.' : 'Take the date table. The Duke, north of the hall, has opinions about it.') :
+        !s.flags['refresh.done'] ? 'The Studio, east then east, has a pie chart with thirty-one slices. Nobody should have to look at it.' :
         xmla ? 'North, through the back gate, the monks are waiting.' : 'The monks are waiting on the other side of the bricks.';
       return `${xmla ? '' : 'The back gate is closed (XMLA endpoint: Off). The Sacristy, up from the Cloister, has the switch; reach the Monastery the long way, east of the Gold Marsh. '}${stage}`;
     },
     // The aside (Task B4): Sir Cardinality guards the diagram, not the paper; the back gate is an idea, never a route (E2).
     nudge: {
       oblique: (s) =>
-        s.flags['trial.hoodie'] && s.flags['refresh.done'] ? "The monks are done with you and so's the Keep. The hall's east, the gate's south of that, and the moat waves." :
-        !s.flags['trial.moat'] && !s.flags['model.related'] ? "There's a line in that diagram that's been dashed since 2021, and one table that's related to nothing because of it." :
-        !s.flags['trial.moat'] && !s.flags['taken.date'] ? 'The table is free to go now, and the Duke north of the hall has opinions about tables.' :
-        !s.flags['trial.moat'] ? "You're carrying every day from 1900 to 2099, and the only man in the Keep who wants to see them is two rooms away." :
-        !measured(s) && !s.flags['refresh.done'] ? 'The Card two rooms east says Blank, and Blank means nobody has put anything on it.' :
-        !s.flags['refresh.done'] ? 'This model is fine. The thing that has been at 97% since 2019 is two rooms east, choking on the roundest thing on the canvas.' :
+        s.flags['trial.hoodie'] && s.flags['trial.moat'] && s.flags['refresh.done'] ? "The monks are done with you and so's the Keep. The hall's east, the gate's south of that, and the moat waves." :
+        !s.flags['trial.moat'] ? "There's a table here with every day in it and nobody marked it, and the Duke north of the hall would love to hear about that." :
+        !s.flags['refresh.done'] ? "This model is fine. The thing that has been at 97% since 2019 is two rooms east, and it's round." :
         keepToMonksAside(s),
       plainer: (s) =>
-        !s.flags['trial.moat'] && !s.flags['model.related'] ? 'Double-click the dashed line. Date to Sales. Sir Cardinality will pretend not to watch.' :
-        !s.flags['trial.moat'] && !s.flags['taken.date'] ? 'Take the date table. It can leave now; it has a relationship.' :
-        !s.flags['trial.moat'] ? 'Bring the Duke the table. He is north of the hall, and he has a window.' :
-        !measured(s) && !s.flags['refresh.done'] ? 'Put a measure on the Card. The Card is in the Studio. The Studio is east of the hall, and the hall is east of here.' :
-        !s.flags['refresh.done'] ? 'Change the pie to a bar chart. The pie is in the Studio, east of the hall, which is east of here.' :
+        !s.flags['trial.moat'] ? "Take the date table. Then show it to the Duke, north of the hall. He'll do the rest." :
+        !s.flags['refresh.done'] ? 'The pie chart in the Studio is what the Big Refresh is choking on. The Studio is east of the hall, and the hall is east of here.' :
         '',
     },
     catchAll: modelLine,
@@ -486,6 +415,11 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       { id: 'fortress.get-bricks', when: { verb: 'get', noun: BRICKS_NOUNS, flags: [XMLA_OFF] }, then: { text: BRICKS_TEXT.take, outcome: 'fail' } },
       { id: 'fortress.use-bricks', when: { verb: 'use', noun: BRICKS_NOUNS, flags: [XMLA_OFF] }, then: { text: BRICKS_TEXT.push, outcome: 'fail' } },
       { id: 'fortress.open-bricks', when: { verb: 'open', noun: BRICKS_NOUNS, flags: [XMLA_OFF] }, then: { text: BRICKS_TEXT.push, outcome: 'fail' } },
+      {
+        id: 'fortress.get-date',
+        when: { verb: 'get', noun: ['date table', 'calendar', 'dates', 'date', 'calendar table', 'the date table'], flags: [{ flag: 'taken.date', not: true }] },
+        then: { text: 'You take the date table. Every day from 1900 to 2099. Heavier than it looks; most of it is weekends.', give: ['date-table'], set: { 'taken.date': true }, sfx: 'item' },
+      },
       {
         id: 'fortress.get-policy',
         when: { verb: 'get', noun: POLICY, flags: [{ flag: 'taken.policy', not: true }] },
@@ -508,27 +442,27 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'look', noun: BRIDGE },
         then: { text: 'A many-to-many bridge. It wobbles. Do not stand on it. Do not build a report on it.', set: { 'bridge.looked': true }, outcome: 'success' },
       },
-      // The wrong tables first (`use relationship on sheet1`), then the dashed line itself (actions-that-fit §1.2).
       {
         id: 'fortress.relationship',
-        when: { verb: 'use', noun: ['relationship', 'relationships', 'new relationship', 'a relationship'], noun2: ['sheet1', 'bridge', 'sales', 'product', 'customer', 'plinth', 'plinths', 'sheet'] },
+        when: { verb: 'use', noun: ['relationship', 'relationships', 'new relationship', 'a relationship'] },
         then: { text: 'Between which tables? Sir Cardinality raises an eyebrow. Both eyebrows. He has many-to-many eyebrows.', outcome: 'fail' },
       },
-      {
-        id: 'fortress.create-relationship',
-        when: { verb: 'use', noun: ['new relationship', 'create relationship'] },
-        then: { text: 'Between which tables? Sir Cardinality raises an eyebrow. Both eyebrows. He has many-to-many eyebrows.', outcome: 'fail' },
-      },
-      { id: 'fortress.relate', when: { verb: 'use', noun: RELATE, flags: [{ flag: 'model.related', not: true }] }, then: RELATE_THEN },
-      { id: 'fortress.relate-again', when: { verb: 'use', noun: RELATE, flags: [{ flag: 'model.related' }] }, then: { text: "It's active. It's single. It's one to many. You can stop double-clicking it.", outcome: 'fail' } },
       { id: 'fortress.ambiguous-say', when: { verb: 'say', noun: ['both'], flags: [{ flag: 'model.m2m' }] }, then: AMBIGUOUS },
       { id: 'fortress.m2m-say', when: { verb: 'say', noun: M2M_WORDS }, then: M2M },
       { id: 'fortress.single-say', when: { verb: 'say', noun: SINGLE_WORDS }, then: SINGLE },
       // A derailment (self-contradiction): he gives the advice, takes it back, and has still given it.
       { id: 'fortress.cardinality-date', when: { verb: 'talk', noun: CARDINALITY, noun2: ['date table', 'date', 'calendar', 'dates'] }, then: { text: "'Mark it as a date table,' says Sir Cardinality. Then, quickly, 'I did not say that. A knight does not do your homework.' He has done your homework.", outcome: 'success' } },
       { id: 'fortress.cardinality-m2m', when: { verb: 'talk', noun: CARDINALITY, noun2: ['many to many', 'many many', 'm2m', 'bidirectional'] }, then: { text: "'Many to many,' says Sir Cardinality. 'Is a relationship. Like yours with the truth.'", outcome: 'success' } },
-      MARK_DATE_AGAIN,
-      MARK_DATE,
+      {
+        id: 'fortress.date-table-again',
+        when: { verb: 'use', noun: ['date table', 'as date table', 'calendar', 'date', 'dates', 'calendar table'], flags: [{ flag: 'model.date' }] },
+        then: { text: 'It is already marked. You mark it again. Time intelligence sighs: "I heard you the first time."', outcome: 'fail' },
+      },
+      {
+        id: 'fortress.date-table',
+        when: { verb: 'use', noun: ['date table', 'as date table', 'calendar', 'date', 'dates', 'calendar table'] },
+        then: { text: `You mark the date table as a date table. Time intelligence, which had been sulking, starts working. No points. It should have been done already. Time intelligence feels ${MALAPROPS.refreshered}.`, set: { 'model.date': true } },
+      },
       // Talking to Sir Cardinality reaches the builtin: his three pieces of advice are talk 1, 2 and 3 there (npcs.ts).
       {
         id: 'fortress.give-shortcut-cardinality',
@@ -564,17 +498,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       ], [
         'You pick up a relationship. The model forgets which Product you meant. You put it back.',
       ]),
-      // The date table leaves only once it is related (§1.2). Ahead of the plinths' `get tables`.
-      {
-        id: 'fortress.get-date-unrelated',
-        when: { verb: 'get', noun: DATE_WORDS, flags: [{ flag: 'model.related', not: true }] },
-        then: { text: "You lift the date table. It is related to nothing, and Sir Cardinality will not let a table leave the diagram unrelated. 'Nothing leaves this view without a relationship,' he says. 'Not even you.'", outcome: 'fail' },
-      },
-      {
-        id: 'fortress.get-date',
-        when: { verb: 'get', noun: DATE_WORDS, flags: [{ flag: 'model.related' }, { flag: 'taken.date', not: true }] },
-        then: { text: 'You take the date table. Every day from 1900 to 2099, and now a line to Sales. Heavier than it looks; most of it is weekends.', give: ['date-table'], set: { 'taken.date': true }, sfx: 'item' },
-      },
+
       ...poke('lectern', ['lectern', 'podium', 'stand'], [
         'You stand at the lectern and clear your throat. Sir Cardinality waits for a relationship. You have none.',
       ], [
@@ -593,7 +517,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     enterQuip: () => 'The Duke speaks only in CALCULATE. Every sentence has a filter context. Mind yours.',
     describe: (s) =>
       s.flags['trial.moat']
-        ? "The Duke's chamber. The Duke of DAX pretends not to see you. You still smell like the moat. The window is shut, for now. The hall is south. Your date table is on his desk. He has marked it."
+        ? "The Duke's chamber. The Duke of DAX pretends not to see you. You still smell like the moat. The window is shut, for now. The hall is south."
         : "The Duke's chamber. The Duke of DAX sits on a throne carved as a giant formula bar: CALCULATE( . He speaks only in filter context. A window looks down on the moat. The hall is south.",
     exits: { s: 'fortress.hall' },
     items: ['throne', 'dax-window', 'keep-window', 'filter-pane'],
@@ -601,36 +525,33 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     scene: () => 'fortress.throne',
     // Cursed (curses.ts): the way out first, and the sin is still one of them, so the moat can never be missed.
     flaskHint: (s) => (s.flags['trial.moat'] ? 'You have the smell. Nothing more for you here, unless you like spinners.'
-      : s.flags['curse.column'] ? 'You are a calculated column. Columns are computed at refresh, and the Model View has a refresh policy on a lectern: apply it to yourself, ten days at a time. Or bring him the date table and let the moat wash it off.'
-      : s.inventory.includes('date-table') ? 'He wants to see a table, not hear a phrase. You are carrying one. Give it to him.'
-      : 'He wants to see a table, not hear a phrase. The Model View, west of the hall, has one.'),
+      : s.flags['curse.column'] ? 'You are a calculated column. Columns are computed at refresh, and the Model View has a refresh policy on a lectern: apply it to yourself, ten days at a time. Or say the thing he despises and let the moat wash it off.'
+      : s.inventory.includes('date-table') ? 'Show him the date table. Or say the thing every DAX lord despises; it has two words and it goes in a table. Either way, mind the window.'
+      : 'Say the thing every DAX lord despises. It has two words and it goes in a table. Or bring him a table he can despise: the date table, west of the hall.'),
     // The aside (Task B4). No nick() in here: one of the nicknames IS the sin, and the first two tiers never say it.
     nudge: {
       oblique: (s) => (s.flags['trial.moat']
         ? 'You have the smell. The Duke has nothing else for you but spinners, and the spinners never finish.'
-        : 'The Duke has thrown people in the moat for a phrase, but lately he wants evidence. Something with every day in it.'),
-      plainer: (s) => (s.flags['trial.moat'] ? '' : 'Bring him a table. The one that knows what day it is.'),
+        : "The Duke has exactly one thing he will not hear in this room, and it's the first thing you'd do to his model if he weren't looking."),
+      plainer: (s) => (s.flags['trial.moat'] ? '' : s.inventory.includes('date-table') ? "He hates one shortcut above all others, and he hates an unmarked date table almost as much. You're carrying one." : "He hates one shortcut above all others. It's a column. It isn't a real one."),
     },
     rules: [
-      // The moat first (actions-that-fit §1.3): the date table, shown, scores; the sin, said, is a strike; SQL only gets you corrected.
-      { id: 'fortress.moat', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, has: ['date-table'], flags: [{ flag: 'trial.moat', not: true }] }, then: MOAT_GIVE },
-      { id: 'fortress.moat-use', when: { verb: 'use', noun: DATE_TABLE, noun2: DUKE, has: ['date-table'], flags: [{ flag: 'trial.moat', not: true }] }, then: MOAT_GIVE },
-      { id: 'fortress.moat-again', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat' }] }, then: { text: "'Another?' He already has one. He points at the window. You take the stairs.", outcome: 'snark' } },
-      // The table by name in his chamber: on his desk after the moat, wanted before it. Carried, the item answers for itself.
-      { id: 'fortress.look-date-duke', when: { verb: 'look', noun: DATE_TABLE, notHas: ['date-table'] }, then: { text: (s) => (s.flags['trial.moat'] ? 'Your date table, on his desk. He has marked it. He will not give it back; he says it is evidence.' : "There's no table in here. The Duke would like one. The Model View, west of the hall, has one."), outcome: 'success' } },
-      { id: 'fortress.give-date-none', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat', not: true }] }, then: { text: "You have no table. The Model View, west of the hall, has one — related to nothing, which he'd also throw you for.", outcome: 'fail' } },
-      // The sin said out loud is a strike now (it used to be the moat). While a column, the curse rule below keeps its count.
-      // At three strikes the sin is the fourth, like any wrong answer: the column curse, by the sin's own door.
-      { id: 'fortress.curse-column-sin', when: { verb: 'say', noun: SIN, flags: [{ flag: 'duke.wrong', is: 3 }, { flag: 'trial.moat', not: true }, { flag: 'curse.column', not: true }] }, then: CURSE_COLUMN_THEN },
-      { id: 'fortress.sin-strike', when: { verb: 'say', noun: SIN, flags: [{ flag: 'trial.moat', not: true }, { flag: 'curse.column', not: true }] }, then: SIN_STRIKE },
-      { id: 'fortress.sin-again', when: { verb: 'say', noun: SIN, flags: [{ flag: 'trial.moat' }] }, then: MOAT_AGAIN },
+      // The moat first: the sin scores, the repeat is a habit, and SQL only gets you corrected.
+      { id: 'fortress.moat', when: { verb: 'say', noun: SIN, flags: [{ flag: 'trial.moat', not: true }] }, then: MOAT_THEN },
+      { id: 'fortress.moat-again', when: { verb: 'say', noun: SIN, flags: [{ flag: 'trial.moat' }] }, then: MOAT_AGAIN },
+      // The other way in: hand him the date table (give / show / use on). Same key as the sin, so it pays once.
+      { id: 'fortress.moat-table', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, has: ['date-table'], flags: [{ flag: 'trial.moat', not: true }] }, then: MOAT_TABLE_THEN },
+      { id: 'fortress.moat-table-use', when: { verb: 'use', noun: DATE_TABLE, noun2: DUKE, has: ['date-table'], flags: [{ flag: 'trial.moat', not: true }] }, then: MOAT_TABLE_THEN },
+      { id: 'fortress.moat-table-again', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, has: ['date-table'], flags: [{ flag: 'trial.moat' }] }, then: { text: "'Another table?' The Duke does not look up. 'I have a window for that, and you have used it.'", outcome: 'snark' } },
+      { id: 'fortress.give-table-none', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat', not: true }] }, then: { text: "You have no table. The Model View, west of the hall, has one. It is unmarked. He will love that.", outcome: 'fail' } },
+      { id: 'fortress.give-table-after', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat' }] }, then: { text: "He has it. It's on his desk, marked, out of spite. You smell like the moat and he has a date table; everyone got something.", outcome: 'snark' } },
       { id: 'fortress.duke-sql', when: { verb: 'talk', noun: DUKE, noun2: ['sql', 't sql', 'tsql', 'the moat', 'moat', 'warehouse'] }, then: { text: "'SQL,' says the Duke, and then, to himself, 'EVALUATE.' Then, quieter, 'SELECT.' He has caught himself. He will not forgive himself.", outcome: 'success' } },
       // Three wrong answers, then a fourth (curses.ts): only a wrong answer (WRONG_RE), never `say hello` or correct DAX.
       // Before the moat only; the moat lifts it. Pre-flight R-7: fortress.say-dax-word (F6), when it comes, goes after this.
       {
         id: 'fortress.curse-column',
         when: { verb: 'say', nounMatches: WRONG_RE, flags: [{ flag: 'duke.wrong', is: 3 }, { flag: 'trial.moat', not: true }, { flag: 'curse.column', not: true }] },
-        then: CURSE_COLUMN_THEN,
+        then: { text: CURSE_COLUMN_TEXT, set: { 'curse.column': true, 'duke.wrong': 0 }, outcome: 'snark', sfx: 'curse' },
       },
       // R-7: right after the curse, so a fourth wrong `say dax` still makes you a column. A wrong answer like the rest (wrong()).
       { id: 'fortress.say-dax-word', when: { verb: 'say', noun: ['dax'] }, then: wrong({ text: `You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed}; it feels like a filter you cannot see.`, outcome: 'snark' }) },
@@ -801,7 +722,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       const card = s.flags['stare.done'] ? 'a Card visual showing 4.2M' : 'a Card visual showing (Blank)';
       // The second tab is the 400-visual page (deaths.ts death.400): named here so it can be opened, and warned about so it should not be.
       return s.flags['refresh.done']
-        ? `The Report Studio. On the canvas: the bar chart that used to be a pie, the slicer stack, ${card}. In the corner the Big Refresh reads 100% and looks embarrassed about the last five years. Below the canvas, a second tab: Page 2 (do not open). The hall is west.`
+        ? `The Report Studio. On the canvas: a bar chart that used to be a pie, the slicer stack, ${card}. In the corner the Big Refresh reads 100% and looks embarrassed about the last five years. Below the canvas, a second tab: Page 2 (do not open). The hall is west.`
         : `The Report Studio. A canvas the size of a wall. On it: a pie chart with 31 slices, a stack of slicers, and ${card}. In the corner, the Big Refresh: a progress bar at 97%, since 2019. A sticky note on it reads DO NOT TOUCH — JEFF. Below the canvas, a second tab: Page 2 (do not open). The hall is west.`;
     },
     exits: { w: 'fortress.hall' },
@@ -809,69 +730,52 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     npcs: ['card'],
     scene: (s) => (s.flags['refresh.done'] ? 'fortress.studio-running' : 'fortress.studio'),
     flaskHint: (s) => {
+      const count = s.flags['stare.count'];
       // (Blank) first (curses.ts): the two words are the dragon's, and Sir Cardinality has them next door.
       if (s.flags['curse.blank']) return 'You are (Blank). Two words put a value back in you, and Sir Cardinality says them in his sleep, two rooms west. The Card can wait; it has practice.';
       if (s.flags['refresh.done']) {
         if (!s.worn.includes('boots')) return 'Wear the boots. The mountain will feel shorter.';
-        if (s.flags['card.measure'] === 1) return 'The first one never counts. Same measure, same Card.';
-        if (!measured(s)) return "The refresh is done and the Card still says Blank. Blank means nothing's on it.";
-        return s.flags['trial.hoodie'] ? 'Nothing left here but a bar chart that used to be a pie. Leave it. West, then south, out of the Keep.' : 'Nothing left here but a bar chart that used to be a pie. Leave it. West, then west, then north: the Monastery.';
+        if (!s.flags['stare.done'] && count !== 3) return 'The Card still says (Blank). Look at it. Do not blink.';
+        return s.flags['trial.hoodie'] ? 'Nothing left here but a bar chart that used to be a pie. West, then south, out of the Keep.' : 'Nothing left here but a bar chart that used to be a pie. West, then west, then north: the Monastery.';
       }
-      if (s.flags['card.measure'] === 1) return 'The first one never counts. Same measure, same Card.';
-      if (!measured(s)) return "There's a Card on the canvas showing Blank. Blank means nothing's on it.";
-      return 'The Big Refresh is stuck on one visual. The one with thirty-one slices. Change it.';
+      // After the Duke's spinner times out the Card is (Blank) again, but the stare is won and cannot restart.
+      if (count === 3 && !s.flags['stare.done']) return "The Card went back to (Blank) when the Duke's spinner gave up. Your stare still counts. The Big Refresh is stuck on the pie: use it.";
+      if (!s.flags['stare.done']) return 'Look at the Card. Do not blink.';
+      return 'The Big Refresh is stuck on one visual: the pie, thirty-one slices. Use it. It wants to be a bar chart.';
     },
     // The aside (Task B4), stage for stage with the flask hint above: the stare is a contest, the policy is a thing in a pocket. No brackets: the Card's Blank goes bare here so the aside always wraps.
     nudge: {
       oblique: (s) => {
+        const count = s.flags['stare.count'];
         if (s.flags['refresh.done']) {
           if (!s.worn.includes('boots')) return "Something fell out of the progress bar and you're carrying it like a souvenir. It goes on your feet.";
-          return "Nothing left in here but a pie with 31 slices, and the pie isn't going anywhere, which is the nicest thing anyone has said about it.";
+          if (!s.flags['stare.done'] && count !== 3) return "There's still a Card on that canvas showing Blank, and it has never once lost a staring contest, mostly because nobody has tried.";
+          return "Nothing left in here but a bar chart that used to be a pie, and it isn't going anywhere, which is the nicest thing anyone has said about it.";
         }
-        if (s.flags['card.measure'] === 1) return 'The first one never counts. Everybody who has ever built a report knows this, and does it anyway.';
-        if (!measured(s)) return "Blank means nothing's on it. Nobody's put anything on it.";
-        return 'The refresh has been at 97% since 2019 and the thing it chokes on is the roundest thing on the canvas.';
+        if (count === 3 && !s.flags['stare.done']) return "The Card went Blank again, and that's the Duke's spinner, not you. The thing in the corner is still choking on the roundest thing on the canvas.";
+        if (!s.flags['stare.done']) return "There's a Card on that canvas showing Blank, and it has never once lost a staring contest, mostly because nobody has tried.";
+        return "The Big Refresh has been at 97% since 2019, and the thing it chokes on is the roundest thing on the canvas.";
       },
       plainer: (s) => {
-        if (s.flags['refresh.done']) return s.worn.includes('boots') ? '' : "They're called Bursting Boots and they've never touched your feet. That's the whole room.";
-        if (s.flags['card.measure'] === 1) return 'Put a measure on the Card. Again. The same one.';
-        if (!measured(s)) return 'Put a measure on the Card. Net Sales. It has heard good things.';
-        return 'Change the pie to a bar chart. The refresh has been choking on it since 2019.';
+        const count = s.flags['stare.count'];
+        if (s.flags['refresh.done'] && !s.worn.includes('boots')) return "They're called Bursting Boots and they've never touched your feet. That's the whole room.";
+        if (count === 3 && !s.flags['stare.done']) return '';
+        if (!s.flags['stare.done']) return "It's a staring contest. Look at the Card and don't blink.";
+        if (!s.flags['refresh.done']) return 'The pie chart. Thirty-one slices. Use it and it becomes a bar chart, and the refresh can finally finish.';
+        return '';
       },
     },
     rules: [
-      // ---- The Card's measure (+10), twice: the first one never counts ----
-      { id: 'fortress.card-measure-1', when: { verb: 'use', noun: MEASURE, noun2: CARD_NOUN2, flags: [{ flag: 'card.measure', not: true }] }, then: MEASURE_1 },
-      { id: 'fortress.stare', when: { verb: 'use', noun: MEASURE, noun2: CARD_NOUN2, flags: [{ flag: 'card.measure', is: 1 }] }, then: { ...MEASURE_2, pointsKey: undefined } },
-      { id: 'fortress.card-measure-more', when: { verb: 'use', noun: MEASURE, noun2: CARD_NOUN2, flags: [{ flag: 'card.measure', is: 2 }] }, then: MEASURE_MORE },
-      ...measureRules('fortress.card-measure-drop', { verb: 'drop', noun: MEASURE, noun2: CARD_NOUN2 }),
-      ...measureRules('fortress.card-measure-bare', { verb: 'use', noun: MEASURE }),
-      { id: 'fortress.look-measure', when: { verb: 'look', noun: MEASURE }, then: { text: (s) => (measured(s) ? 'Net Sales, on the Card, $4,213,908. It looks settled. It has a home now.' : 'Net Sales, in the field list, waiting for somebody to put it on something. It has been waiting since 2019.'), outcome: 'success' } },
-      // ---- The stare: no longer pays; it feeds the (Blank) curse (curses.ts) and nothing else ----
+      // ---- The stare (+10): same mechanics as the old Lookup Activity ----
       {
-        id: 'fortress.stare-start',
+        id: 'fortress.stare',
         when: { verb: 'look', noun: CARD, flags: [{ flag: 'stare.done', not: true }, { flag: 'stare.count', not: true }] },
-        then: { text: 'You look at the Card. It shows (Blank). It looks back. Neither of you blinks.', set: { 'stare.count': 1 }, outcome: 'success' },
+        then: { text: "You look at the Card. It shows (Blank). It looks back. Neither of you blinks. Your eyes water; the Card's don't, it has none. Then it blinks. A number appears: 4.2M. It is wrong, but it is a number. You win.", set: { 'stare.done': true, 'stare.count': 3 }, points: 10, sfx: 'success' },
       },
       // Before the stare's talk rule too: a question about Jeff is not a staring contest.
       // A derailment (bickering): the Card and the pie, one value each, forever.
       { id: 'fortress.card-pie', when: { verb: 'talk', noun: CARD, noun2: ['pie', 'pie chart', 'slices'] }, then: { text: 'The Card shows (Pie). The pie shows 3.2%. The Card shows (Blank). The pie shows 3.2%. (You see where this is going.)', outcome: 'success' } },
       { id: 'fortress.card-jeff', when: { verb: 'talk', noun: CARD, noun2: ['jeff', 'finance', 'jeff from finance'] }, then: { text: 'The Card shows (Jeff). Then (Blank). It has no relationship to Jeff; nobody does.', outcome: 'success' } },
-      {
-        id: 'fortress.talk-card-stare',
-        when: { verb: 'talk', noun: CARD, flags: [{ flag: 'stare.done', not: true }, { flag: 'stare.count', not: true }] },
-        then: { text: 'The Card says (Blank). You realize you are now staring at it. It is staring back. This is going to take a while.', set: { 'stare.count': 1 }, outcome: 'success' },
-      },
-      {
-        id: 'fortress.stare-wait-1',
-        when: { verb: 'wait', flags: [{ flag: 'stare.count', is: 1 }] },
-        then: { text: "Still (Blank). Your eyes water. The Card's do not; it has none.", set: { 'stare.count': 2 }, outcome: 'success' },
-      },
-      {
-        id: 'fortress.stare-wait-2',
-        when: { verb: 'wait', flags: [{ flag: 'stare.count', is: 2 }] },
-        then: { text: 'Still (Blank). Staring at a Card has never once put anything on it. You have now proven this personally.', set: { 'stare.count': 0 }, outcome: 'fail' },
-      },
       // The stare past the point of sense (curses.ts): six looks after the contest are counted; the seventh makes you (Blank).
       // Leaving the Studio (fortress.leave-studio) ends the stare, so it is one stare and not a career.
       {
@@ -920,11 +824,9 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         id: 'fortress.use-card',
         when: { verb: 'use', noun: CARD, flags: [{ flag: 'stare.done', not: true }] },
         then: {
-          text: (s) => (s.flags['stare.count'] === 1 || s.flags['stare.count'] === 2
-            ? 'You are mid-stare. The Card takes no input and, right now, neither do you. Wait.'
-            // After the Duke's spinner times out the Card is (Blank) again, but the stare is won and cannot restart.
-            : s.flags['stare.count'] === 3 ? "The Card takes no input. It went (Blank) when the Duke's spinner gave up; your stare still counts. The refresh is the one that wants something."
-            : 'The Card takes no input from you. It takes measures. Net Sales is right there in the field list.'),
+          // After the Duke's spinner times out the Card is (Blank) again, but the stare is won and cannot restart.
+          text: (s) => (s.flags['stare.count'] === 3 ? "The Card takes no input. It went (Blank) when the Duke's spinner gave up; your stare still counts. The refresh is the one that wants something."
+            : 'The Card takes no input. It wants staring at. Look at it.'),
           outcome: 'fail',
         },
       },
@@ -934,25 +836,44 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         then: { text: 'It shows 4.2M. You cannot use a number that is wrong. Finance can, and will.', outcome: 'fail' },
       },
       // ---- The Big Refresh (+15, the Bursting Boots) ----
-      // The policy stays a gag item (and the column cure): the Big Refresh wants the pie gone, not ten days at a time.
+      // The pie (+15, the Bursting Boots): the refresh has been chewing on thirty-one slices since 2019. Make it a bar chart.
+      {
+        id: 'fortress.copy',
+        when: { verb: 'use', noun: PIE_NOUNS, flags: [{ flag: 'refresh.done', not: true }] },
+        then: {
+          text: 'You click the pie. Visualizations pane: clustered bar. Thirty-one slices unroll into bars, longest first, and for the first time you can read December. Three stakeholders weep. The fourth sends a thumbs-up. In the corner, the Big Refresh, stuck on that pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots.',
+          set: { 'refresh.done': true }, give: ['boots'], points: 15, sfx: 'item',
+        },
+      },
+      {
+        id: 'fortress.copy-open',
+        when: { verb: 'open', noun: PIE_NOUNS, flags: [{ flag: 'refresh.done', not: true }] },
+        then: {
+          text: 'You open the pie. Visualizations pane: clustered bar. Thirty-one slices unroll into bars, longest first, and for the first time you can read December. Three stakeholders weep. The fourth sends a thumbs-up. In the corner, the Big Refresh, stuck on that pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots.',
+          set: { 'refresh.done': true }, give: ['boots'], points: 15, pointsKey: 'fortress.copy', sfx: 'item',
+        },
+      },
+      {
+        id: 'fortress.pie-done',
+        when: { verb: 'use', noun: PIE_NOUNS, flags: [{ flag: 'refresh.done' }] },
+        then: { text: "It's a bar chart. It's been a bar chart for a minute. Leave it.", outcome: 'fail' },
+      },
+      // The policy is a gag now (Tommy: a refresh policy handed to a report makes no sense). It stays the cure for the column curse.
       {
         id: 'fortress.policy-nudge',
         when: { verb: 'use', noun: POLICY, noun2: REFRESH, has: ['policy'], flags: [{ flag: 'refresh.done', not: true }] },
-        then: { text: "The Big Refresh doesn't want a policy. It wants the thing it's been chewing on since 2019 gone: look at the pie.", outcome: 'fail' },
+        then: { text: "The Big Refresh doesn't want a policy. It wants the pie gone. Thirty-one slices is what it has been chewing on since 2019.", outcome: 'fail' },
       },
       {
         id: 'fortress.policy-nudge-give',
         when: { verb: 'give', noun: POLICY, noun2: REFRESH, has: ['policy'], flags: [{ flag: 'refresh.done', not: true }] },
-        then: { text: "The Big Refresh doesn't want a policy. It wants the thing it's been chewing on since 2019 gone: look at the pie.", outcome: 'fail' },
+        then: { text: 'The Big Refresh reads the policy twice and hands it back. 97%. It is not a policy problem. It is a pie problem.', outcome: 'fail' },
       },
       {
         id: 'fortress.copy-nopolicy',
         when: { verb: 'use', noun2: REFRESH, flags: [{ flag: 'refresh.done', not: true }] },
-        then: { text: "The Big Refresh looks at you. 97%. It doesn't need encouragement. It needs the pie gone.", outcome: 'fail' },
+        then: { text: 'The Big Refresh looks at you. 97%. It needs the pie gone, not encouragement.', outcome: 'fail' },
       },
-      // ---- The pie becomes a bar (+15, the Bursting Boots): noun only, so `change pie chart to bar chart` lands whatever noun2 says ----
-      { id: 'fortress.refresh-done', when: { verb: 'use', noun: PIE, flags: [{ flag: 'refresh.done', not: true }] }, then: PIE_TO_BAR },
-      { id: 'fortress.refresh-done-again', when: { verb: 'use', noun: PIE, flags: [{ flag: 'refresh.done' }] }, then: PIE_AGAIN },
       {
         id: 'fortress.refresh-fail',
         when: { verb: 'use', noun: REFRESH, notHas: ['policy'], flags: [{ flag: 'refresh.done', not: true }] },
@@ -964,7 +885,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         then: { text: 'You click Refresh. It was already refreshing. It is now refreshing harder. (The policy in your pocket is not helping from there.)', outcome: 'fail' },
       },
       {
-        id: 'fortress.refresh-again',
+        id: 'fortress.refresh-done',
         when: { verb: 'use', noun: REFRESH },
         then: { text: 'It refreshes. Ten days, one minute. It is almost boring. You miss the drama.', outcome: 'fail' },
       },
@@ -995,17 +916,13 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         then: { text: (s) => vary(s, ['The Card does not take input.', 'You hold it up to the Card. The Card shows (Blank), politely.', 'The Card displays. It does not receive. It is a Card.']), outcome: 'fail' },
       },
       // ---- Report design (spec §12.1) ----
-      {
-        id: 'fortress.bar-chart-pie',
-        when: { verb: 'use', noun: ['bar chart', 'bar', 'chart', 'column chart'], noun2: ['pie', 'pie chart', 'chart', 'slices'] },
-        then: { text: 'You turn the pie into a bar chart. Three stakeholders weep. The fourth sends a thumbs-up.', outcome: 'fail' },
-      },
+
       // The policy on yourself while a column (curses.ts): the global undo, copied ahead of the Studio's own `use policy` line.
       { ...UNDO_COLUMN, id: 'fortress.undo-column-studio' },
       {
         id: 'fortress.use-policy-studio',
         when: { verb: 'use', noun: POLICY, has: ['policy'] },
-        then: { text: 'On what? Nothing in this room is waiting on ten days at a time. The Big Refresh is waiting on the pie.', outcome: 'fail' },
+        then: { text: 'On what? The Big Refresh is right there, at 97%. Use the policy on the refresh.', outcome: 'fail' },
       },
       ...poke('pie', ['pie', 'pie chart', 'chart', 'slices', 'other'], [
         "You click a slice. It is 'Other'. Inside 'Other' is more 'Other'.",
@@ -1071,21 +988,10 @@ const STUDIO = 'fortress.yard';
  * rules above own every state change.
  */
 export const KEEP_PHRASES: PhraseRule[] = [
-  // Studio: `drag` is the global push egg (globals.ts) everywhere else; here it is how a measure reaches the Card.
-  { id: 'fortress.drag-measure', room: 'fortress.yard', test: /^drag (the )?(measure|a measure|net sales|sales|total sales|value|field) (to|on|onto|into) (the )?(card|card visual)$/, text: '',
-    then: (s) => (s.flags['card.measure'] === 2 ? { id: 'fortress.card-measure-more', then: MEASURE_MORE }
-      : s.flags['card.measure'] === 1 ? { id: 'fortress.stare', then: MEASURE_2 } : { id: 'fortress.card-measure-1', then: MEASURE_1 }) },
-  // Studio: `make` is not a verb, so `make it a bar chart` is a phrase that shares the pie rule's `then` (Task 4).
-  { id: 'fortress.make-bar', room: 'fortress.yard', test: /^(make|turn) (it|the pie|the pie chart|this|pie|pie chart) (into )?(a |an )?bar( chart)?$/, text: '',
-    then: (s) => ({ id: 'fortress.refresh-done', then: s.flags['refresh.done'] ? PIE_AGAIN : PIE_TO_BAR }) },
   // Gate
   { id: 'fortress.fish-moat', room: 'fortress.bridge', test: /^(fish|go fishing|cast)( a line)?( (in|into|from))?( the)? ?(moat|moat of t sql|water)?$/, text: (s) => (s.flags['trial.moat']
     ? 'You fish in the moat you were thrown into. You catch a semicolon. It is yours. You left it there on the way down.'
     : "You fish in the Moat of T-SQL. You catch a stored procedure. It has 400 lines and a comment that says 'temporary'. You release it.") },
-  // The trial by the words that have no verb (`try free`), and `install desktop`, ahead of the update line that would
-  // take it. Bridge down, it declines: `install desktop` is just the update again.
-  { id: 'fortress.try-free', room: 'fortress.bridge', test: /^(try (it )?free|use the link|click (the )?link|install (power bi )?desktop)$/, text: '',
-    then: (s) => (s.flags['bridge.down'] ? null : { id: 'fortress.sku', then: TRIAL_THEN }) },
   { id: 'fortress.update-words', room: 'fortress.bridge', test: /^(update|install)\b/, text: 'The update installs. Then another. The drawbridge does not move. This is the update.' },
   // Power Query Hall
   { id: 'fortress.fold', room: 'fortress.hall', test: /^(fold|query folding)\b/, text: 'You attempt to fold. The step before you is `Changed Type`. Folding stops here, as it always has.' },
@@ -1097,8 +1003,6 @@ export const KEEP_PHRASES: PhraseRule[] = [
   { id: 'fortress.merge', room: 'fortress.hall', test: /^(merge|append)\b/, text: 'You merge queries. Left outer. It is always left outer.' },
   { id: 'fortress.advanced-editor', room: 'fortress.hall', test: /^(enter m|edit m|advanced editor|open (the )?advanced editor)\b/, text: 'The Advanced Editor opens. It is a wall of `let`. You close it gently.' },
   // Model View
-  // `set single direction` (§1.2): `set` is not a parser verb (the room's catchAll owns "set it to both"), so the line itself relates.
-  { id: 'fortress.set-relate', room: 'fortress.model', test: /^set (it |the (dashed )?(line|relationship) )?(to )?single( direction)?$/, text: '', then: (s) => (s.flags['model.related'] ? null : { id: 'fortress.relate', then: RELATE_THEN }) },
   { id: 'fortress.hide', room: 'fortress.model', test: /^hide\b/, text: 'You hide the key column. It is still there. It is always still there.' },
   // Ten calculated columns (spec1 §5.4): the count is `model.calc`; the tenth is death.word. The engine signs it off.
   { id: 'fortress.circular', room: 'fortress.model', test: /^(create|add|new|make) (a )?(new )?(calculated )?column\b/, text: '', then: (s) => {
@@ -1108,8 +1012,7 @@ export const KEEP_PHRASES: PhraseRule[] = [
   } },
   // Duke's chamber
   // The sin as a sentence ("i'll just use a calculated column", with or without `say`): the moat rule by another door.
-  // Now a strike like the bare sin (§1.3): the rule by another door, so it counts and warns the same way.
-  { id: 'fortress.moat-words', room: 'fortress.throne', test: /^(say )?(i('ll| will)? )?(just )?(use|add|make) (a )?calculated column$/, text: '', then: (s) => (s.flags['trial.moat'] ? { id: 'fortress.sin-again', then: MOAT_AGAIN } : s.flags['curse.column'] ? null : s.flags['duke.wrong'] === 3 ? { id: 'fortress.curse-column-sin', then: CURSE_COLUMN_THEN } : { id: 'fortress.sin-strike', then: SIN_STRIKE }) },
+  { id: 'fortress.moat-words', room: 'fortress.throne', test: /^(say )?(i('ll| will)? )?(just )?(use|add|make) (a )?calculated column$/, text: '', then: (s) => (s.flags['trial.moat'] ? { id: 'fortress.moat-again', then: MOAT_AGAIN } : { id: 'fortress.moat', then: MOAT_THEN }) },
   { id: 'fortress.write-measure-words', room: 'fortress.throne', test: /^write (a |new |some )?(measure|dax)\b/, text: 'You write a measure. It works in the card and not in the table. This is normal. This is DAX.' },
   { id: 'fortress.sit', room: 'fortress.throne', test: /^sit\b/, text: 'You sit on the formula bar. It autocompletes you. You get up as SUMX(.' },
   // Report Studio
@@ -1131,7 +1034,7 @@ export const KEEP_PHRASES: PhraseRule[] = [
   // The sin anywhere but the chamber (C1's deferred minor): right idea, wrong room. The chamber declines it to the moat rules.
   { id: 'fortress.sin-elsewhere', region: KEEP_REGION, test: /^(say )?(a )?calculated columns?$/, text: '', then: (s) => (s.room === 'fortress.throne' ? null : { then: { outcome: 'snark', text: s.flags['trial.moat']
     ? 'You said it once where it counted, and you still smell like it. Out here it is just two words and a draught.'
-    : 'Right sin, wrong room. Nobody here owns a window worth throwing you out of. The Duke does, north of the hall, and lately he wants to see it, not hear it: bring him the date table.' } }) },
+    : 'Right sin, wrong room. Nobody here owns a window worth throwing you out of. The Duke does, north of the hall.' } }) },
   { id: 'fortress.directquery', region: KEEP_REGION, test: /^(say |use |switch to )?direct ?query\b/, text: 'Every click, a query. Every query, a wait. You feel the Keep slow down as you say it.' },
   { id: 'fortress.directlake', region: KEEP_REGION, test: /^(say |use |switch to )?direct ?lake\b/, text: 'Direct Lake. The Keep brightens. Then falls back to DirectQuery for reasons that will be explained in a blog post.' },
   { id: 'fortress.publish', region: KEEP_REGION, test: /^publish\b/, text: 'Publish to Power BI: which workspace? There is one. It is not the right one. You publish anyway. A red dot appears on something.' },

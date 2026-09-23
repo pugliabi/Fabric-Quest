@@ -80,7 +80,9 @@ export function resolveNpc(s: GameState, world: World, noun: string | undefined)
 export function describeRoom(s: GameState, world: World): string {
   const room = world.rooms[s.room]!;
   const parts = [room.name.toUpperCase(), room.describe(s)];
-  const items = roomItems(s, world).filter((i) => i.takeable);
+  // Everything you can look at or use is listed, not just what you can pocket (Tommy: objects you can act on must show up).
+  const all = roomItems(s, world);
+  const items = [...all.filter((i) => i.takeable), ...all.filter((i) => !i.takeable)];
   if (items.length) parts.push(`You see: ${items.map((i) => i.name).join(', ')}.`);
   const npcs = roomNpcs(s, world);
   if (npcs.length) parts.push(`Here: ${npcs.map((n) => n.name).join(', ')}.`);

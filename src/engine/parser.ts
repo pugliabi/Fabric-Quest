@@ -15,9 +15,8 @@ const VERBS: Record<string, Verb> = {
   label: 'use', refresh: 'use',
   // Room texture: plant a seed, skip a pebble, squeeze a stress ball.
   plant: 'use', skip: 'use', squeeze: 'use',
-  // Actions that fit (the Desktop Gate's link, the Model View's line, the Studio's pie, the Monastery's session):
-  // change a visual, click a link, start a session, drag a measure. All ways of using a thing.
-  change: 'use', convert: 'use', switch: 'use', swap: 'use', start: 'use', press: 'use', click: 'use', ring: 'use', drag: 'use', compare: 'use', activate: 'use', download: 'use',
+  // The Studio's pie: "change pie chart to bar chart" reads as use. `click` too, for the gate's Try free link.
+  change: 'use', convert: 'use', click: 'use',
   talk: 'talk', 'talk to': 'talk', speak: 'talk', 'speak to': 'talk', ask: 'talk', chat: 'talk',
   say: 'say', shout: 'say', answer: 'say', yell: 'say', tell: 'say', whisper: 'say',
   'sign in': 'say', 'log in': 'say', login: 'say', signin: 'say',

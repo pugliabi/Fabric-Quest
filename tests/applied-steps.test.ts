@@ -112,7 +112,7 @@ describe('Applied Steps in order (spec2 §8)', () => {
     const { rs, s } = run([...DEAD, ...DEAD, ...DEAD], { 'pq.step': 4 });
     expect(s.stuck).toBe(12);
     const last = rs[11]!.output[rs[11]!.output.length - 1]!;
-    expect(last).toBe('Psst. West, in the Model View, one line is dashed and a date table is related to nothing. Double-click the line, take the table, show the Duke, north. (Optional, for the bonus: the query is broken at step 5: Filtered Rows. `look at steps`.)');
+    expect(last).toBe('Psst. North. Insult the Duke properly and he will do the rest. He hates one shortcut above all others. Or bring him the date table from the Model View, west. (Optional, for the bonus: the query is broken at step 5: Filtered Rows. `look at steps`.)');
     expect(last).not.toMatch(/\(\(|\)\)/);
     // The first two tiers (Task B4) carry no brackets of their own, so they wrap: the order at 4, the waiting step at 8.
     expect(rs[3]!.output[rs[3]!.output.length - 1]).toBe("(Psst. Seven doorways, one of them waiting, and the hall won't let you skip it. Queries are like that. You do them in order or you do them again.)");
@@ -131,8 +131,8 @@ describe('Applied Steps in order (spec2 §8)', () => {
     expect(run(['look at custom1'], { 'pq.done': true }).outs[0]).toBe('Custom1: = Table.AddColumn(#"Renamed Columns", "Custom", each 1). It was a placeholder. It shipped.');
   });
   it('the flask hint keeps its old tail after the clause, and the clause goes away once the query refreshes', () => {
-    expect(WORLD.rooms['fortress.hall']!.flaskHint(hall())).toBe('West, in the Model View, one line is dashed and a date table is related to nothing. Double-click the line, take the table, show the Duke, north. (Optional, for the bonus: the query is broken at step 1: Source. `look at steps`.)');
-    expect(WORLD.rooms['fortress.hall']!.flaskHint(hall({ 'pq.step': 7, 'pq.done': true }))).toBe('West, in the Model View, one line is dashed and a date table is related to nothing. Double-click the line, take the table, show the Duke, north.');
+    expect(WORLD.rooms['fortress.hall']!.flaskHint(hall())).toBe('North. Insult the Duke properly and he will do the rest. He hates one shortcut above all others. Or bring him the date table from the Model View, west. (Optional, for the bonus: the query is broken at step 1: Source. `look at steps`.)');
+    expect(WORLD.rooms['fortress.hall']!.flaskHint(hall({ 'pq.step': 7, 'pq.done': true }))).toBe('North. Insult the Duke properly and he will do the rest. He hates one shortcut above all others. Or bring him the date table from the Model View, west.');
   });
   it('the query is scenery: 0 errors once done, and it cannot be taken', () => {
     expect(run(['look at sales query'], { 'pq.step': 7, 'pq.done': true }).outs[0]).toMatch(/^Sales — 7 steps, 0 errors\./);
@@ -188,6 +188,6 @@ describe('Applied Steps in order (spec2 §8)', () => {
       s = r.state;
     }
     expect(s.score).toBe(MAX_SCORE); expect(s.bonus).toBe(10); expect(paid).toBe(10); expect(s.won).toBe(true);
-    expect(s.turns).toBe(67 + CHAIN.length);
+    expect(s.turns).toBe(65 + CHAIN.length);
   });
 });

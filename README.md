@@ -95,7 +95,7 @@ there are no points in it.
    | Talk | `talk to miller` |
    | Say something specific | `say star schema` |
    | Hand something over | `give mug to jeff` |
-   | Use one thing on another | `put measure on card` |
+   | Use one thing on another | `give date table to duke` |
    | Read, wear, open, board, wait | `read board`, `wear hoodie`, `open door`, `board boat`, `wait` |
    | Check yourself | `inventory` (or `i`), `score` |
    | Save / restore / restart | `save`, `restore`, `restart` |

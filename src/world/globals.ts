@@ -4,7 +4,6 @@ import { sigilStatus } from './items';
 import { CHEAT, CHEAT_AGAIN, FRUSTRATION, nick } from './voice';
 import { whereText } from './where';
 import { CURSE_GLOBAL_RULES } from './curses';
-import { MARK_DATE, MARK_DATE_AGAIN } from './fortress';
 import { ADE, ADE_DEATH } from './deaths';
 
 /**
@@ -256,9 +255,6 @@ export const GLOBAL_RULES: Rule[] = [
   },
   // The curses' undo lines (curses.ts): the policy on yourself, and `say star schema` while (Blank), ahead of the plain star line.
   ...CURSE_GLOBAL_RULES,
-  // The date table, carried (actions-that-fit §1.2): `use date table` marks it anywhere, not only in the Model View.
-  { ...MARK_DATE_AGAIN, id: 'global.mark-date-again', when: { ...MARK_DATE_AGAIN.when, has: ['date-table'] } },
-  { ...MARK_DATE, id: 'global.mark-date', when: { ...MARK_DATE.when, has: ['date-table'] } },
   {
     id: 'global.say-star-elsewhere',
     when: { verb: 'say', noun: ['star schema', 'a star schema', 'the star schema'] },

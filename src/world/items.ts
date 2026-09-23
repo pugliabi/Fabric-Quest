@@ -338,15 +338,15 @@ export const ITEMS: Record<string, Item> = Object.fromEntries([
       `${doorChecklist(s)} The sigils are not a screensaver of pipes; staring does not make them move.`),
   }),
   item({
-    id: 'gate', name: 'gate', aliases: ['monastery gate', 'progress bar', 'bar', 'button', 'start button', 'start'],
+    id: 'gate', name: 'gate', aliases: ['monastery gate', 'progress bar', 'bar'],
     takeable: false,
-    blurb: 'The Monastery gate, stone progress bar included. SESSION STOPPED, wherever you carry it, with a Start button nobody presses.',
+    blurb: 'The Monastery gate, stone progress bar included. SESSION STARTING, wherever you carry it, at the same percent.',
     untakeableText: 'The gate is attached to the monastery, the monastery to the mountain, the mountain to a session that has not started.',
     describe: (s) => s.flags['gate.open']
       ? secondLook(s, 'The gate is open. The progress bar reads 100%, forever.',
         "100%. You're checking on a progress bar that finished, which is how the monks can tell you came from Power BI.")
-      : secondLook(s, 'A stone gate with a stone progress bar. SESSION STOPPED. On the bar, a Start button, unpressed since 2023. Not enough capacitude to hurry it; enough to press a button.',
-        'The bar has not moved while you looked at it. Looking at it is not one of the things that moves it. Pressing is.'),
+      : secondLook(s, `A stone gate with a stone progress bar. SESSION STARTING… 0%. Not enough capacitude to hurry it. Enough to open a gate, though.`,
+        'The bar has not moved while you looked at it. Looking at it is not one of the things that moves it.'),
   }),
   item({
     id: 'lamp', name: 'lamp', aliases: ['status lamp', 'status', 'post'],

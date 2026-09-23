@@ -133,8 +133,6 @@ describe('fix round 1: a carried thing named in full beats a room thing that mer
     scroll: { room: 'monastery.library', flags: { 'scroll.lent': true } },
     hoodie: { room: 'monastery.cloister', flags: { 'has.hoodie': true, 'trial.hoodie': true } },
     boots: { room: 'fortress.yard', flags: { 'refresh.done': true, 'stare.done': true } },
-    // Takeable only once related (actions-that-fit §1.2): held the way fortress.get-date leaves you.
-    'date-table': { room: 'fortress.model', flags: { 'model.related': true, 'taken.date': true } },
   };
   const homeOf = (id: string): string | undefined => Object.values(WORLD.rooms).find((r) => r.items.includes(id))?.id ?? GIVEN[id]?.room;
 

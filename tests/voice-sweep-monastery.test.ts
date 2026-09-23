@@ -39,7 +39,7 @@ describe('Monastery sweep', () => {
     expect(one('monastery.library', 'shh')).toBe("'Shh,' she says back, faster. She has been waiting.");
     expect(one('monastery.library', 'say dax')).toBe(`'No DAX in the Library,' says the Librarian. 'Shh.' You have been ${MALAPROPS.daxxed} and shushed.`);
     expect(one('monastery.library', 'look')).toMatch(/A bookmark from Encarta holds someone's place in Runtime 1\.1\./);
-    expect(one('monastery.gate', 'look at gate')).toMatch(new RegExp(`Not enough ${MALAPROPS.capacitude} to hurry it; enough to press a button\\.$`));
+    expect(one('monastery.gate', 'look at gate')).toMatch(new RegExp(`Not enough ${MALAPROPS.capacitude} to hurry it\\. Enough to open a gate, though\\.$`));
   });
 });
 

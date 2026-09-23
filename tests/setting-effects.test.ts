@@ -105,10 +105,10 @@ describe('the back gate is one gate (xmla off, both sides)', () => {
     expect(one('monastery.gate', 's', { 'gate.open': true }).state.room).toBe('fortress.model');
   });
   it("the Model View's hint never says north through a closed gate", () => {
-    const hint = WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', { 'ts.xmla': false, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true }));
+    const hint = WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', { 'ts.xmla': false, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true }));
     expect(hint).toMatch(/^The back gate is closed \(XMLA endpoint: Off\)/);
     expect(hint).not.toMatch(/North, through the back gate/);
-    expect(WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', { 'trial.moat': true, 'taken.policy': true, 'refresh.done': true }))).toBe('North, through the back gate, the monks are waiting.');
+    expect(WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', { 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true }))).toBe('North, through the back gate, the monks are waiting.');
   });
 });
 
@@ -157,7 +157,7 @@ describe('defaults: none of it shows', () => {
     /XMLA/, /^\[Survey\]/m, /^Usage metrics:/m, /A bill arrives/, /Eventhouse/, /no name/, /hard hat/, /The entire organization is here/, /Which Jeff\./, /files out/,
     /Copilot is not available/, /voluntary/,
   ];
-  it('the golden path is 200 in 69 turns with no effect line, and the only delay is the Peaks without boots', () => {
+  it('the golden path is 200 in 65 turns with no effect line, and the only delay is the Peaks without boots', () => {
     let s = newGame(WORLD, 42);
     const transcript: string[] = [];
     for (const cmd of GOLDEN_PATH) {
@@ -168,7 +168,7 @@ describe('defaults: none of it shows', () => {
     }
     const all = transcript.join('\n');
     for (const re of EFFECTS) expect(all).not.toMatch(re);
-    expect(s.score).toBe(MAX_SCORE); expect(s.turns).toBe(67); expect(s.won).toBe(true);
+    expect(s.score).toBe(MAX_SCORE); expect(s.turns).toBe(65); expect(s.won).toBe(true);
   });
   it('a bare number at default is not a survey answer, and the cottage has no Eventhouse', () => {
     expect(one('village.cottage', '7').stepId).not.toBe('survey.reply');
@@ -289,9 +289,9 @@ describe('fix rounds 2–3: no hint, NPC line or gate line names a command the s
     { flags: { 'gate.open': true, 'gate.waiting': 3, 'scroll.lent': true, 'trial.moat': true }, inventory: ['scroll'] },
     { flags: { 'gate.open': true, 'scroll.lent': true, 'notebook.fixed': true, 'trial.moat': true }, inventory: [] },
     { flags: { 'gate.open': true, 'notebook.fixed': true, 'has.hoodie': true, 'trial.hoodie': true, 'trial.moat': true }, inventory: ['hoodie'] },
-    { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true }, inventory: ['policy'] },
-    { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true, 'stare.done': true }, inventory: ['boots'] },
-    { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true, 'trial.hoodie': true }, inventory: ['hoodie', 'boots'] },
+    { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'model.date': true }, inventory: [] },
+    { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true }, inventory: ['boots'] },
+    { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true, 'trial.hoodie': true }, inventory: ['hoodie', 'boots'] },
     { flags: { 'trial.moat': true, 'trial.hoodie': true, 'ferry.online': true }, inventory: ['hoodie', 'standard key'] },
     { flags: { 'trial.moat': true, 'trial.hoodie': true, 'trial.key': true, 'shrine.open': true }, inventory: ['hoodie', 'standard key'] },
   ];
@@ -337,8 +337,8 @@ describe('fix rounds 2–3: no hint, NPC line or gate line names a command the s
     const STAGE: Record<string, Record<string, boolean | number>> = {
       'village.square': { 'prophecy.read': true, 'jeff.pacified': true, 'has.credentials': true, 'trial.moat': true },
       'village.fields': { 'trial.moat': true }, 'peaks.foothills': { 'trial.moat': true }, 'peaks.ledge': { 'trial.moat': true },
-      'fortress.bridge': { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true },
-      'fortress.hall': { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true },
+      'fortress.bridge': { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true },
+      'fortress.hall': { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true },
     };
     const DIR_WORD: Record<string, string> = { n: 'north', s: 'south', e: 'east', w: 'west' };
     expect(Object.keys(XMLA_DETOUR).sort()).toEqual(Object.keys(STAGE).sort());
@@ -366,10 +366,10 @@ describe('fix rounds 2–3: no hint, NPC line or gate line names a command the s
     expect(knight.talkMore!(at('fortress.model', { 'ts.xmla': false }), 3)).toMatch(/which is bricks.*XMLA endpoint: Read Write.*Capacity Ledger/);
     expect(knight.talkMore!(at('fortress.model', {}), 3)).toMatch(/The monks are that way/);
     expect(librarian.talkMore!(at('monastery.library', { 'ts.fabricItems': false, 'scroll.lent': true }), 3)).toMatch(/will not take the scroll until Users can create Fabric items/);
-    const done = { 'ts.xmla': false, 'taken.policy': true, 'refresh.done': true, 'trial.hoodie': true };
+    const done = { 'ts.xmla': false, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true, 'trial.hoodie': true };
     expect(WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', done))).toBe('The back gate is closed (XMLA endpoint: Off), and the monks are done with you, so let it be. East to the hall, then south, out the gate.');
     expect(WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', { ...done, 'ts.xmla': true }))).toBe('The monks are done with you and so is the Keep. East to the hall, then south, out the gate.');
-    expect(WORLD.rooms['fortress.bridge']!.flaskHint(at('fortress.bridge', { 'ts.xmla': false, 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true }))).toMatch(/^The Keep's back gate to the Monastery is bricked until XMLA endpoint: Read Write/);
+    expect(WORLD.rooms['fortress.bridge']!.flaskHint(at('fortress.bridge', { 'ts.xmla': false, 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true }))).toMatch(/^The Keep's back gate to the Monastery is bricked until XMLA endpoint: Read Write/);
     expect(WORLD.rooms['village.square']!.flaskHint(at('village.square', { 'ts.xmla': false, 'prophecy.read': true, 'jeff.pacified': true, 'has.credentials': true, 'trial.moat': true }))).toMatch(/^The Keep's back gate to the Monastery is bricked/);
   });
   it('the back gate at the Monastery Gate is its own examinable; the gate objects\' second try names the book', () => {

@@ -21,7 +21,7 @@ describe('golden path', () => {
     }
     expect(s.score, log.join('\n')).toBe(MAX_SCORE);
     expect(s.won).toBe(true);
-    expect(s.turns).toBe(67); // village → Keep → Monastery (via the Model View's back gate) → Lake → swamp → Peaks
+    expect(s.turns).toBe(65); // village → Keep → Monastery (via the Model View's back gate) → Lake → swamp → Peaks
     expect(s.flags['trial.hoodie']).toBe(true);
     expect(s.flags['trial.moat']).toBe(true);
     expect(s.flags['trial.key']).toBe(true);
@@ -37,7 +37,7 @@ describe('golden path', () => {
     };
     for (const room of Object.values(WORLD.rooms)) for (const r of room.rules) add(r.id, r.then.pointsKey, r.then.points);
     for (const r of WORLD.globalRules) add(r.id, r.then.pointsKey, r.then.points);
-    expect(seen.size).toBe(18); // + fortress.relate (actions-that-fit §1.2)
+    expect(seen.size).toBe(17);
     expect([...seen.values()].reduce((a, b) => a + b, 0)).toBe(200);
   });
 });

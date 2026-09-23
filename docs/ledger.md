@@ -14,16 +14,15 @@ Points are awarded once per step. Where a step has more than one solution, they 
 | 3 | Bring the Ferryman back online | Ferryman's Dock | 15 | 30 |
 | 4 | Take the Standard (Gateway) Key | Isle of Gateway | 20 | 50 |
 | 5 | Pick up the OneLake Shortcut | Gold Marsh | 10 | 60 |
-| 6 | Press Start on the Spark session at the gate | Monastery Gate | 5 | 65 |
-| 7 | Library card (your Pro license) for the Spark Scroll | Library of Deprecated Notebooks | 10 | 75 |
-| 8 | Read the scroll | Library of Deprecated Notebooks | 5 | 80 |
-| 9 | Fix Brother Pandas' notebook | Spark Session Chamber | 20 | 100 |
-| 10 | The Hoodie of Spark, from the Abbot | Cloister | 15 | 115 |
-| 11 | Click Try free at the gate | Power BI Desktop Gate | 10 | 125 |
-| 11b | Activate the dashed Date-to-Sales relationship | The Model View | 10 | 135 |
-| 12 | Hand the Duke an unmarked date table and get thrown in the Moat | Duke's Chamber | 20 | 155 |
-| 13 | Put a measure on the Card. Twice. | The Report Studio | 10 | 165 |
-| 14 | Change the pie to a bar chart; the Big Refresh finishes; Bursting Boots | The Report Studio | 15 | 180 |
+| 6 | Open the Monastery gate (or wait out the Spark session) | Monastery Gate | 10 | 70 |
+| 7 | Library card (your Pro license) for the Spark Scroll | Library of Deprecated Notebooks | 10 | 80 |
+| 8 | Read the scroll | Library of Deprecated Notebooks | 5 | 85 |
+| 9 | Fix Brother Pandas' notebook | Spark Session Chamber | 20 | 105 |
+| 10 | The Hoodie of Spark, from the Abbot | Cloister | 15 | 120 |
+| 11 | Say (or start) the trial SKU at the gate | Power BI Desktop Gate | 10 | 130 |
+| 12 | Give the Duke something to despise (an unmarked date table, or the words 'calculated column') and get thrown in the Moat | Duke's Chamber | 25 | 155 |
+| 13 | Out-stare the Card visual | The Report Studio | 10 | 165 |
+| 14 | The pie becomes a bar chart → the Big Refresh finishes → Bursting Boots | The Report Studio | 15 | 180 |
 | 15 | Open the Shrine door as one of the Worthy | Bursting Ledge | 5 | 185 |
 | 16 | Say `star schema` to Throttlor | The Shrine | 10 | 195 |
 | 17 | Take the Golden Semantic Model | The Shrine | 5 | **200** |
@@ -92,19 +91,17 @@ s
 e
 e
 n
-use trial                    +10  you click Try free; the guard takes the 60-day trial; the gate opens
+use trial                    +10  you start the free 60-day trial (say trial works too); the gate opens
 n
 w
-use relationship             +10  the dashed Date-to-Sales line goes active, single direction, one to many
-get date table                    the date table can leave the diagram now that it is related
+get date table                    the unmarked date table, off its plinth in the Model View
 e
 n
-give date table to duke      +20  UNMARKED. The Duke throws you in the Moat of T-SQL — Trial 2: you smell like a Warehouse
+give date table to duke      +25  UNMARKED? The Duke throws you in the Moat of T-SQL — Trial 2: you smell like a Warehouse (say calculated column works too)
 n
 e
-put measure on card               (Blank). The first one never counts.
-put measure on card          +10  $4,213,908. The Card blinks first
-change pie chart to bar chart +15  the Big Refresh finishes; the Bursting Boots fall out
+look at card                 +10  the Card visual blinks first
+use pie chart                +15  the pie becomes a bar chart; the Big Refresh finishes; the Bursting Boots fall out
 wear boots                         no more interactive delay on the Peaks
 ```
 
@@ -114,7 +111,7 @@ wear boots                         no more interactive delay on the Peaks
 w
 w
 n
-start session                 +5  you press Start; the gate opens
+open gate                    +10  the session starts (one wait works too); the gate opens
 n
 w
 give license to librarian     +10  your Pro license is a library card here

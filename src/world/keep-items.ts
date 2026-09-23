@@ -35,14 +35,13 @@ export const KEEP_ITEMS: Item[] = [
       : 'The drawbridge is up. Painted across it, a splash screen: "Loading… Power BI Desktop is updating (1 of 3)". It does not look like it is lowering. It looks like it is updating.'),
   },
   {
-    // 'desktop': the splash is Power BI Desktop, so `look at desktop` (a word the trial rule uses) lands here.
-    id: 'splash', name: 'splash screen', aliases: ['splash', 'splash screen', 'loading screen', 'loading', 'logo', 'desktop', 'power bi desktop'],
+    id: 'splash', name: 'splash screen', aliases: ['splash', 'splash screen', 'loading screen', 'loading', 'logo', 'try free', 'link', 'trial', 'trial capacity', 'f trial', 'fabric trial', 'free trial', 'ftrial', 'trial sku'], // the trial is the splash screen's Try free link (fortress.sku-use)
     takeable: false,
     blurb: 'A splash screen. Loading, 1 of 3, and it has been 1 of 3 since it left the gatehouse.',
     untakeableText: 'It is a splash screen. It goes away when it wants to.',
     describe: (s) => (s.flags['bridge.down']
       ? 'The splash screen has finished. It is now a "What\'s new" dialog. There are eleven new things. You will discover them by accident, one a month.'
-      : 'Loading… 1 of 3. Under it, the update dialog, and under that a small blue link: Try free. It has been 1 of 3 since you arrived.'),
+      : 'Loading… 1 of 3. It has been 1 of 3 since you arrived.'),
   },
   {
     id: 'battlements', name: 'battlements', aliases: ['battlements', 'walls', 'wall', 'ramparts', 'parapet', 'crenellations'],
@@ -53,16 +52,11 @@ export const KEEP_ITEMS: Item[] = [
       'December, again. The guard leans on it like it owes him a SKU.'),
   },
   {
-    // The Try free link lives under the dialog (actions-that-fit §1.1), so the link and the trial words look here.
-    id: 'update-dialog', name: 'update dialog',
-    aliases: ['update dialog', 'dialog', 'update', 'updates', 'installer', 'install', 'new version',
-      'link', 'blue link', 'try free', 'try free link', 'trial', 'free trial', 'fabric trial', 'f trial', 'ftrial', 'trial capacity', 'trial sku'],
+    id: 'update-dialog', name: 'update dialog', aliases: ['update dialog', 'dialog', 'update', 'updates', 'installer', 'install', 'new version'],
     takeable: false,
     blurb: 'A small grey update dialog. Install now, Install now, or Remind me in 1 day, greyed out.',
     untakeableText: 'You drag the dialog off the screen. It comes back, centred.',
-    describe: (s) => (s.flags['bridge.down']
-      ? 'A small grey dialog nailed to the gatehouse: "A new version of Power BI Desktop is available." Under it, the Try free link, visited purple now. Buttons: Install now. Install now. Remind me in 1 day (greyed out).'
-      : 'A small grey dialog nailed to the gatehouse: "A new version of Power BI Desktop is available." Under it, a small blue link: Try free. Buttons: Install now. Install now. Remind me in 1 day (greyed out).'),
+    describe: 'A small grey dialog nailed to the gatehouse: "A new version of Power BI Desktop is available." Buttons: Install now. Install now. Remind me in 1 day (greyed out).',
   },
   // ---- Power Query Hall ----
   {
@@ -135,7 +129,7 @@ export const KEEP_ITEMS: Item[] = [
     describe: 'A many-to-many bridge. It wobbles. Do not stand on it. Do not build a report on it.',
   },
   {
-    id: 'plinths', name: 'plinths', aliases: ['plinths', 'plinth', 'tables', 'fact tables', 'dimension', 'dimensions', 'sheet1', 'sheet', 'product', 'customer'], // a bare 'table' goes to the date table (suffix match)
+    id: 'plinths', name: 'plinths', aliases: ['plinths', 'plinth', 'tables', 'fact tables', 'dimension', 'dimensions'], // a bare 'table' goes to the date table (suffix match)
     takeable: false,
     blurb: 'Stone plinths, five tables on top, one of them Sheet1. Each table holds a grudge, and now they hold it against you.',
     untakeableText: 'Each plinth holds a table. Each table holds a grudge. They stay.',
@@ -143,18 +137,16 @@ export const KEEP_ITEMS: Item[] = [
       'You look at Sheet1 a second time. It is the most attention it has had since it was imported, and it thinks this might be a relationship.'),
   },
   {
-    id: 'lines', name: 'relationship lines', aliases: ['lines', 'line', 'relationships', 'relationship', 'relationship lines', 'arrows', 'dashed line', 'inactive relationship', 'date relationship', 'single direction'],
+    id: 'lines', name: 'relationship lines', aliases: ['lines', 'line', 'relationships', 'relationship', 'relationship lines', 'arrows'],
     takeable: false,
     blurb: 'Relationship lines, arrows and all. The model has forgotten which Product you meant, and so have you.',
     untakeableText: 'You pick up a relationship. The model forgets which Product you meant. You put it back.',
     describe: 'Relationship lines, one to many, each with a little arrow pointing the way the filter flows. All but one are solid. The dashed one is inactive and has been since a meeting in 2021.',
   },
   {
-    id: 'date-table', name: 'date table', aliases: ['date table', 'calendar', 'dates', 'date', 'calendar table'],
-    // Takeable once the dashed line is related (actions-that-fit §1.2): the Model View's own get rules gate it first.
+    id: 'date-table', name: 'date table', aliases: ['date table', 'calendar', 'dates', 'date', 'calendar table', 'the date table'],
     takeable: true,
-    blurb: 'The date table: 1900 to 2099, related to Sales. Marked or not, the Duke will notice.',
-    untakeableText: 'The date table is the most important table in the model. It is also the one nobody bothered to mark.',
+    blurb: 'A date table, 1900 to 2099, unmarked. Time intelligence is sulking, and it is sulking at you. The Duke will want a word.',
     again: "You have the date table. It's the only table in the realm that knows what day it is.",
     describe: (s) => (s.flags['model.date']
       ? 'The date table, marked as a date table. Time intelligence is working. It is quietly smug about it.'
@@ -218,12 +210,14 @@ export const KEEP_ITEMS: Item[] = [
       : 'A progress bar, 97%, since 2019. It is refreshing everything, every time, all at once. It needs smaller steps. A sticky note on it reads DO NOT TOUCH — JEFF. A logo on the bar: Refreshr™.'),
   },
   {
-    id: 'pie', name: 'pie chart', aliases: ['pie', 'pie chart', 'chart', 'slices', 'other', 'bar chart', 'the pie'], // not 'visual': it would swallow 'card visual'
+    id: 'pie', name: 'pie chart', aliases: ['pie', 'pie chart', 'chart', 'slices', 'other', 'bar chart'], // not 'visual': it would swallow 'card visual'
     takeable: false,
     blurb: "A pie with 31 slices, twelve of them 'Other'. Nobody wanted a slice, and you took the whole pie.",
     untakeableText: 'The pie is 31 slices. You cannot take it in one trip, and nobody wants a slice.',
-    describe: (s) => s.flags['refresh.done'] ? 'A clustered bar chart. It used to be a pie. Nobody misses it except Jeff.' : looks(s, "A pie with 31 slices. Twelve of them are 'Other'. You could fix it. You could also leave it and let it be someone else's problem in Q3.",
-      "You count the slices again. Thirty-two. The new one is labelled 'You', and it is filed under 'Other'."),
+    describe: (s) => (s.flags['refresh.done']
+      ? 'A clustered bar chart. It used to be a pie. Nobody misses it except Jeff.'
+      : looks(s, "A pie with 31 slices. Twelve of them are 'Other'. You could fix it: use it, and it could be a bar chart. You could also leave it and let it be someone else's problem in Q3.",
+        "You count the slices again. Thirty-two. The new one is labelled 'You', and it is filed under 'Other'.")),
   },
   {
     id: 'slicers', name: 'slicers', aliases: ['slicers', 'slicer', 'slicer stack', 'stack', 'dropdowns'],

@@ -41,13 +41,14 @@ const STATES: { flags: Record<string, boolean | number>; inventory: string[]; wo
   { flags: { 'gate.open': true, 'scroll.lent': true, 'ts.fabricItems': false }, inventory: ['scroll'] },
   { flags: { 'gate.open': true, 'scroll.lent': true, 'ts.workloads': false }, inventory: ['scroll'] },
   { flags: { 'bridge.down': true, 'trial.moat': true }, inventory: [] },
-  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true }, inventory: ['policy'] },
-  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'stare.count': 1 }, inventory: ['policy'] },
-  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'stare.count': 3 }, inventory: ['policy'] },
-  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'stare.done': true, 'stare.count': 3 }, inventory: [] },
-  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true, 'stare.done': true }, inventory: ['boots'] },
-  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true, 'trial.hoodie': true }, inventory: ['hoodie', 'boots'], worn: ['boots', 'hoodie'] },
-  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true, 'trial.hoodie': true, 'ts.xmla': false }, inventory: ['hoodie', 'boots'] },
+  { flags: { 'bridge.down': true, 'taken.date': true }, inventory: ['date-table'] },
+  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'model.date': true }, inventory: [] },
+  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'stare.count': 3 }, inventory: [] },
+  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'stare.done': true, 'stare.count': 3 }, inventory: [] },
+  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'refresh.done': true }, inventory: ['boots'] },
+  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true }, inventory: ['boots'] },
+  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true, 'trial.hoodie': true }, inventory: ['hoodie', 'boots'], worn: ['boots', 'hoodie'] },
+  { flags: { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true, 'trial.hoodie': true, 'ts.xmla': false }, inventory: ['hoodie', 'boots'] },
   { flags: { 'bridge.down': true, 'trial.moat': true, 'ts.xmla': false }, inventory: [] },
   { flags: { 'pq.step': 4 }, inventory: [] },
   { flags: { 'pq.step': 7, 'pq.done': true, 'trial.moat': true }, inventory: [] },
@@ -67,7 +68,7 @@ describe('the tier ladder at the Desktop Gate (Task B4)', () => {
     expect(stuckFor(4, gate()).last).toBe("(Psst. The guard's been asked for one thing all day and it wasn't your name.)");
   });
   it('8: plainer, still never the command', () => {
-    expect(stuckFor(8, gate()).last).toBe("(Psst. He wants a SKU. There's a free one. It's a link, under the dialog, and it rhymes with denial.)");
+    expect(stuckFor(8, gate()).last).toBe("(Psst. He wants a SKU. There's a free one. It rhymes with denial.)");
   });
   it('12 and on: the flask hint verbatim', () => {
     const twelve = stuckFor(12, gate());
@@ -89,7 +90,7 @@ describe('tier 1 is oblique: no backtick, none of the flask hint\'s command word
     ["fortress.throne", at('fortress.throne', { 'bridge.down': true }), /`|calculated|\bcolumn\b|\bsay\b/i],
     ['monastery.sacristy', at('monastery.sacristy', { 'gov.errand': true }), /`|turn off|publish to web|\bsettings\b|\breset\b/i],
     ['lake.island', at('lake.island', { 'ferry.online': true }), /`|\bget\b|\bstandard\b/i],
-    ['fortress.yard', at('fortress.yard', { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'stare.done': true }, { inventory: ['policy'] }), /`|\bpolicy\b|\buse\b|\bgive\b/i],
+    ['fortress.yard', at('fortress.yard', { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'stare.done': true }), /`|\bpie\b|\buse\b|\bbar chart\b/i],
   ];
   it.each(CASES)('%s', (room, start, forbidden) => {
     const { s, last } = stuckFor(4, start);
@@ -102,9 +103,9 @@ describe('tier 1 is oblique: no backtick, none of the flask hint\'s command word
 });
 
 describe('tier 2 is the plainer line where there is one, the flask hint where there is not', () => {
-  it('the Studio, policy in hand, names the thing and not the verb', () => {
-    const { last } = stuckFor(8, at('fortress.yard', { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'stare.done': true }, { inventory: ['policy'] }));
-    expect(last).toBe('(Psst. Change the pie to a bar chart. The refresh has been choking on it since 2019.)');
+  it('the Studio, stare won, names the pie', () => {
+    const { last } = stuckFor(8, at('fortress.yard', { 'bridge.down': true, 'trial.moat': true, 'taken.date': true, 'stare.done': true }));
+    expect(last).toBe('(Psst. The pie chart. Thirty-one slices. Use it and it becomes a bar chart, and the refresh can finally finish.)');
   });
   it('the Lake House has no plainer line: its flask hint whispers at 8', () => {
     const { s, last } = stuckFor(8, at('lake.house'));

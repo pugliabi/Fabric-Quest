@@ -47,14 +47,14 @@ describe('Keep sweep: the rulings', () => {
     expect(one('fortress.yard', 'look at jeff')).toMatch(/DO NOT TOUCH — JEFF/);
     expect(one('fortress.model', 'ask cardinality about both')).not.toMatch(/Like yours with the truth/);
   });
-  it('C1: the sin outside the chamber is the right idea in the wrong room; inside, it is a strike, and the table is the moat', () => {
+  it('C1: the sin outside the chamber is the right idea in the wrong room; inside, it is still the moat', () => {
     for (const room of ['fortress.bridge', 'fortress.hall', 'fortress.model', 'fortress.yard']) {
       expect(one(room, 'say calculated column'), room).toMatch(/^Right sin, wrong room\./);
     }
     expect(one('fortress.hall', 'say calculated column', { 'trial.moat': true })).toMatch(/^You said it once where it counted/);
-    const moat = step({ ...at('fortress.throne'), inventory: ['date-table'] }, 'give date table to duke', WORLD);
+    const moat = step(at('fortress.throne'), 'say calculated column', WORLD);
     expect(moat.state.flags['trial.moat']).toBe(true);
-    expect(moat.pointsAwarded).toBe(20);
+    expect(moat.pointsAwarded).toBe(25);
   });
 });
 

@@ -61,22 +61,15 @@ const monasteryLine = (s: GameState, { command }: HeardLine): { then: RuleThen; 
   return p ? { id: p.id, then: { text: p.text, outcome: 'snark' } } : null;
 };
 
-/** The Monastery Gate's solve (actions-that-fit §1.5): press Start. `wait` only bills. */
-const START_NOUNS = ['session', 'spark session', 'start', 'start button', 'button', 'gate', 'progress bar', 'bar', 'stone bar', 'monastery gate', 'bell', 'door'];
-const START_SESSION: RuleThen = {
-  text: 'You press Start. The stone bar jumps to 33%, hums at 67%, and stops at 99% for exactly as long as it takes you to doubt it. SESSION STARTED. Four minutes, as is tradition. The gate swings open.',
-  set: { 'gate.open': true, 'gate.waiting': 3 }, points: 5, sfx: 'door',
-};
-
 export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
   room({
     id: 'monastery.gate', name: 'Monastery Gate', region: 'monastery',
-    enterQuip: () => 'A gate. A Spark session, stopped. A Start button. You can see where this is going.',
+    enterQuip: () => 'A gate. A Spark session is starting. It says so. It has said so for a while.',
     // The Keep's back gate is the XMLA endpoint from this side too (spec2 §3.4): Off, and it is a wall both ways.
     describe: (s) =>
       s.flags['gate.open']
         ? `The Monastery gate stands open. Beyond it, north, the cloister. The Gold Marsh is west. South, the Keep's back gate${setting(s, 'xmla') ? ': the Model View opens onto the Monastery — every model needs its engineers.' : ', which is a wall now. XMLA endpoint: Off.'}`
-        : `The Monastery gate. A gatekeeper monk stands beside a stone progress bar. It reads: SESSION STOPPED. A Start button nobody has pressed since 2023. The Gold Marsh is west. South, the Keep's back gate${setting(s, 'xmla') ? '' : ', which is a wall now. XMLA endpoint: Off'}.`,
+        : `The Monastery gate. A gatekeeper monk stands beside a stone progress bar. It reads: SESSION STARTING… 0%. The Gold Marsh is west. South, the Keep's back gate${setting(s, 'xmla') ? '' : ', which is a wall now. XMLA endpoint: Off'}.`,
     exits: { w: 'swamp.gold', s: (s) => (setting(s, 'xmla') ? 'fortress.model' : null), n: (s) => (s.flags['gate.open'] ? 'monastery.cloister' : null) },
     items: ['gate', 'pamphlet', 'xmla-bricks'], // the bricks after the gate: 'gate' / 'back gate' stay the progress-bar gate
     npcs: ['monk'],
@@ -87,17 +80,17 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
           ? 'Go south, back through the Keep. The hoodie is on. The Monastery has nothing left to teach you, and it tried.'
           : XMLA_CLAUSE)
         : 'Go north. The gate is open. Nobody knows for how long.';
-      return "There's a Start button on the progress bar. Nobody has pressed it since 2023.";
+      return 'The session is starting. Open the gate, or wait for it. Either way it takes four minutes, and the game is kind enough to skip them.';
     },
-    // The aside (Task B4, actions-that-fit §1.5): the bar has a button nobody presses. No route is named, so XMLA off changes nothing here.
+    // The aside (Task B4): the progress bar moves on the one thing you have not typed. No route is named, so XMLA off changes nothing here.
     nudge: {
       oblique: (s) => {
         if (s.flags['gate.open']) return s.flags['trial.hoodie']
           ? 'The monks are finished with you, hoodie and all. Everything left to do is on the far side of a Keep, and the Keep remembers your smell.'
           : "The gate's open and the session is running, which means it's billing. Everything past this point costs by the second, so stop admiring the gate.";
-        return 'The bar has a button and a monk, and only one of them has ever started a session.';
+        return "The session's starting. It's been starting. A progress bar moves for exactly two things: patience, and a hand on the gate.";
       },
-      plainer: (s) => (s.flags['gate.open'] ? '' : "It's a progress bar with a Start button. Press it."),
+      plainer: (s) => (s.flags['gate.open'] ? '' : "It's a gate with a progress bar. Open the gate. Or wait; the bar moves when you stop typing at it."),
     },
     catchAll: monasteryLine,
     rules: [
@@ -106,16 +99,21 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'talk', noun: MONK, noun2: ['session', 'the session', 'spark session', 'progress bar', 'bar'] },
         then: { text: unlessBlank('monk', () => 'The monk points at the bar. Then at the sky. Then at the bar. It is a lineage view.'), outcome: 'success' },
       },
-      // actions-that-fit §1.5: a session starts when somebody presses Start (start / press / click / knock / ring are `use`).
+      // One command opens it (Tommy: nobody waits three times for points). `wait`, `open gate` and `use gate` all pay the same 10.
       {
-        id: 'monastery.wait', // the ledger key stays
-        when: { verb: 'use', noun: START_NOUNS, flags: [{ flag: 'gate.open', not: true }] },
-        then: START_SESSION,
+        id: 'monastery.wait',
+        when: { verb: 'wait', flags: [{ flag: 'gate.open', not: true }] },
+        then: { text: 'You wait. The bar creeps to 33%. The monk nods approvingly at your patience. 67%. The monk hums. SESSION STARTED. It took four minutes, as is tradition. The gate swings open.', set: { 'gate.open': true, 'gate.waiting': 3 }, points: 10, sfx: 'door' },
       },
       {
-        id: 'monastery.wait-closed',
-        when: { verb: 'wait', flags: [{ flag: 'gate.open', not: true }] },
-        then: { text: "You wait. The bar doesn't. Sessions don't start because you're patient; they start because somebody pressed Start.", outcome: 'fail' },
+        id: 'monastery.open-gate',
+        when: { verb: 'open', noun: ['gate', 'door', 'monastery gate', 'the gate'], flags: [{ flag: 'gate.open', not: true }] },
+        then: { text: "You push the gate. It's a Spark session; you can't push a session. But your hand on the gate is apparently what it was waiting for. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open.", set: { 'gate.open': true, 'gate.waiting': 3 }, points: 10, pointsKey: 'monastery.wait', sfx: 'door' },
+      },
+      {
+        id: 'monastery.use-gate',
+        when: { verb: 'use', noun: ['gate', 'door', 'monastery gate', 'the gate', 'progress bar', 'bar', 'session', 'spark session'], flags: [{ flag: 'gate.open', not: true }] },
+        then: { text: "You push the gate. It's a Spark session; you can't push a session. But your hand on the gate is apparently what it was waiting for. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open.", set: { 'gate.open': true, 'gate.waiting': 3 }, points: 10, pointsKey: 'monastery.wait', sfx: 'door' },
       },
       // The harmless grind (Task F7): waiting on a session that already started. Once with delight, then the drama.
       {
@@ -138,7 +136,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'monastery.go-north-closed',
         when: { verb: 'go', dir: 'n', flags: [{ flag: 'gate.open', not: true }] },
-        then: { text: 'The gate is closed. SESSION STOPPED. There is a Start button and a monk, and neither of them is going to press it for you.', outcome: 'fail' },
+        then: { text: 'The gate is closed. SESSION STARTING…', outcome: 'fail' },
       },
       {
         // The Keep's back gate is its own thing here (round 2, M4 nit): the builtin would suffix-match 'back gate' to the
@@ -156,10 +154,9 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
         then: { text: 'The back gate is an XMLA endpoint. Your capacity admin set it to Off. From this side it is a wall, and the monks are using it to lean on.', outcome: 'fail' },
       },
       {
-        // A bare `knock` (no noun) presses Start too, on the same ledger key.
         id: 'monastery.knock',
-        when: { verb: 'use', verbWord: ['knock', 'ring'], flags: [{ flag: 'gate.open', not: true }] },
-        then: { ...START_SESSION, pointsKey: 'monastery.wait' },
+        when: { verb: 'use', verbWord: ['knock'], flags: [{ flag: 'gate.open', not: true }] },
+        then: { text: 'You knock. The gate says: Session starting. Please wait. It has always said that. Knocking does not count as waiting.', outcome: 'fail' },
       },
       {
         id: 'monastery.knock-open',

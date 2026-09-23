@@ -28,7 +28,7 @@ export const WHERE: Record<string, WhereLine> = {
   'swamp.bronze': 'The Bronze Marsh. Everything here is a string, including your plan.',
   'swamp.silver': "The Silver Marsh. Things have names now. Yours is still 'peasant'.",
   'swamp.gold': 'The Gold Marsh. Clean, typed, modeled. You lower the tone just by standing here.',
-  'monastery.gate': "The Monastery Gate. A session that isn't starting. It wasn't starting when you got here and it won't start at your funeral, unless somebody presses Start.",
+  'monastery.gate': "The Monastery Gate. A session is starting. It was starting when you got here and it'll be starting at your funeral.",
   'monastery.cloister': "The Cloister. Monks in a circle, chanting. You're in the loop now. There's no break statement.",
   'monastery.spark': 'The Spark Session Chamber. Warm, humming, billed. Like a hot tub with an invoice.',
   'monastery.library': 'The Library of Deprecated Notebooks. One of them is yours. She knows.',
@@ -38,7 +38,7 @@ export const WHERE: Record<string, WhereLine> = {
   'fortress.model': 'The Model View. Tables on plinths, lines between them, and one bridge that wobbles like your DAX.',
   'fortress.throne': "The Duke's Chamber. Filter context only. Your outside voice doesn't work in here.",
   'fortress.yard': (s) => (s.flags['stare.done']
-    ? (s.flags['refresh.done'] ? 'The Report Studio. A bar chart that used to be a pie and a Card that says 4.2M, which is more than you had.' : "The Report Studio. A pie with 31 slices and a Card that says 4.2M now, which is wrong, but at least it's a number.")
+    ? `The Report Studio. ${s.flags['refresh.done'] ? 'A bar chart that used to be a pie' : 'A pie with 31 slices'} and a Card that says 4.2M now, which is wrong, but at least it's a number.`
     : 'The Report Studio. A pie with 31 slices and a Card that says (Blank), which is also your plan.'),
   'peaks.foothills': "The Foothills. The air's thin and so is the excuse you'll give Finance.",
   'peaks.pass': 'Throttling Pass. Every step costs more than the last one, like a consultant, or you, eventually.',

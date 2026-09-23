@@ -38,7 +38,7 @@ describe('talk counters and escalation (spec1 §3.1)', () => {
     const { outs } = talk('fortress.bridge', 'guard', 4);
     expect(outs[0]).toBe('"HALT! State your SKU!"');
     expect(outs[2]).toMatch(/S-K-U\. Trial's free/);
-    expect(outs[3]).toMatch(/Still no SKU|Almost there|The link/);
+    expect(outs[3]).toMatch(/Still no SKU|Almost there|Say it/);
     const done = talk('fortress.bridge', 'guard', 4, { flags: { 'bridge.down': true } });
     expect(done.outs[3]).toMatch(/Lookin' good, Mr\. Trial\./);
   });

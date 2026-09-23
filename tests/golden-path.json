@@ -1,9 +1,9 @@
 [
  "look", "get mug", "read report", "out", "read board", "give mug to jeff",
  "n", "talk to miller", "s",
- "e", "e", "n", "use trial", "n", "w", "use relationship", "get date table", "e", "n", "give date table to duke",
- "n", "e", "put measure on card", "put measure on card", "change pie chart to bar chart", "wear boots",
- "w", "w", "n", "start session", "n",
+ "e", "e", "n", "use trial", "n", "w", "get date table", "e", "n", "give date table to duke",
+ "n", "e", "look at card", "use pie chart", "wear boots",
+ "w", "w", "n", "open gate", "n",
  "w", "give license to librarian", "read scroll", "e", "e", "use scroll on notebook", "w", "talk to abbot", "wear hoodie",
  "s", "s", "e", "s", "s", "w", "w",
  "s", "e", "give credentials to ferryman", "board boat", "get standard key", "board boat", "w",
