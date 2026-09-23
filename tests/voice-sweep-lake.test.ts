@@ -11,8 +11,8 @@ describe('lake + swamp sweep', () => {
     expect(r.output[0]).toMatch(/^Skip\. Skip\. Sink\./); expect(r.state.inventory).not.toContain('pebble');
     expect(one('lake.dock', 'ask ferryman about the lake')).toBe("He mouths: 'ONE.' Then, more slowly: 'LAKE.' He holds up one finger. Then, after thought, no more fingers.");
     expect(one('lake.dock', 'sit in boat')).toBe('You sit in the boat. It does not move. Neither does the Ferryman. You are all OFFLINE together, which is almost company.');
-    expect(one('lake.dock', 'look at timetable')).toMatch(/Sponsored by Refreshr™\.$/);
-    expect(one('lake.island', 'use plinth')).toBe("You put your hand in the STANDARD hollow. It fits. Everyone fits. That is what shared means. The PERSONAL hollow has no capacitude for that.");
+    expect(one('lake.dock', 'look at timetable')).toMatch(/Every departure this year has been crossed out and replaced with OFFLINE\.$/);
+    expect(one('lake.island', 'use plinth')).toBe("You put your hand in the STANDARD hollow. It fits. Everyone fits. That is what shared means. The PERSONAL hollow has no capacity for that.");
     expect(one('lake.house', 'open mailbox')).toBe('One new CSV. It has been in there since bronze. You leave it; the mailbox is also a Lakehouse, legally.');
     expect(one('lake.house', 'use chair')).toMatch(/It is the Windows XP hill with a deck chair on it\.$/);
   });
@@ -28,7 +28,6 @@ describe('lake + swamp sweep', () => {
 
 // ---- The sweep beyond the plan's lines ----
 
-import { isScenery } from '../src/engine/builtins';
 import { LAKE_PHRASES } from '../src/world/lake';
 import { VILLAGE_PHRASES } from '../src/world/village';
 import { GATE_PHRASES } from '../src/world/gates';
@@ -76,19 +75,14 @@ describe('lake + swamp sweep: registration and what it must not touch', () => {
     expect(step(at('swamp.gold'), 'get signpost', WORLD).pointsAwarded).toBe(10);
     expect(step(at('swamp.gold', { inventory: ['license', 'shortcut'] }), 'use shortcut', WORLD).state.room).toBe('lake.shore');
   });
-  it('nothing the sweep added turns lake or marsh scenery into a puzzle (the fishing count still sees it)', () => {
-    // (Not the plaque or the porch sign: `sign` is a noun of global.use-shortcut, which has been so since before the sweep, like the Fields' banner.)
-    const scenery: [string, string, Partial<GameState>][] = [['lake.island', 'plinth', ONLINE], ['swamp.bronze', 'water', {}], ['swamp.bronze', 'csv', {}], ['swamp.silver', 'log', {}], ['lake.house', 'mailbox', {}], ['lake.house', 'deck-chair', {}], ['lake.house', 'house-door', {}]];
-    for (const [room, id, extra] of scenery) expect(isScenery(at(room, extra), WORLD, WORLD.items[id]!), `${room} ${id}`).toBe(true);
-  });
   it('the shore keeps no untakeable item (the budget line still names the wall) and a bare `use pebble` still falls to the generic pool', () => {
     expect(WORLD.rooms['lake.shore']!.items.every((id) => WORLD.items[id]!.takeable)).toBe(true);
     expect(step(at('lake.shore', { inventory: ['license', 'pebble'] }), 'use pebble', WORLD).stepId).toBe('lake.shore');
   });
-  it('the Lake House still scores nothing and keeps no plainer nudge', () => {
+  it('the Lake House still scores nothing and keeps no nudge', () => {
     const { s } = run(at('lake.house'), ['open mailbox', 'use mailbox', 'get mail', 'use chair', 'sit', 'knock', 'fish', 'buy house', 'say lakehouse', 'look at house', 'drink water', 'get house', 'use sign', 'open sign']);
     expect(s.score).toBe(0); expect(s.bonus).toBe(0); expect(s.dead).toBe(false);
-    expect(WORLD.rooms['lake.house']!.nudge?.plainer).toBeUndefined();
+    expect(WORLD.rooms['lake.house']!.nudge).toBeUndefined();
   });
 });
 
@@ -189,7 +183,7 @@ describe('lake + swamp sweep: every gag has a second line, and the same verb rea
     expect(step(at('swamp.bronze'), 'drink water', WORLD).state.dead).toBe(true);
     for (const room of layers) {
       expect(step(at(room, { inventory: ['license', 'capacityade'] }), 'drink capacityade', WORLD).deathCause, room).toBe('death.capacityade');
-      expect(step(at(room), 'drink capacityade', WORLD).output[0], room).toMatch(/no CapacityAde in the marsh/);
+      expect(step(at(room), 'drink capacityade', WORLD).output[0], room).toMatch(/no energy drink in the marsh/);
     }
   });
   it('the signpost knows whether it is here: dropped in Gold it still reads; dropped elsewhere, nothing to read', () => {
@@ -208,7 +202,7 @@ describe('lake + swamp sweep: the deferred minor and the constants', () => {
     expect(line).not.toMatch(/a man who/);
     expect(typeof WHERE['lake.island']).toBe('function');
   });
-  it('malaprops twice or more, the allusions, the brand', () => {
+  it('the plain words twice or more, the allusions, no brand', () => {
     const lines = [
       step(at('lake.island', ONLINE), 'use plinth', WORLD).output[0]!,
       step(at('swamp.silver'), 'drink water', WORLD).output[0]!,
@@ -220,7 +214,7 @@ describe('lake + swamp sweep: the deferred minor and the constants', () => {
     expect(lines).toMatch(MALAPROPS.capacitude); expect(lines).toMatch(MALAPROPS.refreshered);
     expect(step(at('lake.house'), 'use chair', WORLD).output[0]).toMatch(/the Windows XP hill/);
     expect(run(at('lake.house'), ['look at mailbox', 'look at mailbox']).firsts[1]).toMatch(/a Hotmail inbox/);
-    expect(step(at('lake.dock'), 'look at timetable', WORLD).output[0]).toMatch(/Refreshr™/);
+    expect(step(at('lake.dock'), 'look at timetable', WORLD).output[0]).not.toMatch(/™|Sponsored/);
   });
 });
 

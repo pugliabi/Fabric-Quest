@@ -4,7 +4,7 @@ import { WORLD } from '../src/world';
 import { WHERE } from '../src/world/where';
 import { SNARK } from '../src/world/globals';
 import { FRUSTRATION, NICKNAMES } from '../src/world/voice';
-import { isScenery, named } from '../src/engine/builtins';
+import { named } from '../src/engine/builtins';
 import type { GameState } from '../src/engine/types';
 
 const run = (cmds: string[], start: Partial<GameState> = {}) => {
@@ -58,7 +58,7 @@ describe('where and why', () => {
   });
 });
 
-describe('echo-your-words, repeats, boredom, making up puzzles', () => {
+describe('echo-your-words, repeats, boredom', () => {
   it('a three-adjective noun gets quoted back', () => {
     const { outs } = run(['look at the big ugly brown door']);
     expect(outs[0]![0]).toBe('Listen to you. "look at the big ugly brown door." What kinda gaming is that? It\'s a door.');
@@ -66,10 +66,10 @@ describe('echo-your-words, repeats, boredom, making up puzzles', () => {
   });
   it('second and third looks at the same scenery', () => {
     const { outs } = run(['look at candle', 'look at candle', 'look at candle']);
-    // The candle's second look is its own remembered line, and that IS the repeat joke (Task F4b): no chirp under it.
-    // The third look says the same words again, so the third-look chirp lands.
+    // The candle's second look is its own remembered line, and that IS the repeat joke. The third says it again, alone:
+    // nothing is stacked on a line that already answered.
     expect(outs[1]!.length).toBe(1); expect(outs[1]![0]).not.toBe(outs[0]![0]);
-    expect(outs[2]![0]).toBe(outs[1]![0]); expect(outs[2]![1]).toMatch(/^Shut up\.$|You are an incredibly boring person\./);
+    expect(outs[2]).toEqual(outs[1]);
   });
   it('boredom: 10 turns in one room with no progress', () => {
     const { s, outs } = run(Array(10).fill('inventory'));
@@ -80,16 +80,11 @@ describe('echo-your-words, repeats, boredom, making up puzzles', () => {
     expect(run(Array(20).fill('inventory')).outs[19]!.at(-1)).toBe('You are an incredibly boring person.');
     expect(run(['inventory', 'inventory', 'get mug', ...Array(8).fill('inventory')]).s.idle).toBe(8);
   });
-  it('five scenery looks in a row: making up puzzles', () => {
-    const { outs, s } = run(['look at candle', 'look at bed', 'look at desk', 'look at window', 'look at door']);
-    expect(outs[4]!.at(-1)).toBe("For what? Now you're just making up puzzles to solve.");
-    expect(s.looks).toBe(0);
-  });
 });
 
 // ---- Fix round 1 ----
 
-const BORED_LINES = /Let's get moving, here, people\.|Are you THAT bored\? Do some questing already!|You are an incredibly boring person\.|^Shut up\.$/;
+const BORED_LINES = /Let's get moving, here, people\.|Are you THAT bored\? Do some questing already!|You are an incredibly boring person\./;
 const count = (out: string[], re: RegExp) => out.filter((l) => re.test(l)).length;
 
 describe('I-1: "On what?" only answers a bare use', () => {
@@ -97,30 +92,6 @@ describe('I-1: "On what?" only answers a bare use', () => {
     const asks = /On what\? Discuss\.|Like where\?/;
     expect([...seen(['use pebble'], SEEDS, 'lake.shore', 3)].some((l) => asks.test(l))).toBe(true);
     for (const c of ['use mug on candle', 'open desk', 'open candle', 'use pebble on shore']) for (const warm of [0, 3]) expect([...seen([c], SEEDS, c.includes('pebble') ? 'lake.shore' : 'village.cottage', warm)].some((l) => asks.test(l)), c).toBe(false);
-  });
-});
-
-describe('I-2: the puzzle rooms are not fishing', () => {
-  it("the hall's steps and query don't count while the query is broken; its texture does", () => {
-    const { outs, s } = run(['look at steps', 'look at query', 'look at portraits', 'look at custom1', 'look at advanced editor door'], { room: 'fortress.hall' });
-    expect(outs.flat().join(' ')).not.toMatch(/making up puzzles/);
-    expect(s.looks).toBe(3);
-    // The reviewer's sequence: five looks, four of them at texture (the doorways are named by the nudge, not the flask hint), so no line.
-    expect(run(['look at steps', 'look at doorways', 'look at portraits', 'look at custom1', 'look at advanced editor door'], { room: 'fortress.hall' }).outs.flat().join(' ')).not.toMatch(/making up puzzles/);
-    const hall = { ...newGame(WORLD, 11), room: 'fortress.hall' };
-    expect(isScenery(hall, WORLD, WORLD.items['steps']!)).toBe(false);
-    expect(isScenery(hall, WORLD, WORLD.items['query']!)).toBe(false);
-    expect(isScenery(hall, WORLD, WORLD.items['portraits']!)).toBe(true);
-  });
-  it("the Sacristy's books are read by the room, so they never count", () => {
-    const { outs, s } = run(['look at export to excel', 'look at autoscale', 'look at surge protection', 'look at pause capacity', 'look at publish to web'], { room: 'monastery.sacristy' });
-    expect(outs.flat().join(' ')).not.toMatch(/making up puzzles/);
-    expect(s.looks).toBe(0);
-  });
-  it('a gate object is the puzzle, not scenery', () => {
-    const bridge = { ...newGame(WORLD, 11), room: 'fortress.bridge' };
-    expect(isScenery(bridge, WORLD, WORLD.items['drawbridge']!)).toBe(false);
-    expect(isScenery(bridge, WORLD, WORLD.items['battlements']!)).toBe(true);
   });
 });
 
@@ -141,7 +112,7 @@ describe('I-3: the echo has grammar', () => {
 });
 
 describe('M-1: one scold per turn', () => {
-  it('the third repeat and the boredom line do not both say it', () => {
+  it('a repeat and the boredom line never stack a scold', () => {
     const { outs } = run([...Array(12).fill('inventory'), 'get sword', 'get sword', 'get sword'], {}, );
     expect(count(outs[14]!, /Are you THAT bored\?/)).toBeLessThanOrEqual(1);
     const looks = run([...Array(22).fill('inventory'), 'look at candle', 'look at candle', 'look at candle']);
@@ -185,9 +156,9 @@ describe('M-7: the gaps', () => {
   it('a bare interjection gets the one frustration line', () => {
     for (const c of ['ugh', 'argh', 'dammit', 'seriously', 'jeez', 'omg', 'ffs', 'ugh!']) expect(run([c]).outs[0]![0], c).toBe(FRUSTRATION);
   });
-  it('boredom yields to the nudge on the same turn, and lands where the nudge does not', () => {
+  it('boredom yields to the stuck helper on the same turn, and lands where the helper does not', () => {
     const { outs } = run(Array(20).fill('get sword'));
-    expect(outs[19]!.at(-1)).toMatch(/^\(Psst\. /);
+    expect(outs[19]!.at(-1)).toMatch(/^A hollow voice adds: /);
     expect(outs[19]!.join(' ')).not.toMatch(/incredibly boring/);
     expect(outs[9]!.at(-1)).toBe("Let's get moving, here, people.");
     expect(outs[14]!.at(-1)).toBe('Are you THAT bored? Do some questing already!');

@@ -1,11 +1,10 @@
-import type { FlagPatch, PhraseRule, Room, Rule, RuleThen } from './types';
+import type { PhraseRule, Room, Rule, RuleThen } from './types';
 import type { GameState, HeardLine } from '../engine/types';
 import { vary } from '../engine/quirks';
 import { talkTo } from '../engine/builtins';
 import { setting } from '../engine/governance';
 import { STEPS, pqDone, pqStep } from './applied-steps';
 import { BRICKS_NOUNS, BRICKS_TEXT, xmlaRouteFrom } from './sacristy';
-import { CURSE_BLANK_TEXT, CURSE_COLUMN_TEXT, UNDO_COLUMN } from './curses';
 import { WORD_DEATH } from './deaths';
 import { MALAPROPS } from './voice';
 
@@ -46,41 +45,20 @@ export const MOAT_TEXT = `'A CALCULATED COLUMN?' ${MOAT_BODY}`;
 const MOAT_TABLE_TEXT = (s: GameState): string => (s.flags['model.date']
   ? `The Duke takes the table. 'Marked,' he says, almost pleased. Then he sees how. 'CALENDARAUTO?' ${MOAT_BODY}`
   : `The Duke takes the table. Turns it over. 'A date table,' he says. 'UNMARKED?' ${MOAT_BODY}`);
-/**
- * Trial 2 (+25, `trial.moat`): the id, key and points are unchanged from the SQL days, so the ledger still sums to 200.
- * The moat also washes the Duke's curse off (curses.ts), and his count with it: a calculated column that finally says
- * the sin is a measure again.
- */
-export const MOAT_THEN: RuleThen = { text: MOAT_TEXT, set: { 'trial.moat': true, 'curse.column': false, 'duke.wrong': 0 }, points: 25, pointsKey: 'fortress.moat', moveTo: 'fortress.bridge', sfx: 'death' };
-const MOAT_TABLE_THEN: RuleThen = { ...MOAT_THEN, text: MOAT_TABLE_TEXT, remove: ['date-table'], set: { 'trial.moat': true, 'curse.column': false, 'duke.wrong': 0, 'model.date': true } };
+/** Trial 2 (+25, `trial.moat`): the id, key and points are unchanged from the SQL days, so the ledger still sums to 200. */
+export const MOAT_THEN: RuleThen = { text: MOAT_TEXT, set: { 'trial.moat': true }, points: 25, pointsKey: 'fortress.moat', moveTo: 'fortress.bridge', sfx: 'death' };
+const MOAT_TABLE_THEN: RuleThen = { ...MOAT_THEN, text: MOAT_TABLE_TEXT, remove: ['date-table'], set: { 'trial.moat': true, 'model.date': true } };
 const MOAT_AGAIN: RuleThen = { text: "'Another?' The Duke does not rise this time. 'Once was instructive. Twice is a habit.' He points at the window. You take the stairs.", outcome: 'snark' };
 
 /**
- * The Duke's patience (spec1 §5.4, fix round 1): a WRONG answer is a `say` about DAX or the model that is not the sin
- * and not correct DAX (WRONG_RE: it names a DAX or modelling word, and is not `calculate` alone, a CALCULATE…FILTER,
- * a SUMX(…) or a VAR…RETURN). `say hello` never counts. The second and third wrong answers are counted out loud (STRIKES:
- * WRONG two, the warning at three); the fourth makes you a CALCULATED COLUMN (fortress.curse-column). Only before the moat, which
- * lifts it, so the curse can never soft-lock the win. Leaving the chamber (fortress.leave-duke) and every undo reset the
- * count. `wrong(then)` adds the count and the strike beat to a snark rule without touching its line.
+ * A WRONG answer is a `say` about DAX or the model that is not the sin and not correct DAX (WRONG_RE: it names a DAX or
+ * modelling word, and is not `calculate` alone, a CALCULATE…FILTER, a SUMX(…) or a VAR…RETURN). `say hello` is not his
+ * business. Each wrong answer that has its own line gets it; the rest get fortress.dax-wrong. Nothing is counted.
  */
 const DAXISH = '(select|join|evaluate|implicit|bidirectional|bi directional|both directions|cross filter|userelationship|use relationship|sumx|sum|divide|filter|measures?|context|all|allexcept|removefilters|calculate|columns?|relationships?|tables?|model|dax)';
 /** Correct DAX (fix round 2): any expression starting with CALCULATE, with or without FILTER, a SUMX(…) or a VAR…RETURN. `say calculate` alone is dax-calculate, matched by exact noun first. */
 const GOOD_DAX = /(^calculate\b.|calculate.*filter|sumx|var .*return)/;
 export const WRONG_RE = new RegExp(`^(?!calculate\\b)(?!.*(var .*return|sumx.|calculated column))(?=.*\\b${DAXISH}\\b)`);
-// The first wrong answer is its own line, unchanged (keep-sense pins it); the second and third are counted out loud.
-const STRIKES = ['', '', "Two fingers go up. 'WRONG. Two.'", "A third finger. 'One more and you're a column.'"] as const;
-const WRONG: FlagPatch = { 'duke.wrong': (v) => Math.min(3, (Number(v) || 0) + 1) };
-/** The strike beat for this wrong answer: the count before it, plus one. Nothing while you are already a column. */
-/** …and nothing after the moat either (fix round 2): the curse only applies before it, so no threat of one. */
-const strike = (s: GameState): string => (s.flags['curse.column'] || s.flags['trial.moat'] ? '' : STRIKES[Math.min(3, (Number(s.flags['duke.wrong']) || 0) + 1)]!);
-const wrong = (then: RuleThen): RuleThen => ({
-  ...then,
-  text: (s, w, cmd) => `${typeof then.text === 'function' ? then.text(s, w, cmd) : then.text} ${strike(s)}`.trim(),
-  set: { ...then.set, ...WRONG },
-});
-
-/** Studio: the seventh stare at the Card after the contest is won makes you (Blank) (fortress.curse-blank). */
-const STARES: FlagPatch = { 'card.stares': (v) => Math.min(6, (Number(v) || 0) + 1) };
 
 /** Model View: ten calculated columns (spec1 §5.4). Nine warnings, each its own line, counted out loud; the tenth opens in Word. */
 const COLUMNS = [
@@ -105,21 +83,6 @@ const poke = (id: string, noun: string[], use: readonly PokeLine[], get: readonl
 ];
 /** One, two … six, for the room text's count of open doors (no numerals next to "Seven doorways"). */
 const COUNT = ['', 'one', 'two', 'three', 'four', 'five', 'six'] as const;
-
-/**
- * The Keep's aside for the hoodie still to get (Task B4): the back gate as an idea, never a route. With XMLA off the
- * gate is bricks and no hint may walk through it (E2), so the aside names the bricks and the lake, and nothing in between.
- */
-const keepToMonksAside = (s: GameState): string => (setting(s, 'xmla')
-  ? 'The monks are behind this Keep. The Model View has a back gate, and back gates are how engineers get in, and out.'
-  : 'The monks are behind this Keep, and the back gate to them is bricks today. The long way round goes past the lake.');
-
-/** The hall's business once its query runs (Task B4), sideways: the Duke, the policy, the refresh, the monks, then out. */
-const hallRestAside = (s: GameState): string =>
-  !s.flags['trial.moat'] ? 'The Duke is north of here and he throws people out of windows for one sentence. The prophecy needs you to smell like where you would land.' :
-  !s.flags['refresh.done'] ? 'East, a progress bar has been at 97% since 2019, chewing on a pie with thirty-one slices.' :
-  !s.flags['trial.hoodie'] ? keepToMonksAside(s) :
-  "The Keep's done with you. The moat, south of the gate, would like a second go, and won't get one.";
 
 /** Studio: what the Big Refresh says when you push it without a policy (spec §17). */
 export const REFRESH_ERRORS = [
@@ -164,14 +127,8 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       !s.flags['refresh.done'] ? 'North, then east. The Report Studio has a pie chart with thirty-one slices and a refresh that hates it.' :
       !s.flags['trial.hoodie'] ? (setting(s, 'xmla') ? "North, west, then north again: the Model View's back gate opens onto the Monastery." : xmlaRouteFrom('fortress.bridge')) :
       'The Keep is done with you, and you with it. South, to the Foothills.',
-    // The aside (Task B4), the tier ladder the plan spells out for this gate: sideways at 4, a rhyme at 8, the flask hint at 12.
+    // The helper (Task B4): the rhyme at 4 dead turns, the flask hint from 8.
     nudge: {
-      oblique: (s) =>
-        !s.flags['bridge.down'] ? "The guard's been asked for one thing all day and it wasn't your name." :
-        !s.flags['trial.moat'] ? 'The Duke throws people in the moat for exactly one sentence, and the prophecy needs you to smell like the moat. You can see where this is going.' :
-        !s.flags['refresh.done'] ? "The Studio inside has a progress bar stuck at 97% since 2019, and the thing it's stuck on is round and has thirty-one slices." :
-        !s.flags['trial.hoodie'] ? keepToMonksAside(s) :
-        "The Keep is finished with you. So is the moat, though it'd take you back.",
       plainer: (s) => (!s.flags['bridge.down'] ? "He wants a SKU. There's a free one. It rhymes with denial." : ''),
     },
     rules: [
@@ -311,10 +268,8 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       const k = pqStep(s);
       return pqDone(s) ? rest : `${rest} (Optional, for the bonus: the query is broken at step ${k + 1}: ${STEPS[k]}. \`look at steps\`.)`;
     },
-    // The aside (Task B4): the order is the idea. The plainer tier names the waiting step; the flask hint, at 12, names the command.
+    // The helper (Task B4): the plain line names the waiting step; the flask hint, from 8, names the command.
     nudge: {
-      oblique: (s) => (pqDone(s) ? hallRestAside(s)
-        : "Seven doorways, one of them waiting, and the hall won't let you skip it. Queries are like that. You do them in order or you do them again."),
       plainer: (s) => (pqDone(s) ? '' : `The waiting doorway is step ${pqStep(s) + 1}, ${STEPS[pqStep(s)]}. Steps aren't walked through. They're applied.`),
     },
     rules: [
@@ -389,13 +344,8 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         xmla ? 'North, through the back gate, the monks are waiting.' : 'The monks are waiting on the other side of the bricks.';
       return `${xmla ? '' : 'The back gate is closed (XMLA endpoint: Off). The Sacristy, up from the Cloister, has the switch; reach the Monastery the long way, east of the Gold Marsh. '}${stage}`;
     },
-    // The aside (Task B4): Sir Cardinality guards the diagram, not the paper; the back gate is an idea, never a route (E2).
+    // The helper (Task B4): Sir Cardinality guards the diagram, not the paper.
     nudge: {
-      oblique: (s) =>
-        s.flags['trial.hoodie'] && s.flags['trial.moat'] && s.flags['refresh.done'] ? "The monks are done with you and so's the Keep. The hall's east, the gate's south of that, and the moat waves." :
-        !s.flags['trial.moat'] ? "There's a table here with every day in it and nobody marked it, and the Duke north of the hall would love to hear about that." :
-        !s.flags['refresh.done'] ? "This model is fine. The thing that has been at 97% since 2019 is two rooms east, and it's round." :
-        keepToMonksAside(s),
       plainer: (s) =>
         !s.flags['trial.moat'] ? "Take the date table. Then show it to the Duke, north of the hall. He'll do the rest." :
         !s.flags['refresh.done'] ? 'The pie chart in the Studio is what the Big Refresh is choking on. The Studio is east of the hall, and the hall is east of here.' :
@@ -425,8 +375,6 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'get', noun: POLICY, flags: [{ flag: 'taken.policy', not: true }] },
         then: { text: "An incremental refresh policy: 'Refresh rows from the last 10 days.' Small steps. Bursting steps, one might say.", give: ['policy'], sfx: 'item' },
       },
-      // The policy on yourself while a column (curses.ts): the global undo, copied ahead of the room's own `use policy` line.
-      { ...UNDO_COLUMN, id: 'fortress.undo-column-model' },
       {
         id: 'fortress.use-policy-model',
         when: { verb: 'use', noun: POLICY, has: ['policy'] },
@@ -523,16 +471,11 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     items: ['throne', 'dax-window', 'keep-window', 'filter-pane'],
     npcs: ['duke'],
     scene: () => 'fortress.throne',
-    // Cursed (curses.ts): the way out first, and the sin is still one of them, so the moat can never be missed.
     flaskHint: (s) => (s.flags['trial.moat'] ? 'You have the smell. Nothing more for you here, unless you like spinners.'
-      : s.flags['curse.column'] ? 'You are a calculated column. Columns are computed at refresh, and the Model View has a refresh policy on a lectern: apply it to yourself, ten days at a time. Or say the thing he despises and let the moat wash it off.'
       : s.inventory.includes('date-table') ? 'Show him the date table. Or say the thing every DAX lord despises; it has two words and it goes in a table. Either way, mind the window.'
       : 'Say the thing every DAX lord despises. It has two words and it goes in a table. Or bring him a table he can despise: the date table, west of the hall.'),
-    // The aside (Task B4). No nick() in here: one of the nicknames IS the sin, and the first two tiers never say it.
+    // The helper (Task B4). No nick() in here: one of the nicknames IS the sin, and the plain line never says it.
     nudge: {
-      oblique: (s) => (s.flags['trial.moat']
-        ? 'You have the smell. The Duke has nothing else for you but spinners, and the spinners never finish.'
-        : "The Duke has exactly one thing he will not hear in this room, and it's the first thing you'd do to his model if he weren't looking."),
       plainer: (s) => (s.flags['trial.moat'] ? '' : s.inventory.includes('date-table') ? "He hates one shortcut above all others, and he hates an unmarked date table almost as much. You're carrying one." : "He hates one shortcut above all others. It's a column. It isn't a real one."),
     },
     rules: [
@@ -546,45 +489,32 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       { id: 'fortress.give-table-none', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat', not: true }] }, then: { text: "You have no table. The Model View, west of the hall, has one. It is unmarked. He will love that.", outcome: 'fail' } },
       { id: 'fortress.give-table-after', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat' }] }, then: { text: "He has it. It's on his desk, marked, out of spite. You smell like the moat and he has a date table; everyone got something.", outcome: 'snark' } },
       { id: 'fortress.duke-sql', when: { verb: 'talk', noun: DUKE, noun2: ['sql', 't sql', 'tsql', 'the moat', 'moat', 'warehouse'] }, then: { text: "'SQL,' says the Duke, and then, to himself, 'EVALUATE.' Then, quieter, 'SELECT.' He has caught himself. He will not forgive himself.", outcome: 'success' } },
-      // Three wrong answers, then a fourth (curses.ts): only a wrong answer (WRONG_RE), never `say hello` or correct DAX.
-      // Before the moat only; the moat lifts it. Pre-flight R-7: fortress.say-dax-word (F6), when it comes, goes after this.
-      {
-        id: 'fortress.curse-column',
-        when: { verb: 'say', nounMatches: WRONG_RE, flags: [{ flag: 'duke.wrong', is: 3 }, { flag: 'trial.moat', not: true }, { flag: 'curse.column', not: true }] },
-        then: { text: CURSE_COLUMN_TEXT, set: { 'curse.column': true, 'duke.wrong': 0 }, outcome: 'snark', sfx: 'curse' },
-      },
-      // R-7: right after the curse, so a fourth wrong `say dax` still makes you a column. A wrong answer like the rest (wrong()).
-      { id: 'fortress.say-dax-word', when: { verb: 'say', noun: ['dax'] }, then: wrong({ text: `You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed}; it feels like a filter you cannot see.`, outcome: 'snark' }) },
-      // The count does not survive the door (fix round 1): south with strikes on the board forgets them.
-      {
-        id: 'fortress.leave-duke',
-        when: { verb: 'go', dir: 's', flags: [{ flag: 'duke.wrong' }] },
-        then: { text: 'You back out of the chamber. The Duke loses count of you; nothing here survives leaving the filter context.', set: { 'duke.wrong': 0 }, moveTo: 'fortress.hall', outcome: 'move' },
-      },
+      // R-7: `say dax` is a wrong answer with a line of its own.
+      { id: 'fortress.say-dax-word', when: { verb: 'say', noun: ['dax'] }, then: { text: `You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed}; it feels like a filter you cannot see.`, outcome: 'snark' } },
       {
         id: 'fortress.select-star',
         when: { verb: 'say', noun: ['select *', 'select star', 'select * from', 'select *;', 'select * from table', 'select all', 'select * from everything'] },
-        then: wrong({ text: "The Duke blinks. 'SELECT? This is a semantic model. We EVALUATE here.' He does not throw you. He corrects you, which is worse.", outcome: 'snark' }),
+        then: { text: "The Duke blinks. 'SELECT? This is a semantic model. We EVALUATE here.' He does not throw you. He corrects you, which is worse.", outcome: 'snark' },
       },
       { id: 'fortress.dax-evaluate', when: { verb: 'say', noun: ['evaluate', 'evaluate table', 'evaluate sales'] }, then: { text: "'Correct,' says the Duke, disappointed. 'And useless.'", outcome: 'snark' } },
-      { id: 'fortress.dax-implicit', when: { verb: 'say', noun: ['implicit measure', 'implicit measures', 'implicit'] }, then: wrong({ text: "The Duke shudders. 'Implicit.' But he has heard worse today.", outcome: 'snark' }) },
+      { id: 'fortress.dax-implicit', when: { verb: 'say', noun: ['implicit measure', 'implicit measures', 'implicit'] }, then: { text: "The Duke shudders. 'Implicit.' But he has heard worse today.", outcome: 'snark' } },
       // 'bi directional': the parser strips the hyphen before the noun is matched.
-      { id: 'fortress.dax-bidirectional', when: { verb: 'say', noun: ['bidirectional', 'bi-directional', 'bi directional', 'both directions', 'bidirectional filtering', 'cross filter both'] }, then: wrong({ text: "'Both directions,' says the Duke, 'is how ambiguity gets a seat at the table.' He does not throw you. He wants you to hear that again on the way out.", outcome: 'snark' }) },
-      { id: 'fortress.dax-userelationship', when: { verb: 'say', noun: ['userelationship', 'use relationship'] }, then: wrong({ text: "'USERELATIONSHIP,' says the Duke. 'The inactive one. You are the inactive one.'", outcome: 'snark' }) },
+      { id: 'fortress.dax-bidirectional', when: { verb: 'say', noun: ['bidirectional', 'bi-directional', 'bi directional', 'both directions', 'bidirectional filtering', 'cross filter both'] }, then: { text: "'Both directions,' says the Duke, 'is how ambiguity gets a seat at the table.' He does not throw you. He wants you to hear that again on the way out.", outcome: 'snark' } },
+      { id: 'fortress.dax-userelationship', when: { verb: 'say', noun: ['userelationship', 'use relationship'] }, then: { text: "'USERELATIONSHIP,' says the Duke. 'The inactive one. You are the inactive one.'", outcome: 'snark' } },
       {
         id: 'fortress.select1',
         when: { verb: 'say', noun: ['select 1', 'select 1;'] },
-        then: wrong({ text: "'Adequate,' says the Duke, and returns to his throne.", outcome: 'snark' }),
+        then: { text: "'Adequate,' says the Duke, and returns to his throne.", outcome: 'snark' },
       },
       {
         id: 'fortress.select-cols',
         when: { verb: 'say', nounMatches: /^select .+ from/ },
-        then: wrong({ text: "'A column list. How… proper.' The Duke seems disappointed. 'Nobody gets thrown in the moat for a column list.'", outcome: 'snark' }),
+        then: { text: "'A column list. How… proper.' The Duke seems disappointed. 'Nobody gets thrown in the moat for a column list.'", outcome: 'snark' },
       },
       {
         id: 'fortress.say-join',
         when: { verb: 'say', nounMatches: /join/ },
-        then: wrong({ text: "'JOINs,' says the Duke, 'are for the moat.'", outcome: 'snark' }),
+        then: { text: "'JOINs,' says the Duke, 'are for the moat.'", outcome: 'snark' },
       },
       {
         id: 'fortress.dax-calculate',
@@ -594,32 +524,32 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.dax-sumx',
         when: { verb: 'say', noun: ['sumx', 'sum'] },
-        then: wrong({ text: "'SUMX,' the Duke corrects, 'iterates. SUM aggregates. You, peasant, do neither.'", outcome: 'snark' }),
+        then: { text: "'SUMX,' the Duke corrects, 'iterates. SUM aggregates. You, peasant, do neither.'", outcome: 'snark' },
       },
       {
         id: 'fortress.dax-divide',
         when: { verb: 'say', noun: ['divide'] },
-        then: wrong({ text: "'DIVIDE,' says the Duke, 'handles zero. Unlike you.'", outcome: 'snark' }),
+        then: { text: "'DIVIDE,' says the Duke, 'handles zero. Unlike you.'", outcome: 'snark' },
       },
       {
         id: 'fortress.dax-filter',
         when: { verb: 'say', noun: ['filter'] },
-        then: wrong({ text: "'FILTER returns a table,' says the Duke. 'You return nothing.'", outcome: 'snark' }),
+        then: { text: "'FILTER returns a table,' says the Duke. 'You return nothing.'", outcome: 'snark' },
       },
       {
         id: 'fortress.dax-measure',
         when: { verb: 'say', noun: ['measure', 'a measure', 'measures'] },
-        then: wrong({ text: 'The Duke waits for the rest of the measure. It does not come. He closes the DAX query view on your fingers.', outcome: 'snark' }),
+        then: { text: 'The Duke waits for the rest of the measure. It does not come. He closes the DAX query view on your fingers.', outcome: 'snark' },
       },
       {
         id: 'fortress.dax-context',
         when: { verb: 'say', noun: ['evaluation context', 'filter context', 'row context', 'context', 'context transition'] },
-        then: wrong({ text: "The Duke's eyes narrow. 'Which one?' You do not know. Nobody does, the first six times.", outcome: 'snark' }),
+        then: { text: "The Duke's eyes narrow. 'Which one?' You do not know. Nobody does, the first six times.", outcome: 'snark' },
       },
       {
         id: 'fortress.dax-all',
         when: { verb: 'say', noun: ['all', 'allexcept', 'removefilters'] },
-        then: wrong({ text: "'ALL removes filters,' says the Duke, 'including the ones keeping you alive.'", outcome: 'snark' }),
+        then: { text: "'ALL removes filters,' says the Duke, 'including the ones keeping you alive.'", outcome: 'snark' },
       },
       // The right DAX, but it takes a while: a three-wait spinner, then the classic error (spec §17).
       {
@@ -630,19 +560,13 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.dax-good',
         when: { verb: 'say', nounMatches: GOOD_DAX },
-        // With strikes on the board, correct DAX is grudging and does not count (fix round 1).
-        then: {
-          text: (s) => (Number(s.flags['duke.wrong']) > 0
-            ? "'Correct,' says the Duke. 'And beside the point.' A spinner appears. The spinner is still there. You could wait."
-            : "The Duke nods. 'Correct.' A spinner appears. The spinner is still there. You could wait."),
-          set: { 'dax.spinner': 1 },
-        },
+        then: { text: "The Duke nods. 'Correct.' A spinner appears. The spinner is still there. You could wait.", set: { 'dax.spinner': 1 } },
       },
-      // Any other word about DAX or the model (WRONG_RE) is a wrong answer too, and counts; anything else is not his business.
+      // Any other word about DAX or the model (WRONG_RE) is a wrong answer too; anything else is not his business.
       {
         id: 'fortress.dax-wrong',
         when: { verb: 'say', nounMatches: WRONG_RE },
-        then: wrong({ text: "'That is not DAX,' says the Duke. 'That is a word that has met DAX.'", outcome: 'snark' }),
+        then: { text: "'That is not DAX,' says the Duke. 'That is a word that has met DAX.'", outcome: 'snark' },
       },
       {
         id: 'fortress.dax-wait-1',
@@ -657,8 +581,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.dax-timeout',
         when: { verb: 'wait', flags: [{ flag: 'dax.spinner', is: 3 }] },
-        // The running gag: somewhere east, the Card goes back to (Blank).
-        then: { text: "Visual has exceeded the available resources. The Duke: 'Correct, though.' Somewhere east, in the Studio, a Card quietly goes back to (Blank).", set: { 'dax.spinner': 0, 'stare.done': false } },
+        then: { text: "Visual has exceeded the available resources. The Duke: 'Correct, though.'", set: { 'dax.spinner': 0 } },
       },
       {
         id: 'fortress.write-measure',
@@ -730,36 +653,18 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
     npcs: ['card'],
     scene: (s) => (s.flags['refresh.done'] ? 'fortress.studio-running' : 'fortress.studio'),
     flaskHint: (s) => {
-      const count = s.flags['stare.count'];
-      // (Blank) first (curses.ts): the two words are the dragon's, and Sir Cardinality has them next door.
-      if (s.flags['curse.blank']) return 'You are (Blank). Two words put a value back in you, and Sir Cardinality says them in his sleep, two rooms west. The Card can wait; it has practice.';
       if (s.flags['refresh.done']) {
         if (!s.worn.includes('boots')) return 'Wear the boots. The mountain will feel shorter.';
-        if (!s.flags['stare.done'] && count !== 3) return 'The Card still says (Blank). Look at it. Do not blink.';
+        if (!s.flags['stare.done']) return 'The Card still says (Blank). Look at it. Do not blink.';
         return s.flags['trial.hoodie'] ? 'Nothing left here but a bar chart that used to be a pie. West, then south, out of the Keep.' : 'Nothing left here but a bar chart that used to be a pie. West, then west, then north: the Monastery.';
       }
-      // After the Duke's spinner times out the Card is (Blank) again, but the stare is won and cannot restart.
-      if (count === 3 && !s.flags['stare.done']) return "The Card went back to (Blank) when the Duke's spinner gave up. Your stare still counts. The Big Refresh is stuck on the pie: use it.";
       if (!s.flags['stare.done']) return 'Look at the Card. Do not blink.';
       return 'The Big Refresh is stuck on one visual: the pie, thirty-one slices. Use it. It wants to be a bar chart.';
     },
-    // The aside (Task B4), stage for stage with the flask hint above: the stare is a contest, the policy is a thing in a pocket. No brackets: the Card's Blank goes bare here so the aside always wraps.
+    // The helper (Task B4), stage for stage with the flask hint above: the stare is a contest, the policy is a thing in a pocket.
     nudge: {
-      oblique: (s) => {
-        const count = s.flags['stare.count'];
-        if (s.flags['refresh.done']) {
-          if (!s.worn.includes('boots')) return "Something fell out of the progress bar and you're carrying it like a souvenir. It goes on your feet.";
-          if (!s.flags['stare.done'] && count !== 3) return "There's still a Card on that canvas showing Blank, and it has never once lost a staring contest, mostly because nobody has tried.";
-          return "Nothing left in here but a bar chart that used to be a pie, and it isn't going anywhere, which is the nicest thing anyone has said about it.";
-        }
-        if (count === 3 && !s.flags['stare.done']) return "The Card went Blank again, and that's the Duke's spinner, not you. The thing in the corner is still choking on the roundest thing on the canvas.";
-        if (!s.flags['stare.done']) return "There's a Card on that canvas showing Blank, and it has never once lost a staring contest, mostly because nobody has tried.";
-        return "The Big Refresh has been at 97% since 2019, and the thing it chokes on is the roundest thing on the canvas.";
-      },
       plainer: (s) => {
-        const count = s.flags['stare.count'];
         if (s.flags['refresh.done'] && !s.worn.includes('boots')) return "They're called Bursting Boots and they've never touched your feet. That's the whole room.";
-        if (count === 3 && !s.flags['stare.done']) return '';
         if (!s.flags['stare.done']) return "It's a staring contest. Look at the Card and don't blink.";
         if (!s.flags['refresh.done']) return 'The pie chart. Thirty-one slices. Use it and it becomes a bar chart, and the refresh can finally finish.';
         return '';
@@ -769,39 +674,22 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       // ---- The stare (+10): same mechanics as the old Lookup Activity ----
       {
         id: 'fortress.stare',
-        when: { verb: 'look', noun: CARD, flags: [{ flag: 'stare.done', not: true }, { flag: 'stare.count', not: true }] },
+        when: { verb: 'look', noun: CARD, flags: [{ flag: 'stare.done', not: true }] },
         then: { text: "You look at the Card. It shows (Blank). It looks back. Neither of you blinks. Your eyes water; the Card's don't, it has none. Then it blinks. A number appears: 4.2M. It is wrong, but it is a number. You win.", set: { 'stare.done': true, 'stare.count': 3 }, points: 10, sfx: 'success' },
       },
       // Before the stare's talk rule too: a question about Jeff is not a staring contest.
       // A derailment (bickering): the Card and the pie, one value each, forever.
       { id: 'fortress.card-pie', when: { verb: 'talk', noun: CARD, noun2: ['pie', 'pie chart', 'slices'] }, then: { text: 'The Card shows (Pie). The pie shows 3.2%. The Card shows (Blank). The pie shows 3.2%. (You see where this is going.)', outcome: 'success' } },
       { id: 'fortress.card-jeff', when: { verb: 'talk', noun: CARD, noun2: ['jeff', 'finance', 'jeff from finance'] }, then: { text: 'The Card shows (Jeff). Then (Blank). It has no relationship to Jeff; nobody does.', outcome: 'success' } },
-      // The stare past the point of sense (curses.ts): six looks after the contest are counted; the seventh makes you (Blank).
-      // Leaving the Studio (fortress.leave-studio) ends the stare, so it is one stare and not a career.
-      {
-        id: 'fortress.leave-studio',
-        when: { verb: 'go', dir: 'w', flags: [{ flag: 'card.stares' }] },
-        then: { text: 'You leave the Studio. The Card loses count of you; it was the only one counting.', set: { 'card.stares': 0 }, moveTo: 'fortress.hall', outcome: 'move' },
-      },
-      {
-        id: 'fortress.curse-blank',
-        when: { verb: 'look', noun: CARD, flags: [{ flag: 'stare.done' }, { flag: 'card.stares', is: 6 }, { flag: 'curse.blank', not: true }] },
-        then: { text: CURSE_BLANK_TEXT, set: { 'curse.blank': true, 'card.stares': 0 }, outcome: 'snark', sfx: 'curse' },
-      },
       {
         id: 'fortress.look-card-again',
         when: { verb: 'look', noun: CARD, flags: [{ flag: 'stare.done' }, { flag: 'card.looked' }] },
-        then: { text: '4.2M. Then 4.7M. Then 4.2M. It depends on whether Jeff is in the room.', set: STARES, outcome: 'success' },
+        then: { text: '4.2M. Then 4.7M. Then 4.2M. It depends on whether Jeff is in the room.', outcome: 'success' },
       },
       {
         id: 'fortress.look-card-done',
         when: { verb: 'look', noun: CARD, flags: [{ flag: 'stare.done' }] },
-        then: { text: 'The Card shows 4.2M. It is wrong, but it is a number. It looks pleased with itself.', set: { 'card.looked': true, ...STARES }, outcome: 'success' },
-      },
-      {
-        id: 'fortress.look-card-reblank',
-        when: { verb: 'look', noun: CARD, flags: [{ flag: 'stare.count', is: 3 }] },
-        then: { text: '(Blank). Again. Somewhere upstairs a spinner gave up, and the Card took it personally.', outcome: 'success' },
+        then: { text: 'The Card shows 4.2M. It is wrong, but it is a number. It looks pleased with itself.', set: { 'card.looked': true }, outcome: 'success' },
       },
       {
         id: 'fortress.look-card-staring',
@@ -823,12 +711,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.use-card',
         when: { verb: 'use', noun: CARD, flags: [{ flag: 'stare.done', not: true }] },
-        then: {
-          // After the Duke's spinner times out the Card is (Blank) again, but the stare is won and cannot restart.
-          text: (s) => (s.flags['stare.count'] === 3 ? "The Card takes no input. It went (Blank) when the Duke's spinner gave up; your stare still counts. The refresh is the one that wants something."
-            : 'The Card takes no input. It wants staring at. Look at it.'),
-          outcome: 'fail',
-        },
+        then: { text: 'The Card takes no input. It wants staring at. Look at it.', outcome: 'fail' },
       },
       {
         id: 'fortress.use-card-done',
@@ -858,7 +741,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'use', noun: PIE_NOUNS, flags: [{ flag: 'refresh.done' }] },
         then: { text: "It's a bar chart. It's been a bar chart for a minute. Leave it.", outcome: 'fail' },
       },
-      // The policy is a gag now (Tommy: a refresh policy handed to a report makes no sense). It stays the cure for the column curse.
+      // The policy is a gag now (Tommy: a refresh policy handed to a report makes no sense).
       {
         id: 'fortress.policy-nudge',
         when: { verb: 'use', noun: POLICY, noun2: REFRESH, has: ['policy'], flags: [{ flag: 'refresh.done', not: true }] },
@@ -917,8 +800,6 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       },
       // ---- Report design (spec §12.1) ----
 
-      // The policy on yourself while a column (curses.ts): the global undo, copied ahead of the Studio's own `use policy` line.
-      { ...UNDO_COLUMN, id: 'fortress.undo-column-studio' },
       {
         id: 'fortress.use-policy-studio',
         when: { verb: 'use', noun: POLICY, has: ['policy'] },

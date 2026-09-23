@@ -5,9 +5,7 @@ import { NPCS } from './npcs';
 import { isFlood, setting } from '../engine/governance';
 import { doorChecklist, sigilStatus } from './items';
 import { xmlaRouteFrom } from './sacristy';
-import { trialAside } from './nudges';
 import { ADE, ADE_DEATH } from './deaths';
-import { COLUMN_DRAGON } from './curses';
 import { MALAPROPS, nick, rotate } from './voice';
 
 const room = (r: Room): [string, Room] => [r.id, r];
@@ -127,11 +125,6 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
       s.inventory.includes('boots') ? 'Wear the boots. Then go east. You have been carrying them like a souvenir.' :
       "Go north to the Keep's Report Studio and get boots. East is slow going without them. Or go east anyway, slowly, like a refresh.",
     nudge: {
-      oblique: (s) =>
-        !worthy(s) ? trialAside(s, 'north of here') :
-        s.worn.includes('boots') ? "You're bursting. Up is east, and the bill is already drafted." :
-        s.inventory.includes('boots') ? 'Those boots in your bag are a capacity setting. They only do anything on your feet.' :
-        "The pass east is slow going in those shoes. Something better fell out of a progress bar back in the Keep, and it's still lying there.",
       plainer: (s) => (worthy(s) && s.inventory.includes('boots') && !s.worn.includes('boots') ? "Bursting Boots. It's on the label, and the label is on your feet or it's nothing." : ''),
     },
     rules: [
@@ -162,10 +155,6 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
       s.inventory.includes('boots') ? 'Wear the boots. You are holding the solution to this entire room in your hand.' :
       'Go north, slowly. Boots would help. The Keep has some, in the Report Studio, if you want to walk all the way back for them.',
     nudge: {
-      oblique: (s) =>
-        s.worn.includes('boots') ? 'Every second here is billed, and standing still costs the same as walking. Walking at least gets you a ledge.' :
-        s.inventory.includes('boots') ? "You're paying by the second to carry boots through a pass named after not having boots." :
-        'Every step here is billed and yours are taking twice as long. The Keep had boots in a progress bar; the Keep is also very far away now.',
       plainer: (s) => (s.inventory.includes('boots') && !s.worn.includes('boots') ? 'The boots in your bag are called Bursting. The pass is called Throttling. Only one of those is optional.' : ''),
     },
     rules: [
@@ -200,15 +189,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
       s.flags['shrine.open'] ? 'Go north. Do not fight what you find. Answer it.' :
       worthy(s) ? 'Open the door. Or look at it. You are Worthy. Apparently. The door is as surprised as you are.' :
       worthyToDo(s),
-    // The aside (Task B4): the door checks three things; the flask hint lists which are missing, so no plainer tier is needed.
-    nudge: {
-      oblique: (s) => {
-        if (s.flags['shrine.open']) return "The door's open and something inside asks one question of everyone who walks in. Dragons like answers more than swords, and this one bills for both.";
-        if (worthy(s)) return "You're Worthy. The door doesn't know yet. It finds out the moment you pay it any attention at all.";
-        const dark = [!s.flags['trial.hoodie'], !s.flags['trial.moat'], !s.flags['trial.key']].filter(Boolean).length;
-        return `The door checks three things: what you're wearing, what you smell like, what you're carrying. It's unhappy about ${['none', 'one', 'two', 'all three'][dark]} of them, and it's the kind that says so.`;
-      },
-    },
+    // No nudge (Task B4): the flask hint lists which of the door's three things are missing, so it is the helper from 4.
     rules: [
       { id: 'peaks.shrine-door', when: { verb: 'look', noun: DOOR, flags: WORTHY_AND_CLOSED }, then: { ...DOOR_OPENS } },
       { id: 'peaks.shrine-door-open', when: { verb: 'open', noun: DOOR, flags: WORTHY_AND_CLOSED }, then: { ...DOOR_OPENS } },
@@ -263,27 +244,19 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
     npcs: ['throttlor'],
     scene: (s) => (s.flags['dragon.gone'] ? 'peaks.shrine-clear' : 'peaks.shrine'),
     onEnter: (s) => (s.flags['dragon.gone'] ? null : '"WHO DARES— oh. Oh no. You smell like a Warehouse." The dragon gags. "Answer me this, peasant: WHAT IS THE ONE TRUE MODEL?"'),
-    // A calculated column gets no audience (spec1 §5.4): the hint says so before it says the answer.
     flaskHint: (s) => (s.flags['dragon.gone']
       ? 'Get the model. Try not to look inside.'
-      : s.flags['curse.column'] ? 'He will not negotiate with a column. Be a measure first: the refresh policy from the Model View, on yourself, or the Duke and his moat. Then answer him.'
       : 'Answer the dragon. Say the one true model: one fact table, several dimensions, two words. Do not attack him. People always attack him.'),
     nudge: {
-      oblique: (s) => (s.flags['dragon.gone']
-        ? "The dragon left. The Model's right there on the pedestal, glowing. Nobody has looked inside it in years, and there's a reason."
-        : 'He asked you a question. Dragons ask one question and bill for the silence. Sir Cardinality has been answering it in his sleep since the Model View.'),
       plainer: (s) => (s.flags['dragon.gone']
         ? "It's the Golden Semantic Model and it's yours. Pick it up. Do not open it."
         : "It's a shape. One fat table in the middle, skinny ones around it, and the name is something you'd wish on."),
     },
     rules: [
-      // A calculated column (curses.ts) gets neither the question nor the answer: before his talk and before the star schema.
-      { id: 'peaks.column-say', when: { verb: 'say', flags: [{ flag: 'curse.column' }, ...DRAGON_THERE] }, then: { text: COLUMN_DRAGON, outcome: 'fail' } },
-      { id: 'peaks.column-talk', when: { verb: 'talk', noun: DRAGON, flags: [{ flag: 'curse.column' }, ...DRAGON_THERE] }, then: { text: COLUMN_DRAGON, outcome: 'fail' } },
       // Asked about the model twice in a row, he stops hinting and says too much (Task F8); the first ask keeps the two-word hint.
       {
         id: 'peaks.dragon-model',
-        when: { verb: 'talk', noun: DRAGON, noun2: ['model', 'the model', 'golden semantic model', 'semantic model', 'the golden semantic model', 'one true model', 'the one true model'], flags: [...DRAGON_THERE, { flag: 'curse.blank', not: true }] },
+        when: { verb: 'talk', noun: DRAGON, noun2: ['model', 'the model', 'golden semantic model', 'semantic model', 'the golden semantic model', 'one true model', 'the one true model'], flags: DRAGON_THERE },
         then: {
           text: (s, world, cmd) => again(s, talkTo(s, world, world.npcs['throttlor']!, cmd?.noun2),
             "'The model,' says Throttlor, 'is one table.' He pauses. 'I mean. It's golden. It's ONE golden table.' He looks at the pedestal. 'Don't look inside.'"),
@@ -293,14 +266,14 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         // The derailment: ask about the Warehouse and he can only talk about how you smell.
         id: 'peaks.dragon-warehouse',
-        when: { verb: 'talk', noun: DRAGON, noun2: ['warehouse', 'the warehouse', 'fabric warehouse', 'moat', 'the moat', 'smell'], flags: [...DRAGON_THERE, { flag: 'curse.blank', not: true }] },
+        when: { verb: 'talk', noun: DRAGON, noun2: ['warehouse', 'the warehouse', 'fabric warehouse', 'moat', 'the moat', 'smell'], flags: DRAGON_THERE },
         then: { text: "'Don't bring up the Warehouse,' says Throttlor. 'You ARE the Warehouse. I can taste it from here. It tastes like a view nobody documented.'", outcome: 'success' },
       },
       {
         // The brush-off, varied (Task F8): the first unknown topic gets his voice.ts line (through talkTo, below); once you have
         // talked to him at all, the talk count walks these, a new nickname each time.
         id: 'peaks.dragon-brushoff',
-        when: { verb: 'talk', noun: DRAGON, noun2Matches: UNKNOWN_TO_DRAGON, flags: [...DRAGON_THERE, { flag: 'talk.throttlor' }, { flag: 'curse.blank', not: true }] },
+        when: { verb: 'talk', noun: DRAGON, noun2Matches: UNKNOWN_TO_DRAGON, flags: [...DRAGON_THERE, { flag: 'talk.throttlor' }] },
         then: {
           text: (s) => [
             `Throttlor exhales a neat 30-second puff. "Off-topic questions are smoothed over 24 hours, ${nick(s)}. Come back tomorrow."`,
@@ -338,8 +311,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'say', noun: ['star schema', 'a star schema', 'the star schema', 'star', 'star-schema', 'kimball'], flags: [{ flag: 'dragon.gone', not: true }] },
         then: {
           text: "'STAR… SCHEMA?' Throttlor recoils. 'One fact table? Conformed dimensions? Single-direction filters?' He shrieks, deflates like a paused capacity, and drifts out of the Shrine, whistling faintly. He does not come back.",
-          // The two words that put a value in you (curses.ts): the answer lifts (Blank) as it goes.
-          set: { 'dragon.gone': true, 'curse.blank': false }, points: 10, sfx: 'success',
+          set: { 'dragon.gone': true }, points: 10, sfx: 'success',
         },
       },
       {
@@ -374,7 +346,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
         // The sports drink, offered to the thing it is named after.
         id: 'peaks.ade-dragon',
         when: { verb: 'give', noun: ADE, noun2: DRAGON, has: ['capacityade'], flags: DRAGON_THERE },
-        then: { text: "Throttlor sniffs the CapacityAde and hands it back. 'I don't drink my own product,' he says. 'Neither should you.'", outcome: 'snark' },
+        then: { text: "Throttlor sniffs the energy drink and hands it back. 'I don't drink my own product,' he says. 'Neither should you.'", outcome: 'snark' },
       },
       {
         id: 'peaks.reach-model',

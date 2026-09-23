@@ -297,13 +297,12 @@ describe('fix rounds 2–3: no hint, NPC line or gate line names a command the s
   ];
   const rooms = Object.values(WORLD.rooms).filter((r) => !SIDE_REGIONS.has(r.region));
   const txt = (s: GameState, l: GateText | undefined): string => (typeof l === 'function' ? l(s) : l ?? '');
-  /** Every hint-like line in one room and state: the flask hint, the narrator's two nudge tiers (Task B4), the NPCs' talks 1–6, and each shut gate's shape, plainer hint and flavor pool. */
+  /** Every hint-like line in one room and state: the flask hint, the stuck helper's plain line (Task B4), the NPCs' talks 1–6, and each shut gate's shape, plainer hint and flavor pool. */
   const linesIn = (s: GameState, room: (typeof rooms)[number]): [string, string][] => {
     const out: [string, string][] = [[`${room.id} flaskHint`, room.flaskHint(s)]];
-    for (const [tier, l] of [['oblique', room.nudge?.oblique], ['plainer', room.nudge?.plainer]] as const) {
-      const t = typeof l === 'function' ? l(s) : l;
-      if (t) out.push([`${room.id} nudge ${tier}`, t]);
-    }
+    const plain = room.nudge?.plainer;
+    const t = typeof plain === 'function' ? plain(s) : plain;
+    if (t) out.push([`${room.id} nudge plainer`, t]);
     for (const id of room.npcs) {
       const npc = WORLD.npcs[id]!;
       if (npc.hiddenWhen?.(s)) continue;

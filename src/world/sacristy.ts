@@ -264,7 +264,7 @@ export const GOVERNANCE_PHRASES: PhraseRule[] = [
   { id: 'flood.look-jeffs', room: 'village.square', test: /^(look at|look|examine|x|l|inspect)\s+(the )?(jeff from (ops|hr)|other jeffs|jeffs|organization|entire organization|whole organization|everyone|crowd|a jeff you do not recognize|the jeff you do not recognize)$/, text: '',
     then: (s) => (isFlood(s) ? { then: { text: JEFFS_TEXT, outcome: 'success' } } : null) },
   // The engine counts every talk whose noun resolves to an NPC here (step.ts finish() 3d), and a talk verb on "jeff from
-  // hr" parses to the noun "jeff", so that Jeff would count toward Jeff from Finance's escalation and the Jeff curse. On
+  // hr" parses to the noun "jeff", so that Jeff would count toward Jeff from Finance's escalation. On
   // those lines this takes one off first and the engine's bump puts it back: net nothing, which is how many words you
   // said to Jeff from Finance (Task F4). A greeting ("hey jeffs") never parses as talk, so it never bumps and never needs this.
   { id: 'flood.talk-jeffs', room: 'village.square', test: /^(talk to|talk with|speak to|speak with|ask|greet|hello|hi|hey)\s+(the )?(jeff from (ops|hr)|other jeffs|jeffs|organization|entire organization|whole organization|everyone|crowd|a jeff you do not recognize|the jeff you do not recognize)\b/, text: '',
@@ -340,13 +340,8 @@ export const SACRISTY_ROOM: Room = {
     : changedFromDefault(s).length
       ? 'Something is off its default. `settings` shows which. `reset settings` puts every book back.'
       : 'Nothing here is required. `settings` lists the books; `turn off <book>` finds out what it did. Put it back after. Or don\'t, and see.'),
-  // The aside (Task B4): the flask hint here is all backticks, so the first two tiers are all books and no commands.
+  // The helper (Task B4): the flask hint here is all backticks, so the plain line at 4 is all books and no commands.
   nudge: {
-    oblique: (s) => (s.flags['gov.errand'] && setting(s, 'publishToWeb')
-      ? "The Abbot asked you for one thing, and it's on the shelf, in a book with a switch for a spine and 4,112 readers."
-      : changedFromDefault(s).length
-        ? "Something in here isn't the way you found it, and the sign says nobody enforces the sign, which is not the same as nobody noticing."
-        : 'Nothing in here is required. Every book has a switch, every switch does something to someone, and one of them does it to you.'),
     plainer: (s) => (s.flags['gov.errand'] && setting(s, 'publishToWeb')
       ? 'The Abbot wants the prophecy off the internet. One of these books put it there. Turn it the other way.'
       : changedFromDefault(s).length

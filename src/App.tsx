@@ -215,7 +215,6 @@ export default function App({ recorder }: { recorder: Recorder }) {
     <>
       <PlayScreen
         state={state}
-        playerName={session.playerName}
         score={statusScore}
         maxScore={MAX_SCORE}
         log={log}

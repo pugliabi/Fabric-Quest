@@ -22,19 +22,13 @@ export type ParsedCommand = {
 export type Flags = Record<string, boolean | number>;
 
 /**
- * The last command, for the repeat quirks: normalized, where it was typed, how many times in a row, and (once the turn
- * has been answered) what the rules said before any aside, with the turn number that answer was read at. The next
- * repeat compares its own answer against `answer` (quirks.ts applyQuirks, step.ts): a remembered line is the repeat
- * joke, so the generic chirp stays quiet; the same answer verbatim still gets it.
+ * The last command: normalized, where it was typed, and how many times in a row. The world reads `n` for its second
+ * lines (a second look, a second ask); the chirps read it only for the flask's nag (quirks.ts).
  */
 export type Recent = {
   input: string;
   room: string;
   n: number;
-  /** The rule / builtin output of that turn, joined by newlines. Absent before the turn is answered, and on old saves. */
-  answer?: string;
-  /** The `turns` the answer was read at (the pools rotate by turn; the repeat re-reads at this number to tell a rotation from a memory). */
-  at?: number;
 };
 
 export type GameState = {
@@ -50,14 +44,12 @@ export type GameState = {
   won: boolean;
   /** Deterministic seed for snark rotation; derived from the quest id. */
   seed: number;
-  /** Last command (normalized), where it was typed, how many times in a row, and what the game answered. Drives the repeat quirks. */
+  /** Last command (normalized), where it was typed, and how many times in a row. Drives the second lines and the flask's nag. */
   recent?: Recent;
-  /** Consecutive dead turns (fail/snark, no points, same room). The narrator whispers the flask hint at 4, 8, 12… */
+  /** Consecutive dead turns (fail/snark, no points, same room). The room's plain helper at 4, the flask hint at 8, 12… */
   stuck?: number;
   /** Consecutive turns in one room without points, bonus, a move or a change to what you carry — any outcome. Boredom lines at 10, 15, then every 5. */
   idle?: number;
-  /** Consecutive successful looks at scenery (an untakeable item). At 5 the narrator says you're making up puzzles, and it resets. */
-  looks?: number;
 };
 
 export type StepResult = {
@@ -85,7 +77,7 @@ export type WrapKind = 'intent' | 'insist' | 'frustrated';
 /** A line with its wrapper words taken off ("ugh just give me sales please" → "give me sales"). */
 export type Unwrapped = {
   command: string;
-  /** The first wrapper found (leading, else trailing); what the chirps comment on. */
+  /** The first wrapper found (leading, else trailing). The main realm plays the command; the Copilot pane reads the wrapper. */
   kind: WrapKind | null;
   lead?: { kind: WrapKind; word: string };
   trail?: { kind: WrapKind; word: string };

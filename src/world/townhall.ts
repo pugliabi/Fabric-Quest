@@ -1,6 +1,6 @@
 import type { GameState } from '../engine/types';
 import type { Npc, PhraseRule, Room } from './types';
-import { BRUSHOFFS, MALAPROPS, nick } from './voice';
+import { BRUSHOFFS, MALAPROPS } from './voice';
 
 /**
  * The Town Hall (spec2 §6): up the steps from the Village Square. Nothing here scores. The Clerk has one sentence and
@@ -62,7 +62,6 @@ export const HALL_ROOM: Room = {
   npcs: ['clerk'],
   scene: () => HALL,
   flaskHint: () => 'Nothing to win here. The clerk will tell you where the admins are if you keep talking.',
-  nudge: { oblique: (s) => `Nothing in here scores, ${nick(s)}. The Clerk has one sentence, and somewhere around the fourth time he says it, it's a different one.` },
   rules: [
     // The voice sweep (Task F11): the Clerk has heard of the Sacristy. He has not been. Ahead of everything, since it is a talk.
     { id: 'hall.clerk-sacristy', when: { verb: 'talk', noun: CLERK, noun2: ['sacristy', 'the sacristy', 'admins', 'the admins', 'monastery'] }, then: { text: "'The Sacristy,' says the Clerk. 'Up from the Cloister. I've never been. I put in a ticket to go. It's an admin setting.'", outcome: 'success' } },

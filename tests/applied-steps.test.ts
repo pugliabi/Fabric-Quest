@@ -107,21 +107,22 @@ describe('Applied Steps in order (spec2 §8)', () => {
     for (const l of before) expect(l).toContain('#"Changed Type"');
     for (const l of after) { expect(l).toContain('#"Renamed Columns"'); expect(l).not.toContain('#"Changed Type"'); }
   });
-  it('the narrator\'s whisper does not nest brackets around the hall\'s hint (fix round 1, M6; the flask hint is tier 3 since Task B4)', () => {
+  it('the stuck helper says the hall\'s hint in the hint command\'s words, brackets and all (fix round 1, M6; Task B4, made plain)', () => {
     const DEAD = ['get csv', 'get sword', 'get csv', 'get sword'];
     const { rs, s } = run([...DEAD, ...DEAD, ...DEAD], { 'pq.step': 4 });
     expect(s.stuck).toBe(12);
+    const hint = 'North. Insult the Duke properly and he will do the rest. He hates one shortcut above all others. Or bring him the date table from the Model View, west. (Optional, for the bonus: the query is broken at step 5: Filtered Rows. `look at steps`.)';
     const last = rs[11]!.output[rs[11]!.output.length - 1]!;
-    expect(last).toBe('Psst. North. Insult the Duke properly and he will do the rest. He hates one shortcut above all others. Or bring him the date table from the Model View, west. (Optional, for the bonus: the query is broken at step 5: Filtered Rows. `look at steps`.)');
+    expect(last).toBe(`A hollow voice adds: "${hint}"`);
     expect(last).not.toMatch(/\(\(|\)\)/);
-    // The first two tiers (Task B4) carry no brackets of their own, so they wrap: the order at 4, the waiting step at 8.
-    expect(rs[3]!.output[rs[3]!.output.length - 1]).toBe("(Psst. Seven doorways, one of them waiting, and the hall won't let you skip it. Queries are like that. You do them in order or you do them again.)");
-    expect(rs[7]!.output[rs[7]!.output.length - 1]).toBe("(Psst. The waiting doorway is step 5, Filtered Rows. Steps aren't walked through. They're applied.)");
-    // Elsewhere the whisper keeps its brackets.
+    // The plain line at 4 names the waiting step; the flask hint at 8 names the command.
+    expect(rs[3]!.output[rs[3]!.output.length - 1]).toBe('A hollow voice adds: "The waiting doorway is step 5, Filtered Rows. Steps aren\'t walked through. They\'re applied."');
+    expect(rs[7]!.output[rs[7]!.output.length - 1]).toBe(`A hollow voice adds: "${hint}"`);
+    // Elsewhere the helper reads the same way.
     let c = { ...newGame(WORLD, 6) };
     let out: string[] = [];
     for (const cmd of DEAD) { const r = step(c, cmd, WORLD); c = r.state; out = r.output; }
-    expect(out[out.length - 1]).toMatch(/^\(Psst\. .*\)$/);
+    expect(out[out.length - 1]).toMatch(/^A hollow voice adds: ".*"$/);
   });
   it('the flask hint leads with the broken step; look at query lists the state', () => {
     expect(WORLD.rooms['fortress.hall']!.flaskHint(hall({ 'pq.step': 3 }))).toMatch(/\(Optional, for the bonus: the query is broken at step 4: Changed Type\. `look at steps`\.\)$/);

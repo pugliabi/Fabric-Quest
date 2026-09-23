@@ -28,7 +28,8 @@ export function rotate(s: GameState, lines: readonly string[]): string {
 }
 
 /** Misspelled on purpose, reused exactly. Each must appear verbatim in at least six lines across the game (tests/voice-harness.test.ts, Task F12). */
-export const MALAPROPS = { refreshered: 'refreshered', capacitude: 'capacitude', daxxed: 'DAXxed' } as const;
+/** Plain words now (Tommy, Sep 23 evening: no made-up words). The keys stay so every line still reads. */
+export const MALAPROPS = { refreshered: 'refreshed', capacitude: 'capacity', daxxed: 'filtered' } as const;
 
 /** The one unchanging reply to frustration and profanity (spec1 §5.3). */
 export const FRUSTRATION = "Come now. Don't get throttled.";
@@ -70,7 +71,7 @@ export function brushOffLine(s: GameState, b: BrushOff | undefined): string | un
 }
 
 /** Twisted brands, one syllable off. */
-export const BRANDS = ['Refreshr™', 'CapacityAde', 'Dataflows Gen1 Classic'] as const;
+export const BRANDS = ['Dataflows Gen1 Classic'] as const;
 
 /** The 2000s-Microsoft allusion layer. The region sweeps (Tasks F4–F11) use at least one per region. */
 export const ALLUSIONS = [

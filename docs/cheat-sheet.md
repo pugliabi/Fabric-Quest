@@ -1,7 +1,7 @@
 # The cheat sheet
 
 The whole game, spoilers everywhere. [The ledger](ledger.md) is the points authority; this is the map of what to
-type. For everything else each room answers to (gags, easter eggs, deaths, curses, what every NPC says), see
+type. For everything else each room answers to (gags, easter eggs, deaths, what every NPC says), see
 [the room guide](room-guide.md). Section 1 is replayed through the engine by
 `npx tsx scripts/cheat-sheet.ts --gameplay`, so the points and totals below are what the game actually pays, not a
 hand count.
@@ -136,9 +136,9 @@ with, and the exact words to type. You start with your Pro license (the card) in
 - **Foothills.** The crossroads: north to the Keep, east up the Peaks. Type: `n` Power BI Desktop Gate; `e` Throttling Pass.
 - **Power BI Desktop Gate.** Name a SKU the guard accepts (+10): the free one is the trial. You leave with: bridge down. Type: `say trial` or `use trial`, then `n`. Don't `swim moat` (☠).
 - **Power Query Hall.** Pass through. Optional: rebuild the query in order (+10 bonus). Type: `source` · `navigate` · `promote headers` · `change type` · `filter rows` · `remove other columns` · `rename columns`. `look at steps`. `n` Duke, `w` Model View, `e` Report Studio. Don't type DAX into the M editor (☠).
-- **Duke's Chamber.** Give the Duke something to despise (+25): the sin, or an unmarked date table. Either way you are thrown into the Moat of T-SQL and land at the Gate. Bring: date table (Model View), or just the two words. You leave with: Trial 2: you smell like a Warehouse (`trial.moat`). Type: `give date table to duke` or `say calculated column`. `say select *` only gets you corrected; three wrong answers and you are a column (curse).
+- **Duke's Chamber.** Give the Duke something to despise (+25): the sin, or an unmarked date table. Either way you are thrown into the Moat of T-SQL and land at the Gate. Bring: date table (Model View), or just the two words. You leave with: Trial 2: you smell like a Warehouse (`trial.moat`). Type: `give date table to duke` or `say calculated column`. `say select *` only gets you corrected.
 - **The Model View.** Take the date table. North is the back gate to the Monastery. You leave with: date table. Type: `get date table`, later `n`. Don't turn on bidirectional filtering (☠).
-- **The Report Studio.** Out-stare the Card (+10); turn the pie into a bar chart and the Big Refresh finishes (+15). You leave with: boots (wear them). Type: `look at card`; `use pie chart`; `wear boots`. Don't `open other page` (☠). Don't stare past six (the Blank curse).
+- **The Report Studio.** Out-stare the Card (+10); turn the pie into a bar chart and the Big Refresh finishes (+15). You leave with: boots (wear them). Type: `look at card`; `use pie chart`; `wear boots`. Don't `open other page` (☠).
 - **Monastery Gate.** Start the Spark session (+10). You leave with: gate open. Type: `open gate` (or `wait`), then `n`.
 - **Cloister.** Get the Hoodie of Spark (+15) once the notebook runs; optional errand. Bring: notebook fixed (Spark Session Chamber). You leave with: hoodie (wear it: Trial 1). Type: `talk to abbot`, `wear hoodie`. `talk to abbot` again for the errand (+10 bonus). `w` Library, `e` Spark Chamber, `u` Sacristy, `s` Gate.
 - **Library of Deprecated Notebooks.** Trade your license for the PySpark scroll (+10); read it (+5). Bring: license (you start with it). You leave with: scroll. Type: `give license to librarian`, `read scroll`.

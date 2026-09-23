@@ -60,12 +60,12 @@ describe('Semantic Model Keep', () => {
 });
 
 describe('Keep humor pass (spec §17)', () => {
-  it('a correct measure spins, and the third wait exceeds the available resources', () => {
+  it('a correct measure spins, and the third wait exceeds the available resources (and touches nothing in another room)', () => {
     const { s, outs } = play(['say calculate(sum(sales), filter(all(date), true))', 'wait', 'wait', 'wait'], 'fortress.throne', { 'stare.done': true });
     expect(outs[0]![0]).toMatch(/spinner/i);
-    expect(outs[3]![0]).toMatch(/exceeded the available resources/);
+    expect(outs[3]![0]).toBe("Visual has exceeded the available resources. The Duke: 'Correct, though.'");
     expect(s.flags['dax.spinner']).toBe(0);
-    expect(s.flags['stare.done']).toBe(false);
+    expect(s.flags['stare.done']).toBe(true); // the Card in the Studio keeps its number
   });
   it('the Big Refresh without a policy fails with a refresh error', () => {
     expect(play(['use refresh'], 'fortress.yard').last[0]).toMatch(/^Refresh (failed|succeeded)/);
@@ -110,11 +110,11 @@ describe('Keep humor pass (spec §17)', () => {
   it('format c: still kills you in the Keep', () => {
     expect(play(['format c:'], 'fortress.yard').s.dead).toBe(true);
   });
-  it('after the spinner blanks the Card again, the Studio hint points at the pie, not at a stare that cannot restart', () => {
-    const { last } = play(['get ye flask'], 'fortress.yard', { 'stare.count': 3, 'stare.done': false });
+  it('once the stare is won, the Studio hint points at the pie', () => {
+    const { last } = play(['get ye flask'], 'fortress.yard', { 'stare.count': 3, 'stare.done': true });
     expect(last.join(' ')).toMatch(/pie/);
     expect(last.join(' ')).not.toMatch(/Look at the Card/);
-    expect(last.join(' ')).not.toMatch(/out-wait/);
+    expect(last.join(' ')).not.toMatch(/spinner/);
   });
   it('Q&A does not swallow asking Jeff or Copilot', () => {
     expect(play(['ask jeff about the numbers'], 'fortress.yard').last[0]).not.toMatch(/Q&A/);

@@ -183,9 +183,6 @@ of things it has been waiting for you to try. Death brings up the Sierra card:
 The game saves to your browser's local storage after every turn, and deliberately does *not* overwrite that save
 with the turn that killed you, so Restore always works.
 
-Some things are worse than death. Push the Duke, the Card or Jeff too far and you are cursed — a calculated
-column, (Blank), or Jeff — and the status bar says so until you find the undo. No curse can lock you out of the
-win. The [ledger](ledger.md#curses-worse-than-death) has every death and every curse, with the cure.
 
 ## Sound
 

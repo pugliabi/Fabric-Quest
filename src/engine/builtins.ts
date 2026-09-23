@@ -1,8 +1,7 @@
 import type { Dir, GameState, Outcome, ParsedCommand } from './types';
-import type { Item, Npc, Rule, World } from '../world/types';
+import type { Item, Npc, World } from '../world/types';
 import { SIDE_REALM_NAME, SIDE_REGIONS } from '../world/types';
 import { brushOffLine, nick, rotate } from '../world/voice';
-import { BLANK_LOOKS_THROUGH, curseOf } from '../world/curses';
 import { vary } from './quirks';
 
 export const MAX_SCORE = 200;
@@ -115,10 +114,8 @@ function talkMore(s: GameState, world: World, npc: Npc, n: number): string {
 /**
  * The NPC's line for this talk: line 1, then the escalation (Npc.talkMore, or the engine default). With an `about`
  * `topic`: something the NPC knows gets their hint (the talk-3 line); anything else gets the brush-off (spec1 §3.1).
- * While you are (Blank) (spec1 §5.4, world/curses.ts) nobody sees you: every NPC looks through you instead.
  */
 export function talkTo(s: GameState, world: World, npc: Npc, topic?: string): string {
-  if (curseOf(s) === 'blank') return BLANK_LOOKS_THROUGH(npc.name);
   if (topic) return knowsTopic(npc, topic) ? talkMore(s, world, npc, 3) : brushOffLine(s, npc.brushOff) ?? `${npc.name} has nothing to say about ${topic}.`;
   const n = (Number(s.flags[`talk.${npc.id}`]) || 0) + 1;
   return n === 1 ? npc.talk(s) : talkMore(s, world, npc, n);
@@ -194,30 +191,7 @@ function budgetLine(s: GameState, world: World): string {
   return `To whom? The ${shown}? The ${shown} ${plural(name) && !/^[A-Z]/.test(name) ? 'have' : 'has'} no budget.`;
 }
 
-/** Whether a rule's `then` changes anything (points, bonus, flags, items, a move, a death): the mark of a puzzle, not texture. */
-const hasEffect = (t: Rule['then']): boolean =>
-  !!(t.points || t.bonus || t.set || t.give || t.remove || t.wear || t.moveTo || t.returnTo || t.death || t.win || t.box);
 const namesOf = (item: Item): string[] => [item.name.toLowerCase(), ...item.aliases.map((a) => a.toLowerCase())];
-const listed = (n: string | string[] | undefined): string[] => (n === undefined ? [] : Array.isArray(n) ? n : [n]);
-/**
- * Pure scenery (spec1 §5.2, the "making up puzzles" count): an untakeable item that nothing in this room can do anything
- * with. Not scenery when a rule with an effect (here or global) names it, when a room-scoped phrase with effects answers
- * to its name (the hall's step commands, the gates), or when the room's flask hint names it right now (the hall while
- * the query is broken names the steps). A poke that only talks back (`use candle`) leaves it scenery.
- */
-export function isScenery(s: GameState, world: World, item: Item): boolean {
-  if (item.takeable) return false;
-  const room = world.rooms[s.room]!;
-  const names = namesOf(item);
-  const byRule = [...room.rules, ...world.globalRules].some((r) => hasEffect(r.then) && [...listed(r.when.noun), ...listed(r.when.noun2)].some((n) => names.includes(n.toLowerCase())));
-  if (byRule) return false;
-  const forms = names.flatMap((n) => [n, `open ${n}`, `use ${n}`, `push ${n}`, `try ${n}`]);
-  const byPhrase = world.phraseRules.some((p) => p.room === s.room && !!p.then && forms.some((f) => p.test.test(f)));
-  if (byPhrase) return false;
-  const hint = room.flaskHint(s).toLowerCase();
-  const byHint = names.some((n) => n.length >= 3 && new RegExp(`\\b${escapeRe(n)}\\b`).test(hint));
-  return !byHint;
-}
 
 export function handle(s: GameState, cmd: ParsedCommand, world: World): Handled | null {
   const room = world.rooms[s.room]!;

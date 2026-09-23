@@ -100,7 +100,7 @@ describe('god mode (burninate)', () => {
     expect(out.stepId).not.toBe('god.locate');
     expect(out.state.inventory).toContain('mug');
     expect(out.output[0]).toMatch(/take the|get that|pocket the|acquired|grab the/i);
-    expect(out.output.length).toBe(2); // base line + the intent-wrapper acknowledgement line
+    expect(out.output.length).toBe(1); // the base line alone: a wrapper adds nothing
     expect(out.state.flags['wrap.intent']).toBe(1);
   });
 

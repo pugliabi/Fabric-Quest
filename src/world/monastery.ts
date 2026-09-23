@@ -3,7 +3,6 @@ import type { PhraseRule, Room, RuleThen } from './types';
 import { setting } from '../engine/governance';
 import { knowsTopic, talkTo } from '../engine/builtins';
 import { MALAPROPS } from './voice';
-import { curseOf } from './curses';
 import { BRICKS_TEXT, notebookBlockerText, notebookBlockers } from './sacristy';
 
 const room = (r: Room): [string, Room] => [r.id, r];
@@ -39,9 +38,6 @@ const ERRAND = '"Also. Someone published the prophecy to web. The whole internet
 
 /** The same line again, in a row (the voice sweep, Task F7; lake.ts has the same): read off `recent`, so no flag moves. */
 const again = (s: GameState, first: string, second: string): string => ((s.recent?.n ?? 1) >= 2 ? second : first);
-/** A topic line nobody says to (Blank): the curse gets talkTo()'s look-through instead, as the builtin would. */
-const unlessBlank = (id: string, line: (s: GameState) => string): RuleThen['text'] =>
-  (s, world, cmd) => (curseOf(s) === 'blank' ? talkTo(s, world, world.npcs[id]!, cmd?.noun2) : line(s));
 
 /**
  * The Monastery's bare lines (Task F7). NOT registered in world/index.ts by this sweep (the sweep contract forbids it):
@@ -82,14 +78,8 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
         : 'Go north. The gate is open. Nobody knows for how long.';
       return 'The session is starting. Open the gate, or wait for it. Either way it takes four minutes, and the game is kind enough to skip them.';
     },
-    // The aside (Task B4): the progress bar moves on the one thing you have not typed. No route is named, so XMLA off changes nothing here.
+    // The helper (Task B4): open the gate, or wait. No route is named, so XMLA off changes nothing here.
     nudge: {
-      oblique: (s) => {
-        if (s.flags['gate.open']) return s.flags['trial.hoodie']
-          ? 'The monks are finished with you, hoodie and all. Everything left to do is on the far side of a Keep, and the Keep remembers your smell.'
-          : "The gate's open and the session is running, which means it's billing. Everything past this point costs by the second, so stop admiring the gate.";
-        return "The session's starting. It's been starting. A progress bar moves for exactly two things: patience, and a hand on the gate.";
-      },
       plainer: (s) => (s.flags['gate.open'] ? '' : "It's a gate with a progress bar. Open the gate. Or wait; the bar moves when you stop typing at it."),
     },
     catchAll: monasteryLine,
@@ -97,7 +87,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'monastery.monk-session',
         when: { verb: 'talk', noun: MONK, noun2: ['session', 'the session', 'spark session', 'progress bar', 'bar'] },
-        then: { text: unlessBlank('monk', () => 'The monk points at the bar. Then at the sky. Then at the bar. It is a lineage view.'), outcome: 'success' },
+        then: { text: 'The monk points at the bar. Then at the sky. Then at the bar. It is a lineage view.', outcome: 'success' },
       },
       // One command opens it (Tommy: nobody waits three times for points). `wait`, `open gate` and `use gate` all pay the same 10.
       {
@@ -199,25 +189,12 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
       s.inventory.includes('scroll') ? 'Go east to the Spark chamber. Use the scroll on the notebook.' :
       'Go west to the Library. Give the Librarian your license. It is, technically, a card.',
     nudge: {
-      oblique: (s) =>
-        s.flags['trial.hoodie'] ? "You look like an Engineer now, and the monks have run out of things to teach you. What's left is outside, and it's mostly walking." :
-        s.flags['has.hoodie'] ? "You're carrying a hoodie. The prophecy said look like an Engineer, and nobody has ever looked like anything by carrying it." :
-        s.flags['notebook.fixed'] ? "Brother Pandas is crying happy tears and the Abbot saw the whole thing. He's holding something at arm's length, and it's for you." :
-        noNotebookYet(s) ? "The scroll is right, the cell is ready, and a book upstairs with a switch for a spine says no. An admin wrote that book. You're the admin." :
-        s.inventory.includes('scroll') ? "You've got the scroll. The cell that needs it is running, east, and has been since Runtime 1.1. Nobody has told it yet." :
-        "Brother Pandas is stuck on a cell, and the fix is under glass in the Library, west. The Librarian takes collateral, and you've been carrying some since the cottage.",
       plainer: (s) =>
         s.flags['has.hoodie'] && !s.flags['trial.hoodie'] ? "It's a hoodie. Hoodies go on. Then you look like an Engineer, which is the entire point of the garment." :
         s.flags['notebook.fixed'] && !s.flags['has.hoodie'] ? "The Abbot has a hoodie with your name on it. He wants a word first. One word; he's a monk." :
         '',
     },
     rules: [
-      // (Blank) gets nothing handed over (curses.ts, fix round 1): no hoodie and no errand until there is a you.
-      {
-        id: 'monastery.abbot-blank',
-        when: { verb: 'talk', noun: ABBOT, flags: [{ flag: 'curse.blank' }] },
-        then: { text: 'The Abbot looks straight through you and blesses the wall behind you. Whatever he has for you, he keeps until there is a you.', outcome: 'fail' },
-      },
       {
         id: 'monastery.abbot-pandas',
         when: { verb: 'talk', noun: ABBOT, noun2: ['pandas', 'brother pandas', 'brother'] },
@@ -290,14 +267,8 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
       noNotebookYet(s) ? `${noNotebookClause(s)} ${s.inventory.includes('scroll') ? 'Keep the scroll; it is right, and the tenant is wrong.' : 'The scroll is west, then west again, in the Library; it keeps.'}` :
       s.inventory.includes('scroll') ? 'Use the scroll on the notebook.' :
       'Go west, then west again, to the Library. That cell needs Spark, not pandas, and the scroll about it is locked in a case.',
-    // The aside never names the scroll, the notebook or the verb (Task B4); with no Notebook to be had it points upstairs, like the flask hint.
+    // The helper (Task B4): with no Notebook to be had it hands the turn to the flask hint, which points upstairs.
     nudge: {
-      oblique: (s) =>
-        s.flags['has.hoodie'] ? "Nothing left in here but a working notebook, which is the least Fabric thing you've seen all day. The rest of the quest is west, and then it's walking." :
-        s.flags['notebook.fixed'] ? 'The cell runs in four seconds now and Brother Pandas has nothing left to cry about. The man who hands out hoodies is in the cloister, and he watched the whole thing.' :
-        noNotebookYet(s) ? "The cell is ready and you're carrying the fix, rolled up, and a book upstairs with a switch for a spine says no. Somebody has to go and be an admin about it." :
-        s.inventory.includes('scroll') ? "Somebody taught that cell pandas and it has been running ever since. You're carrying the thing that un-teaches it, rolled up, and it isn't doing much good in your pocket." :
-        'Somebody taught that cell pandas and it has been running ever since. The cure is under glass in the Library, west, and the Librarian charges collateral.',
       plainer: (s) =>
         s.flags['has.hoodie'] || s.flags['notebook.fixed'] || noNotebookYet(s) ? '' :
         s.inventory.includes('scroll') ? 'The cell wants Spark. The scroll says Spark. You see where this is going.' :
@@ -310,7 +281,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
         id: 'monastery.pandas-spark',
         when: { verb: 'talk', noun: PANDAS, noun2: ['spark', 'pyspark', 'the session', 'session', 'notebook'] },
         then: {
-          text: (s, world, cmd) => (noNotebookYet(s) || curseOf(s) === 'blank' ? talkTo(s, world, world.npcs['pandas']!, cmd?.noun2)
+          text: (s, world, cmd) => (noNotebookYet(s) ? talkTo(s, world, world.npcs['pandas']!, cmd?.noun2)
             : again(s, "'Spark,' says Brother Pandas. 'It's not broken, it's deprecated.' 'It's broken.' 'Deprecated.' 'Broken.' (You see where this is going.)",
               "'Deprecated,' says Brother Pandas, before you finish asking. The notebook prints 'Broken.' It has picked a side.")),
           outcome: 'success',
@@ -386,17 +357,13 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
       s.inventory.includes('scroll') ? (notebookBlockers(s).length ? `Read the scroll. ${noNotebookClause(s)}` : 'Read the scroll. Then go east, and east again, and use it on the notebook.') :
       'Go east. Nothing else in here is supported.',
     nudge: {
-      oblique: (s) =>
-        !s.flags['scroll.lent'] ? "The Librarian lends to members. You've been carrying your membership since the cottage, and it's the only thing in your pocket that says Pro." :
-        s.inventory.includes('scroll') ? "You've got the scroll. It's a two-line fix for a cell east of here that has been running since Runtime 1.1, and it reads better than it sounds." :
-        'Nothing in here is supported anymore, and the Librarian would like you to stop browsing like it is.',
       plainer: (s) => (!s.flags['scroll.lent'] ? "She wants collateral. The thing in your pocket that says Pro will do; she'll sneer, but it'll do." : ''),
     },
     rules: [
       {
         id: 'monastery.librarian-synapse',
         when: { verb: 'talk', noun: LIBRARIAN, noun2: ['synapse', 'the synapse wing', 'synapse wing', 'wing', 'runtime'] },
-        then: { text: unlessBlank('librarian', () => "'Synapse,' she says, and looks at the roped-off wing the way you look at a photo of a house you sold. 'Still supported.' She does not say by whom."), outcome: 'success' },
+        then: { text: "'Synapse,' she says, and looks at the roped-off wing the way you look at a photo of a house you sold. 'Still supported.' She does not say by whom.", outcome: 'success' },
       },
       {
         // Asked twice in a row (Task F7): her "Shh." gets a second beat, and a topic she knows gets a second line.
@@ -405,7 +372,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
         then: {
           text: (s, world, cmd) => {
             const librarian = world.npcs['librarian']!;
-            if ((s.recent?.n ?? 1) < 2 || curseOf(s) === 'blank') return talkTo(s, world, librarian, cmd?.noun2);
+            if ((s.recent?.n ?? 1) < 2) return talkTo(s, world, librarian, cmd?.noun2);
             return knowsTopic(librarian, cmd?.noun2 ?? '')
               ? '"I answered that," she says. "The answer is in the stacks now. Deprecated."'
               : '"Shh," she says again, and writes your name down. In pencil. For now.';

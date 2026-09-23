@@ -11,9 +11,8 @@ const item = (i: Item): [string, Item] => [i.id, i];
 
 /**
  * A second look in a row (the voice sweeps, Task F4 on): the same `look` typed again gets its own line, read off
- * `recent` (set by the engine before the builtin runs), so no flag moves and the thing stays scenery for the fishing
- * count. The second line IS the repeat joke, so the chirp layer stays quiet under it (Task F4b); a third look gets a
- * third line where one is given (the board), else the second again, and under that repeat the chirp's "Shut up." lands.
+ * `recent` (set by the engine before the builtin runs), so no flag moves. The second line IS the repeat joke; a third
+ * look gets a third line where one is given (the board), else the second again.
  */
 const secondLook = (s: GameState, first: string, second: string, third?: string): string => {
   const n = s.recent?.n ?? 1;
@@ -24,7 +23,7 @@ export const ITEMS: Record<string, Item> = Object.fromEntries([
   item({
     id: 'license', name: 'Pro License Card', aliases: ['license', 'card', 'license card', 'pro license', 'pro'],
     takeable: true,
-    blurb: 'A Pro license. Gets you in the building and absolutely no capacitude. Framed next to a participation ribbon.',
+    blurb: `A Pro license. Gets you in the building and absolutely no ${MALAPROPS.capacitude}. Framed next to a participation ribbon.`,
     again: 'You already have the license. It came with the character. It is the only thing that did.',
     describe: 'A Power BI Pro license. The only license you have. Also, it turns out, the only one the Library accepts.',
   }),
@@ -176,7 +175,7 @@ export const ITEMS: Record<string, Item> = Object.fromEntries([
     blurb: "The cloister floor, worn in a circle by monks pacing 'spark dot read'. The monks are pacing on nothing now, and they have not noticed.",
     untakeableText: 'It\'s a floor.',
     describe: (s) => secondLook(s,
-      "Worn in a perfect circle by monks pacing 'spark dot read'. The centre stone has a burn mark shaped like a cluster starting. The monks have refreshered themselves into a circle.",
+      `Worn in a perfect circle by monks pacing 'spark dot read'. The centre stone has a burn mark shaped like a cluster starting. The monks have ${MALAPROPS.refreshered} themselves into a circle.`,
       'Same circle. The monks have lapped it twice while you stared, which is two more laps than you have done all quest.'),
   }),
   item({
@@ -345,7 +344,7 @@ export const ITEMS: Record<string, Item> = Object.fromEntries([
     describe: (s) => s.flags['gate.open']
       ? secondLook(s, 'The gate is open. The progress bar reads 100%, forever.',
         "100%. You're checking on a progress bar that finished, which is how the monks can tell you came from Power BI.")
-      : secondLook(s, `A stone gate with a stone progress bar. SESSION STARTING… 0%. Not enough capacitude to hurry it. Enough to open a gate, though.`,
+      : secondLook(s, `A stone gate with a stone progress bar. SESSION STARTING… 0%. Not enough ${MALAPROPS.capacitude} to hurry it. Enough to open a gate, though.`,
         'The bar has not moved while you looked at it. Looking at it is not one of the things that moves it.'),
   }),
   item({
@@ -408,7 +407,7 @@ export const ITEMS: Record<string, Item> = Object.fromEntries([
     again: "You already peeled the timetable off the post at the dock, right under the Ferryman's lamp. He watched you do it. Every departure was OFFLINE then, too.",
     // The fake brand (Task F5, voice.ts BRANDS) sponsors the schedule; the second look is the pen.
     describe: (s) => secondLook(s,
-      'FERRY TIMETABLE. Departures: 8 per day (Pro), 48 per day (Premium). Every departure this year has been crossed out and replaced with OFFLINE. Sponsored by Refreshr™.',
+      'FERRY TIMETABLE. Departures: 8 per day (Pro), 48 per day (Premium). Every departure this year has been crossed out and replaced with OFFLINE.',
       'Eight departures, all crossed out, in the same pen, in one sitting.'),
   }),
   item({
@@ -470,11 +469,11 @@ export const ITEMS: Record<string, Item> = Object.fromEntries([
   }),
   // The sports drink (voice.ts BRANDS). Drinking it is a death on the Pass and anywhere you carry it (deaths.ts ADE_DEATH).
   item({
-    id: 'capacityade', name: 'CapacityAde', aliases: ['capacity ade', 'bottle', 'sports drink', 'ade', 'drink', 'the ade', 'label'],
+    id: 'capacityade', name: 'energy drink', aliases: ['capacityade', 'capacity ade', 'energy drink', 'can', 'bottle', 'sports drink', 'ade', 'drink', 'the ade', 'label'],
     takeable: true,
-    blurb: 'CapacityAde. Electrolytes, autoscale, and 64 CUs in a bottle. The label says not to drink it standing on a capacity, which is everywhere.',
-    again: 'You already picked the CapacityAde up on the Pass, and the reach was billed per second. Do not drink it. I know you will.',
-    describe: (s) => secondLook(s, "A bottle of CapacityAde. Electrolytes and autoscale. 'Now with 64 CUs.' The label warns against drinking it while standing on a capacity.",
+    blurb: 'An energy drink. Electrolytes, autoscale, and 64 CUs in a bottle. The label says not to drink it standing on a capacity, which is everywhere.',
+    again: 'You already picked the energy drink up on the Pass, and the reach was billed per second. Do not drink it. I know you will.',
+    describe: (s) => secondLook(s, "A bottle of energy drink. Electrolytes and autoscale. 'Now with 64 CUs.' The label warns against drinking it while standing on a capacity.",
       "The fine print: 'Do not operate a capacity after drinking.' You are standing on one. You are always standing on one.",
       "Third read of the label. You are going to drink it anyway. I've started on the death text."),
   }),
@@ -643,7 +642,7 @@ export const ITEMS: Record<string, Item> = Object.fromEntries([
     takeable: false,
     blurb: "An Analyze in Excel connection file. It is the one thing on Jeff's desk that knows where the real numbers live, and he has never double-clicked it.",
     untakeableText: 'It is a connection file. It goes where the Data tab goes.',
-    describe: (s) => (s.flags['excel.connected'] ? 'Analyze in Excel. Connected: Sales (Certified). Powered by Refreshr™.' : 'Analyze in Excel (.odc). Sign-in required. Powered by Refreshr™.'),
+    describe: (s) => (s.flags['excel.connected'] ? 'Analyze in Excel. Connected: Sales (Certified).' : 'Analyze in Excel (.odc). Sign-in required.'),
   }),
   // ---- Copilot (side quest) ----
   item({
@@ -675,7 +674,7 @@ export const ITEMS: Record<string, Item> = Object.fromEntries([
     takeable: false,
     blurb: 'Sales_v3_FINAL_final2, 11 GB, no badge. Last refreshed by someone who has left the company, which you are considering.',
     untakeableText: 'It is 11 GB. Nobody is taking it anywhere. Nobody ever has.',
-    describe: 'Sales_v3_FINAL_final2. No badge. Last refreshed by someone who has left the company. Copilot likes it because it has the most rows. Last refreshed via Refreshr™, personal mode.',
+    describe: 'Sales_v3_FINAL_final2. No badge. Last refreshed by someone who has left the company. Copilot likes it because it has the most rows. Last refreshed through a personal-mode gateway on a laptop that is closed.',
   }),
   item({
     id: 'model-test', name: 'sales_test_DO_NOT_USE', aliases: ['test', 'sales_test_do_not_use', 'do not use', 'sign', 'test model'],

@@ -82,7 +82,7 @@ export type PhraseRule = {
   then?: RuleThen | ((s: GameState, world: World, line: string, heard: HeardLine) => { then: RuleThen; id?: string } | null);
 };
 
-/** A nudge line, or one that depends on the room's state. A function may return '' to hand its tier to the flask hint. */
+/** A nudge line, or one that depends on the room's state. A function may return '' to hand the turn to the flask hint. */
 export type NudgeText = string | ((s: GameState) => string);
 
 export type Room = {
@@ -96,14 +96,14 @@ export type Room = {
   rules: Rule[];
   scene: (s: GameState) => string;
   onEnter?: (s: GameState) => string | null;
-  /** The "get ye flask" nudge for this room: what `hint`, `get ye flask` and the aside's last tier say. */
+  /** The "get ye flask" nudge for this room: what `hint`, `get ye flask` and the stuck helper from 8 dead turns say. */
   flaskHint: (s: GameState) => string;
   /**
-   * The narrator's UNASKED aside (spec1 §3.3, Task B4), tiered by dead turns in the room: `oblique` at 4 points at the
-   * idea, never the command (no backticks, no verb-and-noun); `plainer` at 8 (the flask hint when absent or ''); from 12
-   * the flask hint itself. Without it, the flask hint at every tier (lint warns). Side realms have their own hints.
+   * The stuck helper (spec1 §3.3, Task B4), said like the `hint` command ("A hollow voice adds: …") after dead turns in
+   * the room: `plainer` at 4, a plain line about what to do next (the flask hint when it returns ''); the flask hint
+   * itself at 8 and every 4 after. Without it, the flask hint from 4 (lint warns). Side realms have their own hints.
    */
-  nudge?: { oblique: NudgeText; plainer?: NudgeText };
+  nudge?: { plainer: NudgeText };
   /** Shown in the message box the first time the player enters (null = nothing). */
   enterQuip?: (s: GameState) => string | null;
   /** Last-resort handler for any line the room wants to interpret itself (Copilot prompts). Runs after rules, before builtins. */

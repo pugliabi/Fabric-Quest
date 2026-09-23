@@ -15,9 +15,8 @@ export { RETURN_FLAG } from '../world/types';
 
 /** The interactive-delay marker, first line of a delayed turn. The message box skips it (game/notice.ts). */
 export const DELAY_LINE = '(…interactive delay…)';
-/** The boredom escalation (spec1 §5.2), and the quirk-layer scolds that say the same thing; one of these per turn is plenty. */
+/** The boredom escalation (spec1 §5.2): the only lines the narrator adds for a player who is truly idling. */
 const BOREDOM = ["Let's get moving, here, people.", 'Are you THAT bored? Do some questing already!', 'You are an incredibly boring person.'] as const;
-const SCOLDS = [...BOREDOM, 'Shut up.', "You're really hurtin' for puzzle solutions, huh?"];
 
 /** Verbs a prompt room (catchAll + region 'copilot') leaves to the builtins; every other verb there is a prompt. */
 const NAV_VERBS: ReadonlySet<Verb> = new Set<Verb>(['go', 'look', 'inventory', 'score', 'help', 'save', 'restore', 'restart', 'quit', 'wait', 'get', 'drop', 'read']);
@@ -76,16 +75,14 @@ function ruleMatches(s: GameState, parsed: ParsedCommand, r: Rule): boolean {
 }
 
 /**
- * The aside's tier (Task B4): `nudge.oblique` at 4 dead turns, `nudge.plainer` at 8 (the flask hint when the room has
- * none, or its function says ''), the flask hint verbatim from 12 on. A room without `nudge` whispers its flask hint at
- * every tier, as before.
+ * The stuck helper's line (Task B4, made plain): `nudge.plainer` at 4 dead turns (the flask hint when the room has none,
+ * or its function says ''), the flask hint itself at 8 and every 4 after.
  */
 function nudgeLine(room: Room, s: GameState, stuck: number): string {
   const line = (l: NudgeText | undefined): string => (typeof l === 'function' ? l(s) : l ?? '');
   const flask = room.flaskHint(s);
-  if (!room.nudge || stuck >= 12) return flask;
-  if (stuck === 8) return line(room.nudge.plainer) || flask;
-  return line(room.nudge.oblique) || flask;
+  if (stuck === 4) return line(room.nudge?.plainer) || flask;
+  return flask;
 }
 
 function applyRule(s: GameState, r: Rule, world: World, parsed: ParsedCommand): StepResult {
@@ -177,8 +174,7 @@ export function step(prev: GameState, rawInput: string, world: World): StepResul
   const insideRealm = SIDE_REGIONS.has(hereRegion);
 
   // The shared tail: every path below (phrase, dynamic side-quest, rule, catchAll, builtin, snark) flows through here.
-  // `answer` is what the rules said, before anything here is added: the next repeat of this command is compared against it.
-  const finish = (res: StepResult, quirkOpts: QuirkOptions, answer: string): StepResult => {
+  const finish = (res: StepResult, quirkOpts: QuirkOptions): StepResult => {
     let result = res;
     // 3a. Nobody dies in a side realm (spec §2): whatever would have killed you there gets the realm's shrug instead.
     if (insideRealm && result.state.dead && !base.dead) {
@@ -219,8 +215,8 @@ export function step(prev: GameState, rawInput: string, world: World): StepResul
     if (!inSide && delayed && !r.dead && !r.won) {
       result = { ...result, state: { ...r, turns: r.turns + 2 }, output: [DELAY_LINE, ...result.output] };
     }
-    // 5. Chirps: shouting and repeating yourself.
-    result = applyQuirks(base, command, result, recent, kind, quirkOpts);
+    // 5. Chirps: the shout line, and the flask's nag.
+    result = applyQuirks(base, command, result, recent, quirkOpts);
     // 5b. The settings that nag (spec2 §3.3–3.4): survey, usage and bill lines, after the chirps.
     result = applyGovernance(base, result, world);
     // 6. Ambient interjections (Jeff, mostly).
@@ -228,49 +224,38 @@ export function step(prev: GameState, rawInput: string, world: World): StepResul
       const extra = world.ambient(result.state);
       if (extra) result = { ...result, output: [...result.output, extra] };
     }
-    // 7. Keep the visible-in-flags bonus counter in sync (telemetry / quirks compare flags).
-    //    And remember the answer (Task F4b): the same command next turn is a repeat only if the game says the same thing.
-    result = { ...result, state: { ...result.state, flags: { ...result.state.flags, bonus: result.state.bonus }, recent: { ...recent, answer, at: base.turns } } };
-    // 8. Stuck (spec1 §3.3), bored (spec1 §5.2) and fishing (five scenery looks): three counters, one place, and at most
-    //    one aside per turn.
-    //    Stuck: after four dead turns in one room, a trailing aside; again at 8, 12… A dead turn is a fail or snark that
-    //    moved nothing (same room, no points, no bonus). Anything else, including entering a room, resets the count. A
-    //    turn that already carried the flask hint (`get ye flask`, `hint`) resets it too: the hint was asked for, so it
-    //    is not whispered again under the same answer. Not in god mode and not in Copilot's pane, which hints in its own
-    //    voice. The aside is tiered (Task B4): nobody asked, so it starts sideways.
+    // 7. Keep the visible-in-flags bonus counter in sync (telemetry compares flags).
+    result = { ...result, state: { ...result.state, flags: { ...result.state.flags, bonus: result.state.bonus }, recent } };
+    // 8. Stuck (spec1 §3.3) and bored (spec1 §5.2): two counters, one place, and at most one aside per turn.
+    //    Stuck: after four dead turns in one room, a helper in the `hint` command's own words ("A hollow voice adds:"):
+    //    the room's plain line at 4 (nudgeLine), the flask hint at 8, 12… A dead turn is a fail or snark that moved
+    //    nothing (same room, no points, no bonus). Anything else, including entering a room, resets the count. A turn
+    //    that already carried the flask hint (`get ye flask`, `hint`) resets it too: the hint was asked for, so it is
+    //    not said again under the same answer. Not in god mode and not in Copilot's pane, which hints in its own voice.
     //    Bored: turns in one room without progress, whatever the outcome (inventory, look, wait all count). Progress is
     //    a move, points, bonus, or a success that changed what you carry or wear. Lines at 10, 15, then every 5; not in
-    //    god mode, a side realm, or once dead or won. Boredom yields to the nudge (the nudge is the helpful one) and to
-    //    a quirk-layer scold already on the turn (the third repeat's "Are you THAT bored?"): the same sentence is never said twice.
-    //    Fishing: consecutive looks the builtin answered at pure scenery (B.isScenery: nothing here can do anything with
-    //    it, and the flask hint doesn't name it); the fifth gets the puzzles line and resets.
+    //    god mode, a side realm, or once dead or won. Boredom yields to the helper (the helper is the useful one).
     const r8 = result.state;
     const hinted = result.stepId === 'egg.flask' || result.stepId.startsWith('hint.');
-    const deadTurn = (result.outcome === 'fail' || result.outcome === 'snark') && r8.room === base.room
-      && result.pointsAwarded === 0 && !(result.bonusAwarded ?? 0) && !hinted;
-    const stuck = deadTurn ? (base.stuck ?? 0) + 1 : 0;
     const progressed = r8.room !== base.room || result.pointsAwarded > 0 || (result.bonusAwarded ?? 0) > 0
       || (result.outcome === 'success' && (r8.inventory.length !== base.inventory.length || r8.worn.length !== base.worn.length));
+    // Stuck = turns in this room without progress (Tommy: "helpers after like four messages"): failures and looking
+    // around both count; talking (the NPC's own ladder is the helper there), `hint`, the flask, meta commands and
+    // dying don't. Progress resets it.
+    const looked = (parsedEarly.verb === 'look' || parsedEarly.verb === 'read') && result.outcome === 'success';
+    const deadTurn = !progressed && !hinted && !r8.dead && (result.outcome === 'fail' || result.outcome === 'snark' || looked);
+    // Meta commands (inventory, score, save) leave the count alone; anything else that isn't a dead turn resets it.
+    const stuck = deadTurn ? (base.stuck ?? 0) + 1 : result.outcome === 'meta' && !hinted ? (base.stuck ?? 0) : 0;
     const idle = progressed ? 0 : (base.idle ?? 0) + 1;
-    const lookedAtScenery = parsedEarly.verb === 'look' && !!parsedEarly.noun && result.outcome === 'success' && result.stepId === base.room && (() => {
-      const x = B.resolveNoun(base, world, parsedEarly.noun);
-      return !!x && x.kind === 'item' && B.isScenery(base, world, x.item);
-    })();
-    let looks = lookedAtScenery ? (base.looks ?? 0) + 1 : 0;
     const extra: string[] = [];
     const quiet = !!r8.flags[GOD_FLAG] || r8.dead || r8.won || SIDE_REGIONS.has(world.rooms[r8.room]!.region);
-    const scolded = result.output.some((l) => SCOLDS.some((b) => l.endsWith(b)));
     if (stuck > 0 && stuck % 4 === 0 && !r8.flags[GOD_FLAG] && r8.room !== 'copilot.pane' && !r8.dead) {
       const hint = nudgeLine(world.rooms[r8.room]!, r8, stuck) || 'Look around. Talk to people. Read things.';
-      // A hint that already carries a bracketed aside (the hall's "(`look at steps`.)") is whispered unwrapped, so brackets never nest.
-      extra.push(/\(.*\)/.test(hint) ? `Psst. ${hint}` : `(Psst. ${hint})`);
-    } else if (!quiet && looks >= 5) {
-      extra.push("For what? Now you're just making up puzzles to solve.");
-    } else if (!quiet && !scolded && idle === 10) extra.push(BOREDOM[0]);
-    else if (!quiet && !scolded && idle === 15) extra.push(BOREDOM[1]);
-    else if (!quiet && !scolded && idle >= 20 && idle % 5 === 0) extra.push(BOREDOM[2]);
-    if (looks >= 5) looks = 0;
-    result = { ...result, state: { ...r8, stuck, idle, looks }, output: extra.length ? [...result.output, ...extra] : result.output };
+      extra.push(`A hollow voice adds: "${hint}"`);
+    } else if (!quiet && idle === 10) extra.push(BOREDOM[0]);
+    else if (!quiet && idle === 15) extra.push(BOREDOM[1]);
+    else if (!quiet && idle >= 20 && idle % 5 === 0) extra.push(BOREDOM[2]);
+    result = { ...result, state: { ...r8, stuck, idle }, output: extra.length ? [...result.output, ...extra] : result.output };
     return result;
   };
 
@@ -280,10 +265,7 @@ export function step(prev: GameState, rawInput: string, world: World): StepResul
   const promptRoom = !!here.catchAll && hereRegion === 'copilot';
   const parsed = parsedEarly;
 
-  /**
-   * The answer: phrase rules, side-quest hooks, room and global rules, the catch-all, the builtins, the snark. Pure in
-   * `b`, which is `base` for the turn itself and, on a repeat, `base` at the previous turn's number (see below).
-   */
+  /** The answer: phrase rules, side-quest hooks, room and global rules, the catch-all, the builtins, the snark. Pure in `b` (`base`). */
   const resolve = (b: GameState): { res: StepResult; opts?: QuirkOptions } => {
     // 1. Phrase rules (easter eggs / deaths that don't fit the verb-noun grammar).
     //    Side-quest hooks (`dynamic`) that don't apply here are skipped as if they had not matched:
@@ -338,7 +320,7 @@ export function step(prev: GameState, rawInput: string, world: World): StepResul
     }
     // A phrase with effects (`then`) is a rule keyed on the raw line: flags, moves, bonus and death all apply.
     // In a prompt room a phrase ("start over", "thanks") is the pane answering, so the chirps keep only their shout
-    // lines, as for a prompt: no "not a slot machine" under a second `start over`, no wrapper line under `ugh start over`.
+    // lines, as for a prompt.
     const quiet = { suppressWrapAndRepeat: promptRoom };
     if (phrase && phraseThen) return { res: applyRule(b, { id: phraseThen.id ?? phrase.id, when: { verb: 'unknown' }, then: phraseThen.then }, world, parsed), opts: quiet };
     if (phrase) {
@@ -380,16 +362,7 @@ export function step(prev: GameState, rawInput: string, world: World): StepResul
   };
 
   const { res, opts } = resolve(base);
-  // The repeat chirp only when the answer didn't change (Task F4b). A remembered line (an item's `again`, a rule's
-  // second reading, an NPC's next variant, a gate's plainer hint) IS the repeat joke; the chirp under it would make the
-  // joke twice. The answer is what the rules said, before finish() adds any aside. A pool that merely rotated (vary,
-  // nick, rotate, the snark: all keyed on `turns`) is not the world remembering, so a changed answer is read once more
-  // at the previous turn's number: if that gives last turn's answer verbatim, only the pick moved, and the chirp stands.
-  const answer = res.output.join('\n');
-  const last = prev.recent;
-  const answerChanged = recent.n >= 2 && last?.answer !== undefined && last.at !== undefined && answer !== last.answer
-    && resolve({ ...base, turns: last.at }).res.output.join('\n') !== last.answer;
-  return finish(res, { ...opts, answerChanged }, answer);
+  return finish(res, opts ?? {});
 }
 
 /** Test-only: apply one rule directly. */

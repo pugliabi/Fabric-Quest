@@ -26,7 +26,7 @@ describe('Copilot sweep', () => {
     expect(one('copilot.gallery', 'push the model')).toBe('You push the biggest model. It does not move. It has the most rows; it has the most everything except a badge.');
     expect(one('copilot.gallery', 'use plinth')).toBe('You lean on a plinth. The model on it recalculates a measure out of nerves.');
     expect(one('copilot.gallery', 'use badge')).toBe(`You polish the badge. The certified model feels ${MALAPROPS.refreshered}. It was already certified; now it is shiny.`);
-    expect(one('copilot.gallery', 'look at final2')).toMatch(/Last refreshed via Refreshr™, personal mode\./);
+    expect(one('copilot.gallery', 'look at final2')).toMatch(/Last refreshed through a personal-mode gateway on a laptop that is closed\.$/);
   });
   it('the gallery: second and third looks at each plinth, then the third again', () => {
     for (const [noun, second, third] of [

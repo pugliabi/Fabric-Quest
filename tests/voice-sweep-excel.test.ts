@@ -1,5 +1,5 @@
 // Task F9: the voice sweep of Jeff's Excel, plus the region's deferred fixes (export labels, the stage-4 box on a
-// re-add, analyze-in-excel when connected, `sales data`, `ask jeff about the result`, the three rooms' oblique nudge).
+// re-add, analyze-in-excel when connected, `sales data`, `ask jeff about the result`, the three rooms' stuck helper).
 import { describe, expect, it } from 'vitest';
 import { newGame, step } from '../src/engine/step';
 import type { GameState } from '../src/engine/types';
@@ -26,7 +26,7 @@ describe('Excel sweep', () => {
   });
   it('Data tab and pivot', () => {
     expect(one('excel.data', 'use ribbon')).toBe('You click the Home tab. Then Insert. Then Data. The ribbon has seen people wander before.');
-    expect(one('excel.data', 'look at connection')).toMatch(/Powered by Refreshr™\./);
+    expect(one('excel.data', 'look at connection')).toBe('Analyze in Excel (.odc). Sign-in required.');
     const built = { 'sq.return': 1, 'excel.connected': true, 'excel.pivot': true };
     expect(one('excel.pivot', 'refresh', built)).toBe(`You refresh the pivot. It says the same number, but bolder. It feels ${MALAPROPS.refreshered}.`);
     expect(one('excel.pivot', 'format pivot', built)).toBe('You format the pivot. Banded rows. Jeff likes banded rows. The number is still wrong, now in stripes.');
@@ -54,17 +54,14 @@ describe('Excel deferred fixes', () => {
     const r = step({ ...newGame(WORLD, 3), room: 'excel.sheet1', flags: { ...BUILT, 'excel.dim': true, 'excel.measure': true, 'excel.filter': true } }, 'ask jeff about the result', WORLD);
     expect(r.state.flags['sq.excel.done']).toBe(true);
   });
-  it('the three rooms whisper obliquely at 4 dead turns: no backticks, no command words', () => {
+  it('the three rooms have no plain line of their own: the helper at 4 dead turns is the stage\'s flask hint', () => {
     for (const room of ['excel.sheet1', 'excel.data', 'excel.pivot']) {
+      expect(WORLD.rooms[room]!.nudge, room).toBeUndefined();
       for (const flags of [{ 'sq.return': 1 }, { 'sq.return': 1, 'excel.jeff.asked': true }, { 'sq.return': 1, 'excel.connected': true }, BUILT, { ...BUILT, 'excel.dim': true, 'excel.measure': true, 'excel.filter': true }, { ...BUILT, 'sq.excel.done': true }]) {
         let s: GameState = { ...newGame(WORLD, 3), room, flags };
         let last: string[] = [];
         for (let i = 0; i < 4; i++) { const r = step(s, 'xyzzy', WORLD); s = r.state; last = r.output; }
-        const aside = last[last.length - 1]!;
-        expect(aside, `${room} ${JSON.stringify(flags)}`).toMatch(/^\(Psst\. [^()]*\.\)$/);
-        expect(aside).not.toMatch(/`/);
-        expect(aside).not.toContain(WORLD.rooms[room]!.flaskHint(s));
-        expect(aside.toLowerCase()).not.toMatch(/talk to jeff|analyze in excel|sign in|create pivot|add sales region|add net sales|filter by year|show jeff/);
+        expect(last[last.length - 1], `${room} ${JSON.stringify(flags)}`).toBe(`A hollow voice adds: "${WORLD.rooms[room]!.flaskHint(s)}"`);
       }
     }
   });

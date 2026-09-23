@@ -140,19 +140,19 @@ describe('fix round 1: the pools are verb- and noun-aware', () => {
     expect(new Set(outs).size).toBe(4);
     expect(outs[0]).not.toBe(outs[1]);
   });
-  it("a gate retry is not a state change, but the gate's own ladder is the repeat answer: the chirp returns only when the gate repeats itself (Task F4b)", () => {
+  it("a gate retry: the gate's own ladder is the repeat answer, and when the gate repeats itself nothing is stacked on it", () => {
     const [a, b, c, d] = [1, 2, 3, 4].map((k) => { let s = at('peaks.shrine'); let r = step(s, 'push dragon', WORLD); for (let i = 1; i < k; i++) { s = r.state; r = step(s, 'push dragon', WORLD); } return r; });
     expect(a!.output).toHaveLength(1);
-    // The second try adds the plainer hint and the third is the displaced flavor line: each a new answer, so no chirp under it.
+    // The second try adds the plainer hint and the third is the displaced flavor line: each a new answer, alone.
     expect(b!.output).toHaveLength(1);
     expect(b!.output[0]).not.toBe(a!.output[0]);
     expect(c!.output).toHaveLength(1);
     expect(c!.output[0]).not.toBe(b!.output[0]);
-    // `push dragon` has one flavor line, so the fourth try says the third's words again: the try counter alone moved
-    // (quirks.ts TRY_COUNTER), and that is not a state change, so the ladder is back.
+    // `push dragon` has one flavor line, so the fourth try says the third's words again, with no repeat chirp. The only
+    // line under it is the stuck helper: four dead turns in the room.
     expect(d!.output[0]).toBe(c!.output[0]);
-    expect(d!.output).toHaveLength(3);
-    expect(d!.output[1]).toMatch(/4/);
+    expect(d!.output).toHaveLength(2);
+    expect(d!.output[1]).toMatch(/^A hollow voice adds: /);
     expect(d!.state.flags['gate.dragon']).toBe(4);
   });
   it("the Monastery Gate's second try names the real solve", () => {
@@ -167,9 +167,10 @@ describe('fix round 1: the pools are verb- and noun-aware', () => {
     expect(outs[2]).toMatch(/^You ring the bell\./);
     expect(one('monastery.gate', 'ring the bell').output[0]).toMatch(/^Shut\./);
   });
-  it("the Studio's shape knows the stare is won after the Duke's spinner blanks the Card", () => {
-    expect(one('fortress.yard', 'push card', { flags: { 'stare.count': 3 } }).output[0]).toMatch(/^The Card is stared at\./);
-    expect(one('fortress.yard', 'push card', { flags: { 'stare.count': 3, 'gate.studio': 1 } }).output[0]).not.toMatch(/Look at the Card/);
+  it("the Studio's shape knows whether the stare is won", () => {
+    expect(one('fortress.yard', 'push card', { flags: { 'stare.done': true, 'stare.count': 3 } }).output[0]).toMatch(/^The Card is stared at\./);
+    expect(one('fortress.yard', 'push card', { flags: { 'stare.done': true, 'stare.count': 3, 'gate.studio': 1 } }).output[0]).not.toMatch(/Look at the Card/);
+    expect(one('fortress.yard', 'push card').output[0]).toMatch(/^The Card wants staring at\./);
   });
   it("the Ledge's sigil line does not list the sigils twice, and the hint says where, not 'Missing:'", () => {
     const l = one('peaks.ledge', 'open door', { flags: { 'gate.ledge': 2, 'trial.moat': true }, worn: ['boots'], inventory: ['boots'] }).output[0]!;

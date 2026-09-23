@@ -38,7 +38,7 @@ export const SAME_AGAIN_TEXT = ' I gave the same answer because it is the same q
 export const ALREADY_TEXT = 'Already answered. It remembers.';
 
 /**
- * Frustration, as the chirps layer read the wrappers. Copilot takes the leading ones except a bare "just" ("just the
+ * Frustration, as unwrap() reads the wrappers (engine/quirks.ts). Copilot takes the leading ones except a bare "just" ("just the
  * total" is the hint, not a mood), and only part of the trailing set: "please" earns a "You're welcome!" instead, and
  * a bare "now" is just a word.
  */
@@ -156,7 +156,7 @@ export const modelsText = (s: GameState): string => 'Three semantic models on pl
 
 /**
  * The second and third look at each plinth (the badge, the big one, the sign). The first look is the item's own
- * description; the count stops at 2, so the fourth look is the third again and the repeat chirp gets its turn.
+ * description; the count stops at 2, so the fourth look is the third again.
  * `measures` stays with the item: the measure list is the hint, and it is never swapped for a joke.
  */
 const plinthLook = (key: string, item: string, noun: string[], again: [string, string]): Rule => ({
@@ -215,6 +215,5 @@ export const COPILOT_ROOMS: Record<string, Room> = Object.fromEntries([
     scene: () => 'copilot.gallery',
     enterQuip: () => 'Three models on plinths. One has a badge. The badge is not decorative.',
     flaskHint: () => 'The one with the badge. Its name is the word Copilot is waiting for. Look at its measures, too.',
-    nudge: { oblique: 'Three models, one badge. Copilot is west, and it only knows the names you bring it.' },
   }),
 ]);

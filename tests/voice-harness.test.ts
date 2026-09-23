@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { WORLD } from '../src/world';
 import { newGame, step } from '../src/engine/step';
 import { resolveNoun } from '../src/engine/builtins';
-import { QUIRK_POOLS, applyQuirks } from '../src/engine/quirks';
+import { QUIRK_POOLS } from '../src/engine/quirks';
 import { SNARK } from '../src/world/globals';
 import { whereText } from '../src/world/where';
 import { GOAL, MAIN_GOAL } from '../src/world/sidequests';
 import { ALLUSIONS, BRANDS, MALAPROPS, NICKNAMES, brushOffLine } from '../src/world/voice';
 import { ALLOWLIST } from './voice-allowlist';
-import type { GameState, StepResult } from '../src/engine/types';
+import type { GameState } from '../src/engine/types';
 import type { Region } from '../src/world/types';
 
 type Tagged = { text: string; region: Region | 'global'; from: string };
@@ -140,20 +140,21 @@ describe('voice harness (spec1 §7)', () => {
   });
 });
 
-describe('a second identical command yields a different line', () => {
-  const twice = (s: GameState, cmd: string) => { const a = step(s, cmd, WORLD); const b = step(a.state, cmd, WORLD); return [a.output.join('\n'), b.output.join('\n'), a] as const; };
+describe('a second identical command: the item answers for itself, the NPC has a next line', () => {
   const homeOf = (id: string) => Object.values(WORLD.rooms).find((r) => r.items.includes(id));
   const realmFlags = (roomId: string) => (roomId.startsWith('excel') || roomId.startsWith('copilot') ? { 'sq.return': 1 } : {});
 
-  it.each(Object.values(WORLD.items).filter((i) => i.takeable).map((i) => i.id))('get %s twice in its own room while carrying it', (id) => {
+  it.each(Object.values(WORLD.items).filter((i) => i.takeable).map((i) => i.id))('get %s twice in its own room while carrying it: its own line, and no chirp stacked under the second', (id) => {
     const it = WORLD.items[id]!;
     const room = homeOf(id);
     const s: GameState = { ...newGame(WORLD, 2), ...(room ? { room: room.id } : {}), inventory: ['license', id], flags: { ...(room ? realmFlags(room.id) : {}), [`taken.${id}`]: true } };
     const noun = [it.name.toLowerCase(), ...it.aliases].find((n) => { const r = resolveNoun(s, WORLD, n); return r?.kind === 'item' && r.item.id === id; });
     expect(noun, `${id}: no noun resolves to it`).toBeDefined();
-    const [a, b] = twice(s, `get ${noun}`);
-    expect(a.length).toBeGreaterThan(0);
-    expect(b, `${id}: "get ${noun}" twice`).not.toBe(a);
+    const a = step(s, `get ${noun}`, WORLD);
+    const b = step(a.state, `get ${noun}`, WORLD);
+    expect(a.output.join('\n').length).toBeGreaterThan(0);
+    expect(b.output.length, `${id}: "get ${noun}" twice`).toBe(a.output.length);
+    expect(b.output.filter((l) => QUIRK_POOLS.includes(l)), `${id}: "get ${noun}" twice`).toEqual([]);
   });
 
   it.each(Object.values(WORLD.npcs).map((n) => n.id))('talk to %s twice', (id) => {
@@ -165,17 +166,5 @@ describe('a second identical command yields a different line', () => {
     const a = step(s, `talk to ${noun}`, WORLD);
     const b = step(a.state, `talk to ${noun}`, WORLD);
     expect(b.output.join('\n'), `${id}: "talk to ${noun}" twice`).not.toBe(a.output.join('\n'));
-  });
-});
-
-describe('F4b gap: the repeat chirp compares final text, not talk counters', () => {
-  it('a failed talk that got the same text again is chirped even though its talk counter moved', () => {
-    const prev: GameState = { ...newGame(WORLD, 5), room: 'lake.shore', flags: { 'talk.ferryman': 1 } };
-    const after: GameState = { ...prev, flags: { 'talk.ferryman': 2 } };
-    const parsed = { verb: 'talk', noun: 'ferryman', raw: 'talk to ferryman' } as StepResult['parsed'];
-    const res: StepResult = { state: after, output: ['Same wave. Same mouthing.'], outcome: 'snark', stepId: 'shore.talk-ferryman', pointsAwarded: 0, parsed };
-    const out = applyQuirks(prev, 'talk to ferryman', res, { input: 'talk to ferryman', room: 'lake.shore', n: 2 });
-    expect(out.output.length).toBe(2);
-    expect(QUIRK_POOLS).toContain(out.output[1]);
   });
 });

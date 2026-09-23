@@ -10,13 +10,13 @@ describe('voice constants are pinned (a change here is a reviewed change)', () =
     'Mister Star Schema', 'Calculated Column Casey', 'Import Mode Ishmael', 'Ctrl-Shift-Enter', 'Power Query Pete', 'Many-to-Many Mandy',
     'Captain Blank', 'Bidirectional Bob', 'DAX Vader', 'Clippy', 'Zune', 'Encarta', 'Ask Jeeves', 'Tom from MySpace', 'champ', 'guy',
   ]));
-  it('malaprops', () => expect(MALAPROPS).toEqual({ refreshered: 'refreshered', capacitude: 'capacitude', daxxed: 'DAXxed' }));
+  it('malaprops', () => expect(MALAPROPS).toEqual({ refreshered: 'refreshed', capacitude: 'capacity', daxxed: 'filtered' }));
   it('frustration and cheat', () => {
     expect(FRUSTRATION).toBe("Come now. Don't get throttled.");
     expect(CHEAT).toBe('Meh.');
     expect(CHEAT_AGAIN).toMatch(/literally in a table/);
   });
-  it('brands', () => expect([...BRANDS]).toEqual(['Refreshr™', 'CapacityAde', 'Dataflows Gen1 Classic']));
+  it('brands', () => expect([...BRANDS]).toEqual(['Dataflows Gen1 Classic']));
   it('allusions include the 2000s-Microsoft layer', () => {
     for (const a of ['Clippy', 'Zune', 'Encarta', 'the Windows XP hill', 'an MSN Messenger nudge', 'Access 97', 'SharePoint 2007', "It looks like you're writing a measure."]) expect(ALLUSIONS).toContain(a);
   });
@@ -105,13 +105,13 @@ describe('the §5.3 overwrites', () => {
     expect(b.output[0]).toBe(CHEAT_AGAIN);
     expect(b.state.flags['cheat.count']).toBe(2);
   });
-  it('frustration is one unchanging line, and profanity gets the same one', () => {
+  it('frustration is one unchanging line for profanity; a huff around a command plays the command and adds nothing', () => {
     const OLD_SIX = /Frustration logged|say it slower|with feeling|not fed by tone|Deep breaths|certification in that/;
     let s = newGame(WORLD, 3);
     for (const c of ['ugh get csv', 'get csv, dammit', 'seriously get csv', 'get csv right now']) {
       const r = step(s, c, WORLD); s = r.state;
-      expect(r.output, c).toContain(FRUSTRATION);
-      expect(r.output.join(' '), c).not.toMatch(OLD_SIX); // later tasks may append an aside after it; the line itself never changes
+      expect(r.output, c).not.toContain(FRUSTRATION);
+      expect(r.output.join(' '), c).not.toMatch(OLD_SIX);
     }
     expect(one('what the hell').output[0]).toBe(FRUSTRATION);
   });

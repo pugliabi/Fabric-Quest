@@ -172,7 +172,6 @@ see **[docs/building-and-deploying.md](docs/building-and-deploying.md)**.
 
 - [How to play](docs/how-to-play.md) — full command reference, the parser's grammar, saving, sound, the death card
 - [The ledger](docs/ledger.md) — all 200 points and the 70 bonus, a complete spoiler walkthrough, every death
-  and curse
 - [The cheat sheet](docs/cheat-sheet.md) — one page of every command worth typing
 - [The room guide](docs/room-guide.md) — all 31 rooms, what's in each, and how to get there
 - [Building & deploying](docs/building-and-deploying.md) — local dev, deploying to Fabric, the GitHub Pages mirror,

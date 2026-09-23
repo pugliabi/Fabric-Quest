@@ -10,7 +10,7 @@ describe('Keep sweep', () => {
   it('gate and hall', () => {
     expect(one('fortress.bridge', 'ask guard about the moat')).toBe("'The moat?' The guard looks down. 'That's the Warehouse. We built the Keep on it. Don't tell the Duke I said Warehouse.' He tells the Duke himself, later, in the log.");
     expect(one('fortress.bridge', 'fish in the moat')).toBe("You fish in the Moat of T-SQL. You catch a stored procedure. It has 400 lines and a comment that says 'temporary'. You release it.");
-    expect(one('fortress.bridge', 'say f2')).toMatch(/Not enough capacitude\.$/);
+    expect(one('fortress.bridge', 'say f2')).toMatch(/Not enough capacity\.$/);
     expect(one('fortress.hall', 'look at portraits')).toMatch(/a paperclip with eyes\. 'It looks like you're writing a measure\.'$/);
   });
   it('model view, chamber, studio', () => {
@@ -20,7 +20,7 @@ describe('Keep sweep', () => {
     expect(one('fortress.throne', 'say dax')).toBe(`You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed}; it feels like a filter you cannot see.`);
     expect(one('fortress.yard', 'ask card about jeff')).toBe('The Card shows (Jeff). Then (Blank). It has no relationship to Jeff; nobody does.');
     expect(one('fortress.yard', 'eat the pie')).toBe("You eat a slice. It is 'Other'. It tastes like the other eleven 'Other's.");
-    expect(one('fortress.yard', 'look at refresh')).toMatch(/A logo on the bar: Refreshr™\./);
+    expect(one('fortress.yard', 'look at refresh')).toMatch(/A sticky note on it reads DO NOT TOUCH — JEFF\.$/);
   });
 });
 
@@ -35,11 +35,15 @@ const run = (s: GameState, cmd: string, n: number): string[] => {
 };
 
 describe('Keep sweep: the rulings', () => {
-  it('R-7: say dax is a wrong answer on the ladder, and the fourth still makes you a column', () => {
-    const r = step(at('fortress.throne', { 'duke.wrong': 1 }), 'say dax', WORLD);
-    expect(r.output[0]).toMatch(/DAXxed.*'WRONG\. Two\.'$/);
-    expect(r.state.flags['duke.wrong']).toBe(2);
-    expect(step(at('fortress.throne', { 'duke.wrong': 3 }), 'say dax', WORLD).state.flags['curse.column']).toBe(true);
+  it('R-7: say dax is a wrong answer with its own line, and nothing counts it', () => {
+    let s = at('fortress.throne');
+    for (let i = 0; i < 5; i++) {
+      const r = step(s, 'say dax', WORLD);
+      expect(r.stepId).toBe('fortress.say-dax-word');
+      expect(r.output[0]).toBe(`You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed}; it feels like a filter you cannot see.`);
+      s = r.state;
+    }
+    expect(Object.keys(s.flags).filter((k) => /^(duke\.wrong|curse\.)/.test(k))).toEqual([]);
   });
   it('R-3: the new topics are things in the room', () => {
     expect(one('fortress.model', 'look at many to many')).toMatch(/many-to-many bridge/);

@@ -123,12 +123,11 @@ export const GATES: GateSpec[] = [
   {
     id: 'studio', room: 'fortress.yard', nouns: '(card|card visual|big refresh|refresh|progress bar|refresh bar)', when: (s) => !s.flags['refresh.done'],
     verbs: GATE_VERBS_NO_USE,
-    // After the Duke's spinner times out the Card is (Blank) again (stare.count 3, stare.done off), but the stare is won.
-    shape: (s) => (s.flags['stare.done'] || s.flags['stare.count'] === 3
+    shape: (s) => (s.flags['stare.done']
       ? 'The Card is stared at. The refresh is stuck on the pie. Thirty-one slices; make it a bar chart.'
       : 'The Card wants staring at. The refresh is stuck on the pie. Thirty-one slices; make it a bar chart.'),
     more: (s) => [
-      !s.flags['stare.done'] && !s.flags['stare.count'] && 'Look at the Card.',
+      !s.flags['stare.done'] && 'Look at the Card.',
       '`use pie chart`. The refresh finishes when the pie does.',
     ].filter(Boolean).join(' '),
     flavor: [{ on: /^(push|try)\b.*\b(refresh|progress bar)\b/, line: 'You push the Big Refresh. 97%. It has been pushed before; there is a sticky note about it.' }],

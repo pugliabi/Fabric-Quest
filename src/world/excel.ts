@@ -2,7 +2,7 @@ import type { GameState } from '../engine/types';
 import type { FlagValue, PhraseRule, Room, Rule, RuleThen } from './types';
 import { talkTo, unknownTopicPattern } from '../engine/builtins';
 import { NPCS } from './npcs';
-import { MALAPROPS, nick } from './voice';
+import { MALAPROPS } from './voice';
 
 /** A second try in a row gets its own line, read off `recent` (the voice sweeps, Task F4 on): no flag moves. */
 const again = (s: GameState, first: string, second: string): string => ((s.recent?.n ?? 1) >= 2 ? second : first);
@@ -300,17 +300,6 @@ const dataDescribe = (s: GameState): string => (s.flags['excel.connected']
   ? 'The Data tab. Analyze in Excel: Connected — Sales (Certified). The field list is waiting in the pivot. Sheet1 is south.'
   : 'The Data tab. A button says Analyze in Excel. A connection file (.odc) says Sign-in required. Sheet1 is south.');
 
-/** The unasked aside (Task B4 tier 1, Task F9): the idea for this stage, never the command. The flask hint stays explicit. */
-const EXCEL_ASIDES: Record<ExcelStage, (s: GameState) => string> = {
-  0: (s) => `The man on Sheet1 has been almost crying for a while now, ${nick(s)}, and nobody has asked him why. It's Finance. Nobody ever asks.`,
-  1: () => 'Jeff told you where the good buttons are. Up the ribbon, on the tab he never visits. Bring the card with your name on it.',
-  2: () => "You're connected. The live model is sitting there with nothing built on it, and Jeff named the empty sheet 1.",
-  3: (s) => `The Grand Total says ${total(s)}, which is not 4.2M. Something in the field list is still sitting it out.`,
-  4: () => "The pivot says 4.2M. So does the report. The only one who hasn't seen it is Jeff, and he's pretending not to wait.",
-  5: () => "Jeff's fixed. Nothing else in Excel scores. The way out is the way you came in, which is the only thing Excel has in common with a door.",
-};
-const excelAside = (s: GameState): string => EXCEL_ASIDES[excelStage(s)](s);
-
 export const EXCEL_ROOMS: Record<string, Room> = Object.fromEntries([
   room({
     id: 'excel.sheet1', name: 'Sheet1', region: 'excel',
@@ -321,7 +310,6 @@ export const EXCEL_ROOMS: Record<string, Room> = Object.fromEntries([
     scene: () => 'excel.sheet1',
     enterQuip: () => "Uh oh. You're in a spreadsheet. Cell A1 is blinking. Nobody knows why.",
     flaskHint: stageLine,
-    nudge: { oblique: (s) => excelAside(s) },
     rules: [
       // Already won: Jeff has said it once and will not say it again.
       { id: 'excel.jeff-done-give', when: { verb: 'give', noun: JEFF, flags: [{ flag: 'sq.excel.done' }] }, then: { text: JEFF_DONE_TEXT, outcome: 'snark' } },
@@ -361,7 +349,6 @@ export const EXCEL_ROOMS: Record<string, Room> = Object.fromEntries([
     scene: (s) => (s.flags['excel.connected'] ? 'excel.data-connected' : 'excel.data'),
     enterQuip: () => 'The Data tab. Where the good buttons are kept, away from Jeff.',
     flaskHint: dataHint,
-    nudge: { oblique: (s) => excelAside(s) },
     rules: [
       { id: 'excel.connect', when: { verb: 'use', noun: LICENSE_NOUNS, noun2: CONNECTION_NOUNS, has: ['license'], flags: NOT_CONNECTED }, then: CONNECT },
       { id: 'excel.connect-say', when: { verb: 'say', noun: SIGN_IN, has: ['license'], flags: NOT_CONNECTED }, then: CONNECT },
@@ -390,7 +377,6 @@ export const EXCEL_ROOMS: Record<string, Room> = Object.fromEntries([
     scene: (s) => ['excel.pivot', 'excel.pivot-1', 'excel.pivot-2', 'excel.pivot-3'][pieces(s)]!,
     enterQuip: () => 'PivotTable1. Jeff named it. Jeff names everything 1.',
     flaskHint: stageLine,
-    nudge: { oblique: (s) => excelAside(s) },
     rules: [
       { id: 'excel.create-pivot-unconnected', when: { verb: 'use', noun: PIVOT_NOUNS, flags: NOT_CONNECTED }, then: CREATE_UNCONNECTED },
       { id: 'excel.pivot-already', when: { verb: 'use', verbWord: BUILD, noun: PIVOT_NOUNS, flags: [{ flag: 'excel.pivot' }] }, then: PIVOT_ALREADY },

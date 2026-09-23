@@ -3,8 +3,6 @@ import type { Cond, PhraseRule, Room, Rule } from './types';
 import { isFlood, setting } from '../engine/governance';
 import { knowsTopic, talkTo } from '../engine/builtins';
 import { xmlaRouteFrom } from './sacristy';
-import { trialAside } from './nudges';
-import { CURSE_JEFF_TEXT, curseOf } from './curses';
 import { MALAPROPS } from './voice';
 
 const room = (r: Room): [string, Room] => [r.id, r];
@@ -20,10 +18,8 @@ const USB = ['usb stick', 'usb', 'stick', 'usb drive', 'thumb drive', 'flash dri
 
 /**
  * The same line typed again, in a row (the skill's "gag command, then the same gag again": commit fully the first time,
- * then "you did that already"). Read off `recent`, which the engine sets before any rule runs, so no flag is touched and
- * a bit of scenery that carries a gag stays scenery for the fishing count (builtins isScenery). The second line IS the
- * repeat joke, so the chirp layer stays quiet under it (Task F4b); a third try says it again verbatim, and the chirp's
- * ladder picks up from there.
+ * then "you did that already"). Read off `recent`, which the engine sets before any rule runs, so no flag is touched.
+ * The second line IS the repeat joke; a third try says it again verbatim.
  */
 const again = (s: GameState, first: string, second: string): string => ((s.recent?.n ?? 1) >= 2 ? second : first);
 
@@ -46,27 +42,14 @@ const sitChest = (s: GameState): string => again(s, 'You sit on the chest. The M
 /** The desk, sat at: the rule (`use desk`) and the cottage phrase (`sit at desk`, ahead of egg.sit). */
 const sitDesk = (s: GameState): string => again(s, 'You sit at the desk and open the report. Page 12 is still a pie chart with 31 slices. You close the report. Somewhere, a dragon throttles.', "You sit at the desk again. It's where the report happened to you.");
 
-/**
- * The eighth talk to Jeff with nothing given makes you Jeff (curses.ts). `talk.jeff` is the engine's counter, shared by
- * the Square and the Fields (he stands in both until the mug), so the rule sits first in each; it reads 7 before this turn.
- */
-const curseJeff = (prefix: string): Rule => ({
-  id: `${prefix}.curse-jeff`,
-  when: { verb: 'talk', noun: JEFF, flags: [{ flag: 'talk.jeff', is: 7 }, { flag: 'jeff.pacified', not: true }, { flag: 'curse.jeff', not: true }] },
-  then: { text: CURSE_JEFF_TEXT, set: { 'curse.jeff': true }, outcome: 'snark', sfx: 'curse' },
-});
-
-/**
- * The mug, in the Square or the Fields (fix round 1: the Jeff curse fires in both, so the undo works in both). Cursed,
- * the hand-over is the undo; either way Jeff is pacified and leaves the Fields for the well.
- */
+/** The mug, in the Square or the Fields (he stands in both until the mug): Jeff is pacified and leaves the Fields for the well. */
 const giveMug = (prefix: string): Rule => ({
   id: prefix === 'village' ? 'village.jeff-mug' : `${prefix}.jeff-mug`,
   when: { verb: 'give', noun: ['mug', 'coffee mug', 'cup'], noun2: JEFF, has: ['mug'] },
   then: {
     // The absurd epilogue (spec1 §5.2, Task F3): the milestone runs one beat too long, out to a whole ruined life.
-    text: (s) => `${s.flags['curse.jeff'] ? 'You hand Jeff the mug and, in doing so, stop being Jeff. He takes it from himself. You snap out of it. ' : 'Jeff takes the mug. '}'World's Okayest Analyst.' He reads it twice. Something in him settles. He will never ask for an Excel export again. Probably. Jeff gets promoted to Senior Finance. He mentors a junior analyst, also named Jeff. He develops a severe DAX problem and blames you for never being there.`,
-    set: { 'jeff.pacified': true, 'curse.jeff': false }, remove: ['mug'], outcome: 'success', sfx: 'success',
+    text: "Jeff takes the mug. 'World's Okayest Analyst.' He reads it twice. Something in him settles. He will never ask for an Excel export again. Probably. Jeff gets promoted to Senior Finance. He mentors a junior analyst, also named Jeff. He develops a severe DAX problem and blames you for never being there.",
+    set: { 'jeff.pacified': true }, remove: ['mug'], outcome: 'success', sfx: 'success',
   },
 });
 
@@ -98,13 +81,13 @@ const jeffGifts = (prefix: string, flags: Cond[] = []): Rule[] => [
  * `ask jeff about <topic>` (Task F4). The derailment first: the report, in the bickering-twins shape, and a second line
  * when you ask it again in a row. Then every other `about`: a topic he knows asked twice in a row gets a second known-topic
  * line instead of the same hint (the deferred minor); everything else is handed to talkTo() exactly as the builtin would
- * (his hint, his brush-off, the flood's "Which Jeff.", the (Blank) curse). A bare `talk to jeff` has no `about`, so it
+ * (his hint, his brush-off, the flood's "Which Jeff."). A bare `talk to jeff` has no `about`, so it
  * never lands here and B1's escalation runs. The Fields copy is gated on Jeff still being there.
  */
 const jeffAsks = (prefix: string, flags: Cond[] = []): Rule[] => [
   {
     id: `${prefix}.jeff-report`,
-    when: { verb: 'talk', noun: JEFF, noun2: ['report', 'the report', 'numbers', 'the numbers'], flags: [...flags, { flag: 'curse.blank', not: true }] },
+    when: { verb: 'talk', noun: JEFF, noun2: ['report', 'the report', 'numbers', 'the numbers'], flags },
     then: {
       text: (s) => again(s,
         "'The report,' says Jeff. 'The report says 4.2. I say 4.7. We've agreed to disagree. By which I mean I've disagreed.'",
@@ -115,7 +98,7 @@ const jeffAsks = (prefix: string, flags: Cond[] = []): Rule[] => [
   // The self-contradiction shape: he flubs his own name, in cardinality.
   {
     id: `${prefix}.jeff-jeff`,
-    when: { verb: 'talk', noun: JEFF, noun2: ['jeff', 'jeff from finance', 'himself', 'yourself', 'you'], flags: [...flags, { flag: 'curse.blank', not: true }] },
+    when: { verb: 'talk', noun: JEFF, noun2: ['jeff', 'jeff from finance', 'himself', 'yourself', 'you'], flags },
     then: {
       text: (s) => again(s,
         "'Jeff?' says Jeff. 'Jeff from Finance. Or Finance from Jeff. It's a many-to-one and I forget which side I'm on.'",
@@ -130,7 +113,7 @@ const jeffAsks = (prefix: string, flags: Cond[] = []): Rule[] => [
       text: (s, w, cmd) => {
         const jeff = w.npcs['jeff']!;
         const topic = cmd?.noun2 ?? '';
-        if ((s.recent?.n ?? 1) >= 2 && curseOf(s) !== 'blank' && knowsTopic(jeff, topic)) return "'You asked,' says Jeff. 'I answered. It's still Excel. It's Excel all the way down.'";
+        if ((s.recent?.n ?? 1) >= 2 && knowsTopic(jeff, topic)) return "'You asked,' says Jeff. 'I answered. It's still Excel. It's Excel all the way down.'";
         return talkTo(s, w, jeff, topic);
       },
       outcome: 'success',
@@ -164,12 +147,8 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       !s.flags['taken.mug'] ? 'Get the mug. Someone in the square wants it more than you do.' :
       !s.flags['prophecy.read'] ? 'Go out, east, to the square. Read the notice board. It is a prophecy, and also a feature request.' :
       'Go out. The quest is not in this cottage. It never was.',
-    // The unasked aside (Task B4): the idea, sideways. The desk has two things on it and one of them is not the report.
+    // The helper (Task B4): the desk has two things on it, and the one Jeff wants is not the report.
     nudge: {
-      oblique: (s) =>
-        !s.flags['taken.mug'] ? "A man in the square has been holding an empty spreadsheet since spring. What he actually wants is on your desk, and it isn't the report." :
-        !s.flags['prophecy.read'] ? "The quest isn't in here. It's pinned up outside, in four handwritings, and at least one of them is Jeff's." :
-        "Nothing in here has changed since spring, including you. The door's been open the whole time.",
       plainer: (s) => (!s.flags['taken.mug'] ? "Jeff wants the thing you drink coffee out of. It says Okayest on it. He'd agree." : ''),
     },
     rules: [
@@ -268,21 +247,12 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       !s.flags['has.credentials'] ? 'Go north to the Mill. Talk to the Miller. He has something a Ferryman will cry about later.' :
       onward(s),
     nudge: {
-      oblique: (s) =>
-        !s.flags['prophecy.read'] ? "Every quest starts with somebody's handwriting. There's a lot of it nailed up right behind you, at eye level, on purpose." :
-        !s.flags['jeff.pacified'] ? (s.inventory.includes('mug')
-          ? "Jeff's holding his spreadsheet like a begging bowl, and you're carrying the one thing in the realm he'd rather hold."
-          : "Jeff wants something and it isn't Excel. Whatever it is, you left it on your desk, which is how most of your problems start.") :
-        !s.flags['has.credentials'] ? 'Somewhere a boat is tied up because a password got lost in 2019. The one man who still remembers it is up the road at the Mill, and nobody has asked him anything since.' :
-        trialAside(s, 'east of the village'),
       plainer: (s) =>
         !s.flags['prophecy.read'] ? "It's a notice board. Notices are for reading. The prophecy is on it, and so is a feature request." :
         !s.flags['jeff.pacified'] ? (s.inventory.includes('mug') ? 'Jeff. Mug. He has wanted it since spring and he is not going to ask nicely, because he cannot.' : "Jeff wants a mug. Yours is on your desk, west, where you left it and every other good idea.") :
         '',
     },
     rules: [
-      // The eighth talk with nothing given (curses.ts): `talk.jeff` is the engine's counter (7 before this turn). The mug undoes it.
-      curseJeff('village'),
       {
         id: 'village.prophecy',
         when: { verb: 'read', noun: ['board', 'notice', 'notice board', 'sign', 'prophecy', 'noticeboard'] },
@@ -406,17 +376,14 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       ? 'Go south. When you reach the OneLake dock, give those credentials to the Ferryman. He has been waiting since 2021.'
       : 'Talk to the Miller. Or just open the chest. He will not stop you. He stopped stopping people in 2019.'),
     nudge: {
-      oblique: (s) => (s.flags['has.credentials']
-        ? "You're carrying a password that expired in 2021. There's a man at the lake who'd weep to see it, and he's been practicing."
-        : "The Miller's guarding something with a label on it, and he's the kind of guard who tells you the password if you stand there long enough."),
       plainer: (s) => (s.flags['has.credentials'] ? '' : 'The chest says CREDENTIALS. The Miller says nothing. Neither of them is locked.'),
     },
     rules: [
       // The voice sweep (Task F4): the Miller's derailments go first, so an `about` beats the credentials hand-over
-      // (which takes any talk); a bare `talk to miller` has no `about` and still scores. Not while you are (Blank).
+      // (which takes any talk); a bare `talk to miller` has no `about` and still scores.
       {
         id: 'mill.miller-gen2',
-        when: { verb: 'talk', noun: MILLER, noun2: ['gen2', 'gen 2', 'dataflow gen2', 'gen1', 'gen 1'], flags: [{ flag: 'curse.blank', not: true }] },
+        when: { verb: 'talk', noun: MILLER, noun2: ['gen2', 'gen 2', 'dataflow gen2', 'gen1', 'gen 1'] },
         then: {
           text: (s) => again(s,
             "'Gen2? Gen2 is Gen1 with a haircut,' says the Miller. 'No. Wait. It's the other way. Gen1's the one with the haircut.' (You see where this is going.)",
@@ -426,7 +393,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       },
       {
         id: 'mill.miller-v3',
-        when: { verb: 'talk', noun: MILLER, noun2: ['final_v3', 'final v3', 'v3', 'final 3', 'final_v3 pbix'], flags: [{ flag: 'curse.blank', not: true }] },
+        when: { verb: 'talk', noun: MILLER, noun2: ['final_v3', 'final v3', 'v3', 'final 3', 'final_v3 pbix'] },
         then: { text: (s) => again(s, "'FINAL_v3?' The Miller goes quiet. 'We don't say that name in the Mill.'", "'We don't say it TWICE, either.'"), outcome: 'success' },
       },
       // The one word, where they only speak M; and the mug, in front of a man who remembers when it was full.
@@ -442,12 +409,6 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
           text: (s, _w, cmd) => useMugNear(s, cmd, "You drink from the empty mug. 'Empty since 2019?' asks the Miller. 'Spring.' 'Close.'", "'Still spring?' 'Still spring.' He nods. Q3 is spring somewhere."),
           outcome: 'snark',
         },
-      },
-      // (Blank) gets nothing handed over (curses.ts, fix round 1): the credentials wait for someone with a value.
-      {
-        id: 'village.miller-blank',
-        when: { verb: 'talk', noun: ['miller', 'old miller', 'old man', 'the miller'], flags: [{ flag: 'curse.blank' }, { flag: 'has.credentials', not: true }] },
-        then: { text: 'The Miller looks straight through you. He has credentials for a Report Builder, and all he can see is the chest, so the chest keeps them.', outcome: 'fail' },
       },
       {
         id: 'village.credentials',
@@ -482,7 +443,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
           text: (s, w, cmd) => {
             const miller = w.npcs['miller']!;
             const topic = cmd?.noun2 ?? '';
-            if ((s.recent?.n ?? 1) >= 2 && curseOf(s) !== 'blank' && knowsTopic(miller, topic)) return "'Asked and answered,' says the Miller. 'In Q3. This one.'";
+            if ((s.recent?.n ?? 1) >= 2 && knowsTopic(miller, topic)) return "'Asked and answered,' says the Miller. 'In Q3. This one.'";
             return talkTo(s, w, miller, topic);
           },
           outcome: 'success',
@@ -552,10 +513,8 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
     flaskHint: (s) => (!s.flags['trial.moat'] || !s.flags['trial.hoodie']
       ? (!s.flags['trial.moat'] || setting(s, 'xmla') ? 'Go east to the Foothills, then north into the Keep. The Monastery is behind it.' : xmlaRouteFrom('village.fields'))
       : !s.flags['trial.key'] ? 'Go west to the square, then south to the OneLake. The key is across the water.' : 'Go east. Then keep going east. The Peaks do not climb themselves.'),
-    // Nothing here is the quest, so the aside is the next trial, with the Keep placed from the Fields.
-    nudge: { oblique: (s) => trialAside(s, 'up past the hills east of here') },
+    // No nudge (Task B4): nothing here is the quest, so the helper is the flask hint from 4.
     rules: [
-      curseJeff('fields'),
       giveMug('fields'),
       // The voice sweep (Task F4): Manual's derailments (the refresh, the sign), then Jeff's, while he is still here.
       {
@@ -642,7 +601,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fields.use-sundial',
         when: { verb: 'use', noun: ['sundial', 'clock', 'dial', 'sun dial', 'time'] },
-        then: { text: (s) => again(s, 'You turn the sundial to 2 AM. The sun checks its Refreshr™ schedule and declines.', "The sun still says no. It's in a meeting until 9:02."), outcome: 'fail' },
+        then: { text: (s) => again(s, 'You turn the sundial to 2 AM. The sun checks its refresh schedule and declines.', "The sun still says no. It's in a meeting until 9:02."), outcome: 'fail' },
       },
       {
         id: 'fields.plant-seed',
@@ -697,9 +656,8 @@ export const WORKSPACE_PHRASES: PhraseRule[] = [
  * The village's gag phrases (Task F4): raw-line rules for the verbs the parser has no word for (jump, wish, light,
  * wash, turn, upgrade, scare, water, pick). Room-scoped, so each beats the global egg it would otherwise fall to
  * (egg.jump, egg.climb, egg.swim, egg.boo, egg.push); registered right after WORKSPACE_PHRASES (world/index.ts), ahead
- * of APPLIED_STEP_PHRASES. Only the mug's carries `then` (it declines without the mug), and none of them answers an
- * `open`/`use`/`push`/`try` form, so no bit of scenery here stops counting for the fishing line (builtins isScenery).
- * Every one has a second line for the same command typed again (`again`).
+ * of APPLIED_STEP_PHRASES. Only the mug's carries `then` (it declines without the mug). Every one has a second line for
+ * the same command typed again (`again`).
  */
 export const VILLAGE_PHRASES: PhraseRule[] = [
   { id: 'village.well-jump', room: 'village.square', test: /^(jump|climb|dive|leap) (in|into|down)( the)? well$/, text: (s) => again(s, "You lean over the Q&A Well. It asks you a question first: 'Did you mean: Sales by Region?' You did not. You back away.", "You lean over again. 'Did you mean: the same thing?' You did.") },

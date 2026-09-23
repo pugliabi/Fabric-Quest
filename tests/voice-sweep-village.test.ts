@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { newGame, step } from '../src/engine/step';
-import { isScenery } from '../src/engine/builtins';
 import { WORLD } from '../src/world';
 import { VILLAGE_PHRASES, WORKSPACE_PHRASES } from '../src/world/village';
 import { ALLUSIONS, BRANDS, MALAPROPS } from '../src/world/voice';
@@ -46,7 +45,7 @@ describe('village sweep', () => {
     expect(one('village.fields', 'ask manual about refresh')).toBe('Manual does not answer. A crow lands on him, refreshes, and fails. He is very proud of the crow.');
     expect(one('village.fields', 'scare the crows')).toBe('You flap your arms at the crows. They were not here for the refreshes. They were here for you. They leave, disappointed.');
     expect(one('village.fields', 'look at manual')).toMatch(/You were a scarecrow once, in a school play\. You formatted the programme\.$/);
-    expect(one('village.fields', 'get refresh')).toMatch(/Not enough capacitude/);
+    expect(one('village.fields', 'get refresh')).toMatch(/Not enough capacity\.$/);
   });
 });
 
@@ -73,14 +72,6 @@ describe('village sweep: registration and the gate it must not shadow', () => {
     expect(one('village.mill', 'jump in well')).toMatch(/^You jump\./);
     expect(one('village.fields', 'scare the crows')).not.toMatch(/^Boo\./);
     expect(one('village.square', 'scare the crows')).toMatch(/^Boo\./);
-  });
-  it('nothing the sweep added turns village scenery into a puzzle (the fishing count still sees it)', () => {
-    // (Not the banner: its alias `sign` is a noun of global.use-shortcut, which has been so since before the sweep.)
-    const scenery: [string, string][] = [['village.square', 'well'], ['village.mill', 'wheel'], ['village.fields', 'sundial'], ['village.fields', 'crops'], ['village.cottage', 'candle'], ['village.cottage', 'bed']];
-    for (const [room, id] of scenery) expect(isScenery(at(room), WORLD, WORLD.items[id]!), `${room} ${id}`).toBe(true);
-    // The puzzles stay puzzles: the chest (+10) and the board (read it, +5).
-    expect(isScenery(at('village.mill'), WORLD, WORLD.items['chest']!)).toBe(false);
-    expect(isScenery(at('village.square'), WORLD, WORLD.items['board']!)).toBe(false);
   });
 });
 
@@ -142,7 +133,7 @@ describe('village sweep: the same gag twice is a different line', () => {
     expect(twice(f, 'ask manual about refresh')[1]).toBe('You ask again. The crow refreshes again. Fails again. Manual is prouder.');
     expect(twice(f, 'ask manual about monday')[1]).toBe("He still won't say it. The sign still will.");
     expect(twice(f, 'use manual')[1]).toBe(`You trigger him again. Eleven more minutes. He is thoroughly ${MALAPROPS.refreshered} now, and nothing was waiting on that either.`);
-    expect(twice(f, 'refresh manual')[1]).toMatch(/thoroughly refreshered now/);
+    expect(twice(f, 'refresh manual')[1]).toMatch(/thoroughly refreshed now/);
     expect(twice(f, 'get refresh')[1]).toBe('You pick another. Same error, other hand.');
     expect(twice(f, 'pick a refresh')[0]).toMatch(/^You pick a refresh\. It fails in your hand\./);
     expect(twice(f, 'scare the crows')[1]).toBe('You flap again. Nothing leaves. The crows are gone and the refreshes were never scared of you.');
@@ -150,7 +141,7 @@ describe('village sweep: the same gag twice is a different line', () => {
     expect(twice(f, 'get crow')).toEqual(['The crow declines. It has seen what you do with refreshes.', 'Nope. The crow has a schedule.']);
     expect(twice(f, 'look at sign')[1]).toBe("Still MONDAY. It's a warning, not a calendar.");
     expect(twice(f, 'look at crows')[1]).toBe('Still waiting. Crows are patient. Mondays are inevitable.');
-    expect(twice(f, 'use sundial')).toEqual([`You turn the sundial to 2 AM. The sun checks its ${BRANDS[0]} schedule and declines.`, "The sun still says no. It's in a meeting until 9:02."]);
+    expect(twice(f, 'use sundial')).toEqual(['You turn the sundial to 2 AM. The sun checks its refresh schedule and declines.', "The sun still says no. It's in a meeting until 9:02."]);
     expect(twice(f, 'look at spreadsheet')[1]).toBe("Still empty. Now with a crow's footprint in B2.");
   });
 });
@@ -249,15 +240,14 @@ describe('village sweep: the deferred minors', () => {
     expect(r.firsts[0]).toMatch(/^\(…interactive delay…\)$/);
     expect(r.ids.slice(0, 2)).toEqual(['flood.talk-jeffs', 'flood.talk-jeffs']);
     expect(r.s.flags['talk.jeff']).toBe(1);
-    // Seven talks to the wrong Jeffs never curse you; the eighth to Jeff himself still would.
+    // Seven talks to the wrong Jeffs never count toward Jeff from Finance.
     const seven = run(flood, Array(7).fill('talk to jeff from ops'));
-    expect(seven.s.flags['curse.jeff']).toBeUndefined();
     expect(seven.s.flags['talk.jeff']).toBe(0);
   });
 });
 
 describe('village sweep: the voice constants land here', () => {
-  it('each malaprop, verbatim, at least twice; a brand; the blurbs no longer share a formula', () => {
+  it('each plain word, verbatim, at least twice; the one brand; the blurbs no longer share a formula', () => {
     const f = at('village.fields', { inventory: WITH_MUG });
     const refreshered = [one('village.cottage', 'use mug', WITH_MUG), twice(f, 'use manual')[1]];
     for (const l of refreshered) expect(l).toContain(MALAPROPS.refreshered);
@@ -265,8 +255,8 @@ describe('village sweep: the voice constants land here', () => {
     for (const l of capacitude) expect(l).toContain(MALAPROPS.capacitude);
     const daxxed = [...twice(at('village.square'), 'say dax'), one('village.fields', 'say dax')];
     for (const l of daxxed) expect(l).toContain(MALAPROPS.daxxed);
-    expect(one('village.mill', 'look at wheel')).toContain(BRANDS[2]);
-    expect(one('village.fields', 'use sundial')).toContain(BRANDS[0]);
+    expect(one('village.mill', 'look at wheel')).toContain(BRANDS[0]);
+    expect(one('village.fields', 'use sundial')).not.toMatch(/™/);
     for (const id of ['window', 'board', 'sundial', 'well']) expect(WORLD.items[id]!.blurb, id).not.toMatch(/and all\b|wherever you/);
   });
   it('a third of the sweep\'s lines are short: a sample of one-beat refusals', () => {

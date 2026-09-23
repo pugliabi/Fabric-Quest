@@ -88,14 +88,14 @@ export function lintWorld(world: World): string[] {
 
 /**
  * Advisory checks: what `npm run lint:world` prints but does not fail on. A main-realm room without a `nudge` (Task B4)
- * still works — the narrator whispers its flask hint at every tier — it just whispers it straight, which is the thing
- * the nudge exists to avoid. Side realms hint in their own voice and are not expected to carry one.
+ * still works — its stuck helper says the flask hint from 4 dead turns — it just skips the plain line that comes first.
+ * Side realms hint in their own voice and are not expected to carry one.
  */
 export function lintWarnings(world: World): string[] {
   const warnings: string[] = [];
   for (const room of Object.values(world.rooms)) {
     if (SIDE_REGIONS.has(room.region)) continue;
-    if (!room.nudge?.oblique) warnings.push(`${room.id}: no nudge (the flask hint whispers at every tier)`);
+    if (!room.nudge) warnings.push(`${room.id}: no nudge (the flask hint from 4 dead turns)`);
   }
   return warnings;
 }

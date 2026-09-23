@@ -38,6 +38,6 @@ export const ADE = ['capacityade', 'capacity ade', 'bottle', 'sports drink', 'ad
 /** `drink capacityade`: on the Pass (peaks.ts), in the swamps (lake.ts) or anywhere you carry it (globals.ts, before global.drink-mug). */
 export const ADE_DEATH = 'Electrolytes. Autoscale. Your heart hits 64 CUs and the bill arrives before you do. The label said not on a capacity. Everything in this realm is on a capacity. That is what the dragon is FOR.';
 /** The swamps, without the bottle (fix round 1): there is none here, and the water is worse. */
-export const NO_ADE_IN_SWAMP = 'There is no CapacityAde in the marsh. There is marsh water, which is worse, and free.';
+export const NO_ADE_IN_SWAMP = 'There is no energy drink in the marsh. There is marsh water, which is worse, and free.';
 /** The tenth calculated column (fortress.ts `fortress.circular`). */
 export const WORD_DEATH = 'Your model is a Word document now. It opens in Word. You are in it. Nine warnings, counted out loud, and you wanted a round number.';

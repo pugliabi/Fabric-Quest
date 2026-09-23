@@ -1,9 +1,7 @@
 import type { GameState } from '../engine/types';
 import type { PhraseRule, Room, Rule, RuleThen, World } from './types';
 import { knowsTopic, roomIndex, talkTo, unknownTopicPattern } from '../engine/builtins';
-import { curseOf } from './curses';
-import { MALAPROPS, nick } from './voice';
-import { trialAside } from './nudges';
+import { MALAPROPS } from './voice';
 import { ADE, ADE_DEATH, NO_ADE_IN_SWAMP } from './deaths';
 import { NPCS } from './npcs';
 
@@ -11,9 +9,8 @@ const room = (r: Room): [string, Room] => [r.id, r];
 
 /**
  * The same line typed again, in a row (the voice sweep, Task F5; the same helper the village keeps in village.ts). Read
- * off `recent`, which the engine sets before any rule runs, so no flag is touched and a bit of scenery that carries a
- * gag stays scenery for the fishing count. The second line IS the repeat joke, so the chirp layer stays quiet under it
- * (Task F4b); a third try says the second again, and the chirp's ladder picks up from there.
+ * off `recent`, which the engine sets before any rule runs, so no flag is touched. The second line IS the repeat joke;
+ * a third try says the second again.
  */
 const again = (s: GameState, first: string, second: string): string => ((s.recent?.n ?? 1) >= 2 ? second : first);
 /** A second and a third look in a row, for the scenery the rooms answer themselves (items.ts has the same for items). */
@@ -56,10 +53,6 @@ const afterKey = (s: GameState): string =>
   !s.flags['taken.shortcut'] ? 'Go south, through Bronze and Silver, to the Gold Marsh. Get the signpost. It is lighter than it looks.' :
   !s.flags['trial.moat'] || !s.flags['trial.hoodie'] ? 'Go north to the square, then east and north into the Keep. The Worthy Three are not going to collect themselves.' :
   'Go north to the square, then east, east, east. The Peaks. Bring the key.';
-/** The same, sideways (Task B4): the marsh has something that weighs nothing; after that, the next trial. */
-const afterKeyAside = (s: GameState): string =>
-  !s.flags['taken.shortcut'] ? "The marshes south of here go bronze, silver, gold, and the gold one has something standing at the water's edge that weighs nothing." :
-  trialAside(s, 'east of the village');
 
 // ---- The voice sweep (Task F5): the Ferryman's derailments, offline and online, each with its second line ----
 
@@ -144,13 +137,6 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       s.flags['ferry.online'] ? 'Go east to the dock and board the boat. The Ferryman is ONLINE and would like to feel useful.' :
       s.inventory.includes('credentials') ? 'Go east to the dock. Give the Ferryman your credentials. Watch a grown man weep.' :
       'Go east to the dock and talk to the Ferryman. Then go get him credentials from the Mill, north of the square.',
-    nudge: {
-      oblique: (s) =>
-        s.flags['trial.key'] ? afterKeyAside(s) :
-        s.flags['ferry.online'] ? "The lamp says ONLINE, the boat says GATEWAY, and neither of them is going to stay that way if you keep standing on the shore." :
-        s.inventory.includes('credentials') ? "The Ferryman east of here has been OFFLINE since 2021, and you're carrying the one thing that flips a lamp." :
-        "There's a Ferryman east of here whose lamp says OFFLINE, and lamps like that only come back on for a password somebody wrote down in 2019.",
-    },
     rules: [
       {
         id: 'lake.swim',
@@ -235,10 +221,6 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       s.inventory.includes('credentials') ? 'Give the credentials to the Ferryman. He has been waiting since 2021. Do not make him wait while you look for the verb.' :
       'The Ferryman needs credentials. The Mill has them. Go get them: west, north, north, and talk to the Miller.',
     nudge: {
-      oblique: (s) =>
-        s.flags['ferry.online'] ? (s.flags['trial.key'] ? afterKeyAside(s) : "The lamp's ONLINE and the man's weeping. The boat is the only thing on this dock that hasn't done its job yet.") :
-        s.inventory.includes('credentials') ? "He's been OFFLINE since 2021. You're carrying the reason he doesn't have to be, and he can smell it." :
-        'The lamp says OFFLINE and the Ferryman says nothing. Somewhere north, a mill grinds on a password nobody has asked for since 2019.',
       plainer: (s) =>
         s.flags['ferry.online'] ? (s.flags['trial.key'] ? '' : "It's a boat. There's one thing people do with boats, and it isn't admire them.") :
         s.inventory.includes('credentials') ? "Those credentials in your pocket are his. Hand them over; he's too polite to grab." :
@@ -246,25 +228,25 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
     },
     rules: [
       // The voice sweep (Task F5): the Ferryman's derailments go first (an `about` beats nothing here that scores: the
-      // hand-over is a `give`); a bare `talk to ferryman` has no `about` and B1's ladder runs. Not while you are (Blank),
-      // and only on a topic he does not know (UNKNOWN_TO_FERRYMAN): a known one keeps his hint.
+      // hand-over is a `give`); a bare `talk to ferryman` has no `about` and B1's ladder runs. Only
+      // on a topic he does not know (UNKNOWN_TO_FERRYMAN): a known one keeps his hint.
       {
         id: 'lake.ferryman-lake',
-        when: { verb: 'talk', noun: FERRY_NOUNS, noun2: ['lake', 'onelake', 'the lake', 'water', 'one lake'], noun2Matches: UNKNOWN_TO_FERRYMAN, flags: [{ flag: 'curse.blank', not: true }] },
+        when: { verb: 'talk', noun: FERRY_NOUNS, noun2: ['lake', 'onelake', 'the lake', 'water', 'one lake'], noun2Matches: UNKNOWN_TO_FERRYMAN },
         then: { text: FERRY_LAKE, outcome: 'success' },
       },
       {
         id: 'dock.ferryman-tears',
-        when: { verb: 'talk', noun: FERRY_NOUNS, noun2: ['tears', 'the tears', 'his tears', 'crying', 'weeping', 'cheek', 'his cheek'], noun2Matches: UNKNOWN_TO_FERRYMAN, flags: [{ flag: 'curse.blank', not: true }] },
+        when: { verb: 'talk', noun: FERRY_NOUNS, noun2: ['tears', 'the tears', 'his tears', 'crying', 'weeping', 'cheek', 'his cheek'], noun2Matches: UNKNOWN_TO_FERRYMAN },
         then: { text: FERRY_TEARS, outcome: 'success' },
       },
       {
         id: 'dock.ferryman-himself',
-        when: { verb: 'talk', noun: FERRY_NOUNS, noun2: ['ferryman', 'the ferryman', 'himself', 'yourself', 'you', 'boatman'], noun2Matches: UNKNOWN_TO_FERRYMAN, flags: [{ flag: 'curse.blank', not: true }] },
+        when: { verb: 'talk', noun: FERRY_NOUNS, noun2: ['ferryman', 'the ferryman', 'himself', 'yourself', 'you', 'boatman'], noun2Matches: UNKNOWN_TO_FERRYMAN },
         then: { text: FERRY_SELF, outcome: 'success' },
       },
       // Every other `ask ferryman about <topic>`: a topic he knows asked twice in a row gets a second known-topic line, in
-      // whichever voice the lamp allows him; the rest is talkTo(), as the builtin would (his hint, his brush-off, (Blank)).
+      // whichever voice the lamp allows him; the rest is talkTo(), as the builtin would (his hint, his brush-off).
       {
         id: 'dock.ask-ferryman',
         when: { verb: 'talk', noun: FERRY_NOUNS, noun2Matches: /./ },
@@ -272,7 +254,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
           text: (s, w, cmd) => {
             const ferryman = w.npcs['ferryman']!;
             const topic = cmd?.noun2 ?? '';
-            if ((s.recent?.n ?? 1) >= 2 && curseOf(s) !== 'blank' && knowsTopic(ferryman, topic)) {
+            if ((s.recent?.n ?? 1) >= 2 && knowsTopic(ferryman, topic)) {
               return online(s)
                 ? '"Asked," he says. "Answered. ONLINE." He is using the word as punctuation now.'
                 : 'He mouths it again, slower, in case the mouthing was the problem. It was not the problem.';
@@ -472,9 +454,6 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       ? 'Board the boat back. You have the key. The rest of the quest is on the mainland, where you left it.'
       : 'Get the standard key. The personal one works for one person with an open laptop. Choose like a grown-up.'),
     nudge: {
-      oblique: (s) => (s.flags['trial.key']
-        ? "You've got the key other people can use, which is the whole point of a key. The boat's still there, and the Ferryman's humming."
-        : "Two keys, and the plaque says CHOOSE like it's a coin flip. It isn't. One of them dies when a laptop closes."),
       plainer: (s) => (s.flags['trial.key'] ? '' : "The Ferryman said it when he came back to life: Standard mode. He wasn't reviewing a hotel."),
     },
     rules: [
@@ -625,11 +604,6 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
     flaskHint: (s) => (s.inventory.includes('shortcut')
       ? 'Use the shortcut. You are carrying a pointer and walking through raw data anyway.'
       : 'Do not drink anything. Go south until things have names.'),
-    nudge: {
-      oblique: (s) => (s.inventory.includes('shortcut')
-        ? "You're wading through raw data with a pointer in your pocket. Even Column3 knows what a pointer is for."
-        : "Everything in here is a string and you're the only one with a data type. Keep it that way; the marsh improves the further you get from the shore."),
-    },
     rules: [
       ...adeInSwamp('bronze'),
       {
@@ -697,11 +671,6 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
     flaskHint: (s) => (s.inventory.includes('shortcut')
       ? 'Use the shortcut. Walking back is for people without pointers.'
       : 'Go south to the Gold Marsh. Get the signpost there. It weighs nothing; it is just a pointer.'),
-    nudge: {
-      oblique: (s) => (s.inventory.includes('shortcut')
-        ? "You're standing in Silver with a pointer, walking. The pointer is embarrassed for you."
-        : "Things have names here. One layer further in, they have types, and something's standing at the water's edge that would fit in a pocket."),
-    },
     rules: [
       ...adeInSwamp('silver'),
       {
@@ -788,10 +757,6 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       : s.inventory.includes('shortcut') ? 'Use the shortcut to get back to the shore, no data moved. Or go east, if the monks still owe you a hoodie.'
         : 'Go east to the Monastery, or north the long way. You dropped your pointer somewhere, which is very on brand.'),
     nudge: {
-      oblique: (s) => (!s.flags['taken.shortcut']
-        ? "Something at the water's edge is pointing everywhere at once. It weighs nothing, because it isn't the data, and it would fit in your pocket."
-        : s.inventory.includes('shortcut') ? "You're carrying a pointer through a marsh. Pointers are for not walking."
-          : 'You had a pointer and you put it down somewhere, which is how most data engineering incidents start.'),
       plainer: (s) => (!s.flags['taken.shortcut'] ? "That signpost is a OneLake shortcut. Nobody has ever moved a byte by picking one up." : ''),
     },
     rules: [
@@ -878,7 +843,6 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
     scene: () => 'lake.house',
     enterQuip: () => 'A house. On a lake. Take a moment.',
     flaskHint: () => 'This room is a joke. The joke is the whole room. The shore is east.',
-    nudge: { oblique: (s) => `You've been standing in a house on a lake for four turns waiting for it to become a puzzle, ${nick(s)}. It's a house. On a lake. Marketing did the rest.` },
     rules: [
       { id: 'lake.house.enter', when: { verb: 'open', noun: ['door', 'house', 'front door'] }, then: { text: goIn, outcome: 'fail' } },
       { id: 'lake.house.in', when: { verb: 'go', dir: 'in' }, then: { text: goIn, outcome: 'fail' } },
@@ -923,9 +887,8 @@ export const LAKEHOUSE_PHRASES: PhraseRule[] = [
  * (world/index.ts), ahead of APPLIED_STEP_PHRASES and the gates. None of them uses a gate verb on a gate noun, so the
  * Dock's OFFLINE gate keeps every `open`/`use`/`push`/`climb`/`enter` on the boat, the lamp and the man (`sit in boat`
  * parses to `sit`, which the gate does not claim). Only the throws carry `then` (the pebble leaves your pocket in the
- * OneLake, the Bronze and the Gold), and no phrase here answers an `open`/`use`/`push`/`try` form, so no bit of scenery
- * stops counting for the fishing line (builtins isScenery). Every one has a second line for the same command typed
- * again (`again`); the same throw, smell, swim and dig read differently by marsh layer.
+ * OneLake, the Bronze and the Gold). Every one has a second line for the same command typed again (`again`); the same
+ * throw, smell, swim and dig read differently by marsh layer.
  */
 const SIT_BOAT = /^(sit|get|hop|settle) (in|into|on|onto|aboard|down in)( the)? (boat|ferry|gateway)$/;
 const SMELL = /^(smell|sniff)( the| this| that)? (marsh|water|air|it|bronze|silver|gold|swamp|data|here)$/;

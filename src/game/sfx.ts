@@ -5,7 +5,7 @@
 export type Cue =
   | 'title' | 'splash' | 'move' | 'success' | 'item' | 'fail' | 'snark' | 'door' | 'death' | 'win' | 'flask' | 'type'
   | 'sidequest' | 'sidequest-out' | 'excel-ding' | 'copilot-think' | 'bonus'
-  | 'toggle' | 'toggle-off' | 'survey' | 'curse';
+  | 'toggle' | 'toggle-off' | 'survey';
 
 /** `together`: start at the same moment as the previous note (a chord / a bass hit under the lead). */
 type Note = [freq: number, ms: number, wave?: OscillatorType, gain?: number, together?: boolean];
@@ -43,8 +43,6 @@ export const CUES: Record<Cue, Note[]> = {
   'toggle-off': [[G5, 40, 'triangle', 0.14], [E5, 70, 'triangle', 0.14]],
   // the survey's soft ding-dong
   survey: [[E5, 120, 'triangle', 0.12], [C5, 220, 'triangle', 0.12]],
-  // a curse: three steps down and a low hum, worse than death
-  curse: [[D5, 140], [B4, 140], [G4, 180], [0, 60], [E3, 420, 'square', 0.2]],
 };
 
 let ctx: AudioContext | null = null;

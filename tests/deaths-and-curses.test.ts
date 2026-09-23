@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { newGame, step } from '../src/engine/step';
 import { WORLD } from '../src/world';
 import { SIGNOFF } from '../src/world/voice';
-import { curseOf } from '../src/world/curses';
 import { ADE_DEATH, DEATH_PHRASES } from '../src/world/deaths';
 import { CUES } from '../src/game/sfx';
 import type { GameState } from '../src/engine/types';
@@ -58,17 +57,17 @@ describe('the new deaths', () => {
     expect(s.dead).toBe(true); expect(last.deathCause).toBe(cause); expect(last.output.join(' ')).toMatch(re);
     expect(last.output.at(-1)!.endsWith(SIGNOFF)).toBe(true);
   });
-  it('the CapacityAde kills you anywhere you carry it', () => {
+  it('the energy drink kills you anywhere you carry it', () => {
     const { s } = run('village.square', ['drink the ade'], { inventory: ['license', 'capacityade'] });
     expect(s.dead).toBe(true);
   });
-  it('the CapacityAde is a thing on the Pass: gettable, readable, and the label warns you', () => {
+  it('the energy drink is a thing on the Pass: gettable, readable, and the label warns you', () => {
     const booted = { inventory: ['license', 'boots'], worn: ['boots'] }; // no interactive delay in the way
     const got = one('peaks.pass', 'get capacityade', booted);
     expect(got.state.inventory).toContain('capacityade');
     expect(one('peaks.pass', 'look at bottle', booted).output[0]).toMatch(/Now with 64 CUs/);
     expect(one('peaks.pass', 'drink sports drink', booted).output.join(' ')).toContain(ADE_DEATH);
-    expect(one('peaks.pass', 'look', booted).output.join(' ')).toMatch(/You see: .*CapacityAde/);
+    expect(one('peaks.pass', 'look', booted).output.join(' ')).toMatch(/You see: .*energy drink/);
   });
   it('the other page is a thing in the Studio: named in the room, warm, and not for taking', () => {
     expect(one('fortress.yard', 'look').output.join(' ')).toMatch(/a second tab: Page 2 \(do not open\)/);
@@ -131,118 +130,72 @@ describe('every death signs off exactly once (spec1 §5.1, the scan)', () => {
   });
 });
 
-describe('the curses (spec1 §5.4)', () => {
-  it('column: three wrong answers to the Duke; Throttlor will not talk to a column; the policy or the moat lifts it', () => {
-    const { s, last } = run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say evaluate']);
-    expect(curseOf(s)).toBe('column'); expect(last.sfx).toBe('curse'); expect(last.output[0]).toMatch(/CALCULATED COLUMN/);
-    const shrine = step({ ...s, room: 'peaks.shrine', flags: { ...s.flags, 'trial.hoodie': true, 'trial.moat': true, 'trial.key': true, 'shrine.open': true } }, 'say star schema', WORLD);
-    expect(shrine.state.flags['dragon.gone']).toBeUndefined(); expect(shrine.output[0]).toMatch(/don't negotiate with columns/);
-    const policy = step({ ...s, inventory: ['license', 'policy'] }, 'use policy on self', WORLD);
-    expect(curseOf(policy.state)).toBeNull(); expect(policy.output[0]).toMatch(/a measure again/);
-    const moat = step(s, 'say calculated column', WORLD);
-    expect(curseOf(moat.state)).toBeNull(); expect(moat.state.score).toBe(25);
-    expect(curseOf(run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say calculated column']).s)).toBeNull();
-  });
-  it('column: the counter is capped, the curse fires once, and it never fires after the moat', () => {
-    const { s } = run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say evaluate', 'say sumx', 'say sumx', 'say sumx', 'say sumx']);
-    expect(curseOf(s)).toBe('column'); expect(s.flags['duke.wrong']).toBeLessThanOrEqual(3);
-    const after = run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say evaluate'], { flags: { 'trial.moat': true } });
-    expect(curseOf(after.s)).toBeNull();
-  });
-  it('column: the policy works on yourself in the Model View and the Studio too (their own use-policy lines step aside)', () => {
-    const cursed = { flags: { 'curse.column': true }, inventory: ['license', 'policy'] };
-    for (const room of ['fortress.model', 'fortress.yard', 'fortress.hall', 'village.square']) {
-      const r = one(room, 'use policy on myself', cursed);
-      expect(curseOf(r.state), room).toBeNull(); expect(r.output[0], room).toMatch(/a measure again/);
+describe('no curses (Tommy, Sep 23: the biggest source of "this doesn\'t make sense")', () => {
+  const rules = [...WORLD.globalRules, ...Object.values(WORLD.rooms).flatMap((r) => r.rules)];
+  it('no rule sets or reads a curse flag, the Duke\'s count or the Card\'s stares, and nothing plays a curse cue', () => {
+    const GONE = /^(curse\.|duke\.wrong$|card\.stares$)/;
+    for (const r of rules) {
+      expect(Object.keys(r.then.set ?? {}).filter((k) => GONE.test(k)), r.id).toEqual([]);
+      expect((r.when.flags ?? []).map((c) => c.flag).filter((k) => GONE.test(k)), r.id).toEqual([]);
     }
-    expect(one('fortress.model', 'use policy', cursed).output[0]).toMatch(/Not here/); // the room's own line, when it is not on yourself
-    expect(curseOf(one('village.square', 'use policy on self', { inventory: ['license', 'policy'] }).state)).toBeNull(); // not cursed: nothing to undo
+    expect(rules.filter((r) => r.then.sfx === 'curse').map((r) => r.id)).toEqual([]);
+    expect(Object.keys(CUES)).not.toContain('curse');
   });
-  it('blank: staring past six; NPCs look through you; star schema restores you', () => {
-    const { s, last } = run('fortress.yard', Array(7).fill('look at card'), { flags: { 'stare.done': true } });
-    expect(curseOf(s)).toBe('blank'); expect(last.output[0]).toMatch(/\(Blank\)/);
-    expect(step({ ...s, room: 'village.square' }, 'talk to jeff', WORLD).output[0]).toBe('Jeff from Finance looks through you, the way a visual looks through (Blank).');
-    const back = step({ ...s, room: 'village.square' }, 'say star schema', WORLD);
-    expect(curseOf(back.state)).toBeNull(); expect(back.output[0]).toMatch(/You have a value again/);
-    const shrine = step({ ...s, room: 'peaks.shrine' }, 'say star schema', WORLD);
-    expect(shrine.state.flags['dragon.gone']).toBe(true); expect(curseOf(shrine.state)).toBeNull();
+  it('the Duke: each wrong answer keeps its own line, nothing is counted, and many of them change nothing', () => {
+    const { s, last } = run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say evaluate', 'say table', 'say measure', 'say sumx']);
+    expect(last.output[0]).toBe("'SUMX,' the Duke corrects, 'iterates. SUM aggregates. You, peasant, do neither.'");
+    expect(Object.keys(s.flags).filter((k) => /^(duke\.wrong|curse\.)/.test(k))).toEqual([]);
+    expect(s.room).toBe('fortress.throne'); expect(s.dead).toBe(false);
+    expect(step(s, 'say calculated column', WORLD).pointsAwarded).toBe(25); // the moat is still the way out
+    const table = one('fortress.throne', 'say table');
+    expect(table.stepId).toBe('fortress.dax-wrong'); expect(table.output[0]).toBe("'That is not DAX,' says the Duke. 'That is a word that has met DAX.'");
+    expect(one('fortress.throne', 'say hello').output[0]).not.toMatch(/Duke/); // not DAX: not his business
   });
-  it('blank: six looks are fine, the curse takes the seventh, and it carries the cue', () => {
-    const six = run('fortress.yard', Array(6).fill('look at card'), { flags: { 'stare.done': true } });
-    expect(curseOf(six.s)).toBeNull(); expect(six.s.flags['card.stares']).toBe(6);
-    const seventh = step(six.s, 'look at card', WORLD);
-    expect(curseOf(seventh.state)).toBe('blank'); expect(seventh.sfx).toBe('curse');
-    expect(step(seventh.state, 'talk to card', WORLD).output[0]).toMatch(/looks through you/);
-  });
-  it('jeff: eight talks with nothing given; the mug undoes it', () => {
-    const { s, last } = run('village.square', Array(8).fill('talk to jeff'));
-    expect(curseOf(s)).toBe('jeff'); expect(last.output[0]).toMatch(/You are Jeff now\./); expect(last.sfx).toBe('curse');
-    const mug = step({ ...s, inventory: ['license', 'mug'] }, 'give mug to jeff', WORLD);
-    expect(curseOf(mug.state)).toBeNull(); expect(mug.output[0]).toMatch(/stop being Jeff/);
-    expect(curseOf(run('village.square', Array(8).fill('talk to jeff'), { flags: { 'jeff.pacified': true } }).s)).toBeNull();
-    expect(curseOf(run('village.square', Array(7).fill('talk to jeff')).s)).toBeNull();
-  });
-  it('jeff: the talks count across the Square and the Fields (one counter, one Jeff)', () => {
-    const fields = run('village.fields', Array(8).fill('talk to jeff'));
-    expect(curseOf(fields.s)).toBe('jeff'); expect(fields.last.stepId).toBe('fields.curse-jeff');
-    const mixed = run('village.fields', Array(5).fill('talk to jeff'));
-    expect(curseOf(run('village.square', Array(3).fill('talk to jeff'), { flags: mixed.s.flags }).s)).toBe('jeff');
-  });
-  it('blank: the Card visual and the Duke look through you too, with a capital letter', () => {
-    const blank = { flags: { 'curse.blank': true, 'stare.done': true } };
-    expect(one('fortress.yard', 'talk to card', blank).output[0]).toBe('The Card visual looks through you, the way a visual looks through (Blank).');
-    expect(one('fortress.throne', 'talk to duke', blank).output[0]).toBe('The Duke of DAX looks through you, the way a visual looks through (Blank).');
-    expect(one('fortress.yard', 'hint', blank).output[0]).toMatch(/You are \(Blank\)/);
-  });
-  it('the curse cue is a real cue (RuleThen.sfx is a free string)', () => {
-    expect(Object.keys(CUES)).toContain('curse');
-    const rules = [...WORLD.globalRules, ...Object.values(WORLD.rooms).flatMap((r) => r.rules)];
-    const cursing = rules.filter((r) => r.then.sfx === 'curse').map((r) => r.id);
-    expect(cursing.sort()).toEqual(['fields.curse-jeff', 'fortress.curse-blank', 'fortress.curse-column', 'village.curse-jeff']);
-    for (const r of rules) if (r.then.sfx) expect(Object.keys(CUES), r.id).toContain(r.then.sfx);
-  });
-  // ---- Fix round 1 ----
-  it('I-1: only DAX-ish wrong answers count; hello never; correct DAX is grudging and free; the count is spoken', () => {
-    const { s, last } = run('fortress.throne', ['say hello', 'say star schema', 'say trial']);
-    expect(s.flags['duke.wrong']).toBeUndefined(); expect(curseOf(s)).toBeNull(); expect(last.output[0]).not.toMatch(/Duke/);
-    const one1 = one('fortress.throne', 'say sumx');
-    expect(one1.state.flags['duke.wrong']).toBe(1); expect(one1.output[0]).toBe("'SUMX,' the Duke corrects, 'iterates. SUM aggregates. You, peasant, do neither.'"); // the first is its own line
-    const two = step(one1.state, 'say table', WORLD); // a modelling word the chamber has no line for: still wrong
-    expect(two.stepId).toBe('fortress.dax-wrong'); expect(two.state.flags['duke.wrong']).toBe(2); expect(two.output[0]).toMatch(/Two fingers go up\. 'WRONG\. Two\.'$/);
-    const good = step(two.state, 'say calculate(sum(sales), filter(all(date), true))', WORLD);
-    expect(good.stepId).toBe('fortress.dax-good'); expect(good.state.flags['duke.wrong']).toBe(2); expect(good.output[0]).toMatch(/^'Correct,' says the Duke\. 'And beside the point\.'/);
-    const three = step({ ...good.state, flags: { ...good.state.flags, 'dax.spinner': 0 } }, 'say divide', WORLD);
-    expect(three.state.flags['duke.wrong']).toBe(3); expect(three.output[0]).toMatch(/A third finger\. 'One more and you're a column\.'$/);
-    expect(curseOf(step(three.state, 'say hello', WORLD).state)).toBeNull(); // not DAX: not the fourth
-    expect(curseOf(step(three.state, 'say calculate', WORLD).state)).toBeNull(); // the one true function: not wrong
-    expect(curseOf(step(three.state, 'say sumx(sales, sales[amount])', WORLD).state)).toBeNull(); // correct DAX: not wrong
-    const cursed = step(three.state, 'say measure', WORLD);
-    expect(curseOf(cursed.state)).toBe('column'); expect(cursed.stepId).toBe('fortress.curse-column');
-    expect(step(cursed.state, 'say sumx', WORLD).output[0]).not.toMatch(/finger/); // no strike beats on a column
-  });
-  it('fix round 2: any CALCULATE expression is correct DAX (grudging, no strike); no strikes after the moat', () => {
-    const two = run('fortress.throne', ['say sumx', 'say divide']).s;
-    expect(two.flags['duke.wrong']).toBe(2);
+  it('any CALCULATE expression is correct DAX, with the plain nod, however many wrong answers came first', () => {
+    const wrongs = run('fortress.throne', ['say sumx', 'say divide']).s;
     for (const c of ['say calculate(sum(sales))', 'say calculate(sum(sales), filter(all(date)))', 'say calculate sum sales']) {
-      const r = step(two, c, WORLD);
-      expect(r.stepId, c).toBe('fortress.dax-good'); expect(r.state.flags['duke.wrong'], c).toBe(2);
-      expect(r.output[0], c).toMatch(/^'Correct,' says the Duke\. 'And beside the point\.'/); expect(r.output[0], c).not.toMatch(/finger/);
+      const r = step(wrongs, c, WORLD);
+      expect(r.stepId, c).toBe('fortress.dax-good'); expect(r.output[0], c).toBe("The Duke nods. 'Correct.' A spinner appears. The spinner is still there. You could wait.");
     }
-    expect(step(at('fortress.throne'), 'say calculate(sum(sales))', WORLD).output[0]).toMatch(/^The Duke nods\. 'Correct\.'/); // no strikes yet: the plain nod
     expect(step(at('fortress.throne'), 'say calculate', WORLD).stepId).toBe('fortress.dax-calculate'); // alone, still the one true function
     const after = run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say evaluate'], { flags: { 'trial.moat': true } });
-    expect(after.last.output.join(' ')).not.toMatch(/finger|column/); expect(curseOf(after.s)).toBeNull();
+    expect(after.last.output.join(' ')).not.toMatch(/finger|column/);
   });
-  it('I-1: the count resets when you leave the chamber, and after every undo', () => {
-    const { s } = run('fortress.throne', ['say sumx', 'say divide', 'say filter', 's'], { flags: { 'bridge.down': true } });
-    expect(s.room).toBe('fortress.hall'); expect(s.flags['duke.wrong']).toBe(0);
-    expect(curseOf(step(step(s, 'n', WORLD).state, 'say evaluate', WORLD).state)).toBeNull();
-    const cursed = run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say evaluate']).s;
-    const undone = step({ ...cursed, inventory: ['license', 'policy'] }, 'use policy on self', WORLD).state;
-    expect(undone.flags['duke.wrong']).toBe(0);
-    expect(curseOf(step(undone, 'say sumx', WORLD).state)).toBeNull();
-    expect(step(cursed, 'say calculated column', WORLD).state.flags['duke.wrong']).toBe(0);
+  it('leaving the chamber is just leaving', () => {
+    const r = run('fortress.throne', ['say sumx', 'say divide', 's'], { flags: { 'bridge.down': true } });
+    expect(r.s.room).toBe('fortress.hall'); expect(r.last.stepId).toBe('fortress.hall');
   });
+  it('the Card: staring as long as you like changes nothing, and leaving the Studio is just leaving', () => {
+    const { s, last } = run('fortress.yard', Array(9).fill('look at card'), { flags: { 'stare.done': true } });
+    expect(last.output[0]).toBe('4.2M. Then 4.7M. Then 4.2M. It depends on whether Jeff is in the room.');
+    expect(Object.keys(s.flags).filter((k) => /^(card\.stares|curse\.)/.test(k))).toEqual([]);
+    const left = step(s, 'w', WORLD);
+    expect(left.state.room).toBe('fortress.hall'); expect(left.output[0]).not.toMatch(/counting/);
+    expect(one('fortress.yard', 'hint', { flags: { 'stare.done': true } }).output[0]).not.toMatch(/\(Blank\)\. Two words|You are \(Blank\)/);
+  });
+  it('Jeff: the talk ladder keeps cycling, and you stay you', () => {
+    const { s, last } = run('village.square', Array(9).fill('talk to jeff'));
+    expect(s.flags['talk.jeff']).toBe(9); expect(last.sfx).not.toBe('curse');
+    expect(last.output[0]).toMatch(/^"/); // still Jeff talking
+    expect(Object.keys(s.flags).filter((k) => k.startsWith('curse.'))).toEqual([]);
+    expect(step({ ...s, inventory: ['license', 'mug'] }, 'give mug to jeff', WORLD).output[0]).toMatch(/^Jeff takes the mug\./);
+  });
+  it('NPCs always see you: the Miller hands over the credentials, the Abbot the hoodie, Throttlor hears the answer', () => {
+    expect(one('village.mill', 'talk to miller').state.inventory).toContain('credentials');
+    expect(one('monastery.cloister', 'talk to abbot', { flags: { 'notebook.fixed': true, 'gate.open': true } }).state.inventory).toContain('hoodie');
+    const shrine = one('peaks.shrine', 'say star schema', { flags: { 'trial.hoodie': true, 'trial.moat': true, 'trial.key': true, 'shrine.open': true } });
+    expect(shrine.state.flags['dragon.gone']).toBe(true);
+  });
+  it('the policy is a gag item, not a cure: on yourself it does nothing special', () => {
+    for (const room of ['fortress.model', 'fortress.yard', 'village.square']) {
+      const r = one(room, 'use policy on self', { inventory: ['license', 'policy'] });
+      expect(r.output[0], room).not.toMatch(/a measure again/); expect(r.state.inventory, room).toContain('policy');
+    }
+    expect(one('fortress.model', 'use policy', { inventory: ['license', 'policy'] }).output[0]).toMatch(/Not here/);
+  });
+});
+
+describe('fix round 1: the rulings that stay', () => {
   it.each([
     'set all relationships to both', 'enable bidirectional', 'enable bidirectional filtering', 'make all relationships bidirectional',
     'set cross filter direction to both', 'both on everything', 'set every relationship to both', 'make everything bidirectional',
@@ -266,12 +219,11 @@ describe('the curses (spec1 §5.4)', () => {
     expect(sched.state.dead).toBe(false); expect(sched.output[0]).toMatch(/2 AM/);
     expect(one('village.fields', 'refresh at night').state.dead).toBe(false);
   });
-  it('I-4: the mug undoes the Jeff curse in the Fields too', () => {
+  it('I-4: the mug works in the Fields too', () => {
     const { s } = run('village.fields', Array(8).fill('talk to jeff'), { inventory: ['license', 'mug'] });
-    expect(curseOf(s)).toBe('jeff');
     const mug = step(s, 'give mug to jeff', WORLD);
-    expect(curseOf(mug.state)).toBeNull(); expect(mug.state.flags['jeff.pacified']).toBe(true); expect(mug.state.inventory).not.toContain('mug');
-    expect(mug.output[0]).toMatch(/He takes it from himself\. You snap out of it\./);
+    expect(mug.state.flags['jeff.pacified']).toBe(true); expect(mug.state.inventory).not.toContain('mug');
+    expect(mug.output[0]).toMatch(/^Jeff takes the mug\. 'World's Okayest Analyst\.'/);
     expect(step(mug.state, 'look', WORLD).output.join(' ')).not.toMatch(/Here: Jeff/); // he has gone to the well
   });
   it('I-5: every new death blames you', () => {
@@ -290,28 +242,13 @@ describe('the curses (spec1 §5.4)', () => {
       expect(r.output.at(-1)!.endsWith(SIGNOFF)).toBe(true);
     }
   });
-  it('minors: the swamps, the tab verbs, (Blank) and the Miller and the Abbot, the stare resets, the mirror', () => {
+  it('minors: the swamps, the tab verbs, the mirror', () => {
     for (const room of ['swamp.bronze', 'swamp.silver', 'swamp.gold']) {
       expect(one(room, 'drink capacityade', { inventory: ['license', 'capacityade'] }).deathCause, room).toBe('death.capacityade');
       const none = one(room, 'drink capacityade');
-      expect(none.state.dead, room).toBe(false); expect(none.output[0], room).toMatch(/no CapacityAde in the marsh/);
+      expect(none.state.dead, room).toBe(false); expect(none.output[0], room).toMatch(/no energy drink in the marsh/);
     }
     for (const c of ['click page 2', 'go to page 2', 'click on tab', 'select page 2', 'switch to page 2', 'view page 2']) expect(one('fortress.yard', c).deathCause, c).toBe('death.400');
-    const miller = one('village.mill', 'talk to miller', { flags: { 'curse.blank': true } });
-    expect(miller.state.inventory).not.toContain('credentials'); expect(miller.output[0]).toMatch(/looks straight through you/);
-    const abbot = one('monastery.cloister', 'talk to abbot', { flags: { 'curse.blank': true, 'notebook.fixed': true, 'gate.open': true } });
-    expect(abbot.state.inventory).not.toContain('hoodie'); expect(abbot.state.flags['gov.errand']).toBeUndefined(); expect(abbot.output[0]).toMatch(/looks straight through you/);
-    const left = run('fortress.yard', ['look at card', 'look at card', 'look at card', 'w'], { flags: { 'stare.done': true } }).s;
-    expect(left.room).toBe('fortress.hall'); expect(left.flags['card.stares']).toBe(0);
-    expect(one('village.square', 'look at me', { flags: { 'curse.column': true } }).output[0]).toMatch(/calculated column/);
-    expect(one('village.square', 'look at me', { flags: { 'curse.blank': true } }).output[0]).toMatch(/\(Blank\)/);
-    expect(one('village.square', 'look at me', { flags: { 'curse.jeff': true } }).output[0]).toMatch(/Jeff looks back/);
-    expect(one('village.square', 'look at me').output[0]).not.toMatch(/Jeff looks back|\(Blank\)|calculated column/);
-  });
-  it('only one curse at a time is reported, and curseOf reads flags only', () => {
-    expect(curseOf(at('village.square'))).toBeNull();
-    expect(curseOf(at('village.square', { flags: { 'curse.jeff': true } }))).toBe('jeff');
-    expect(curseOf(at('village.square', { flags: { 'curse.blank': true, 'curse.jeff': true } }))).toBe('blank');
-    expect(curseOf(at('village.square', { flags: { 'curse.column': false, 'curse.jeff': true } }))).toBe('jeff');
+    expect(one('village.square', 'look at me').output[0]).toMatch(/^You look at yourself\. A Report Builder from the Village of Pro\. No hoodie\./);
   });
 });

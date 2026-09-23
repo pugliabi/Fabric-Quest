@@ -3,7 +3,6 @@ import type { GameState } from '../engine/types';
 import { sigilStatus } from './items';
 import { CHEAT, CHEAT_AGAIN, FRUSTRATION, nick } from './voice';
 import { whereText } from './where';
-import { CURSE_GLOBAL_RULES } from './curses';
 import { ADE, ADE_DEATH } from './deaths';
 
 /**
@@ -97,16 +96,9 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.win', test: /^(win|beat game|finish|skip to end|end game)\b/, text: 'You cannot simply win. You must be Worthy. Have you read the notice board? You have not read the notice board.' },
   { id: 'egg.undo', test: /^(undo|ctrl z|go back|rewind)\b/, text: "There is no undo. There is only 'restore', and it only works if you saved, which — look at you." },
   { id: 'egg.laugh', test: /^(lol|haha|lmao|rofl|hehe)\b/, text: 'The realm does not laugh. The realm is a governed tenant.' },
-  // 'yourself' / 'you' too: the curses' undo takes the policy "on yourself" (curses.ts), and anything a rule names can be looked at.
   { id: 'egg.self', test: /^(look at (me|myself|self|yourself|you)|who am i|examine (me|self|myself|yourself|you)|x me)$/, text: (s) => {
-    // The curses (curses.ts, fix round 1) show in the mirror too.
-    const cursed = s.flags['curse.column'] ? 'Also a calculated column: computed at refresh, stored in every row, and still not a measure.'
-      : s.flags['curse.blank'] ? 'Or you would be, if there were anything to look at. You are (Blank). The Card would know.'
-      : s.flags['curse.jeff'] ? 'Also Jeff. You look at yourself and Jeff looks back, and he would like an export.'
-      : '';
     const bits = [
       'You look at yourself. A Report Builder from the Village of Pro.',
-      cursed,
       s.worn.includes('hoodie') ? 'You are wearing a hoodie you did not earn by writing code.' : 'No hoodie. You look like someone who imports CSVs.',
       s.flags['trial.moat'] ? 'You smell of the Moat, permanently.' : 'You smell fine, which is a problem.',
       s.worn.includes('boots') ? 'Your boots are bursting.' : 'Your shoes are Pro-tier.',
@@ -123,7 +115,7 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.thanks', test: /^(thanks|thank you|ty)\b/, text: 'You are welcome. This is the first gratitude the realm has received since 2019. It does not know what to do with it.' },
   { id: 'egg.sorry', test: /^(sorry|apologize|my bad)\b/, text: 'Apology logged. Outcome: no change. Same as every retrospective.' },
   // Profanity anywhere in the line, or a bare interjection as the whole line ("ugh", "argh", "dammit", "seriously"): the
-  // one unchanging line. (A leading "ugh " is a wrapper the chirps strip first; a bare "ugh" reaches here.)
+  // one unchanging line. (A leading "ugh " is a wrapper the engine strips first; a bare "ugh" reaches here.)
   { id: 'egg.swear', test: /\b(damn|hell|crap|wtf|ffs|fuck|shit)\b|^(ugh+|argh+|dammit|damn it|seriously|jeez|grr+|bah|hmph|omg)$/, text: FRUSTRATION },
   { id: 'egg.please', test: /^please\b/, text: 'Manners will not help you here. Two words. Verb, noun.' },
   { id: 'egg.what', test: /^(what|huh|wat|what now|what do i do)\??$/, text: "What indeed. Try 'look'. Try 'help'. Try, as a last resort, 'get ye flask'." },
@@ -253,8 +245,6 @@ export const GLOBAL_RULES: Rule[] = [
     when: { verb: 'look', noun: ['sigils', 'sigil'] },
     then: { text: (s) => (s.room === 'peaks.ledge' ? sigilStatus(s) : 'There are no sigils here. Sigils are a Peaks thing.'), outcome: 'success' },
   },
-  // The curses' undo lines (curses.ts): the policy on yourself, and `say star schema` while (Blank), ahead of the plain star line.
-  ...CURSE_GLOBAL_RULES,
   {
     id: 'global.say-star-elsewhere',
     when: { verb: 'say', noun: ['star schema', 'a star schema', 'the star schema'] },

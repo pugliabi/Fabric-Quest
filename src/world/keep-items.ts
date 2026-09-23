@@ -207,7 +207,7 @@ export const KEEP_ITEMS: Item[] = [
     blurb: 'The Big Refresh, a progress bar at 97% since 2019. DO NOT TOUCH — JEFF, and you did considerably more than touch it.', untakeableText: 'It is 97% of the way through 2019. Leave it.',
     describe: (s) => (s.flags['refresh.done']
       ? 'The Big Refresh: complete. It took ten days at a time and finished in a minute. Nobody learns from this.'
-      : 'A progress bar, 97%, since 2019. It is refreshing everything, every time, all at once. It needs smaller steps. A sticky note on it reads DO NOT TOUCH — JEFF. A logo on the bar: Refreshr™.'),
+      : 'A progress bar, 97%, since 2019. It is refreshing everything, every time, all at once. It needs smaller steps. A sticky note on it reads DO NOT TOUCH — JEFF.'),
   },
   {
     id: 'pie', name: 'pie chart', aliases: ['pie', 'pie chart', 'chart', 'slices', 'other', 'bar chart'], // not 'visual': it would swallow 'card visual'

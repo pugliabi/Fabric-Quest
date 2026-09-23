@@ -304,13 +304,3 @@ All of them are one **Restore** away from undone. The two Sacristy deaths only f
 title word that happens to match (`turn on internet`) gets a warning instead, and the setting is never saved, so a
 restore puts you back on the stair.
 
-## Curses (worse than death)
-
-Three things don't kill you. They stick. The status bar and the prompt show the curse until you lift it, and no
-curse can lock you out of the win.
-
-| Curse | How you get it | The undo |
-|---|---|---|
-| Calculated Column | say the wrong thing to the Duke three times — he makes you a CALCULATED COLUMN, and Throttlor won't negotiate with a column | `use policy on self` (the incremental refresh policy from the Model View); the Duke's Moat also washes it off |
-| (Blank) | stare at the Card visual a seventh time in the Report Studio — every character looks through you | `say star schema`, anywhere |
-| Jeff | talk to Jeff an eighth time in the Village Square with nothing to give — you are Jeff now | `give mug to jeff` |

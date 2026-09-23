@@ -4,12 +4,10 @@ import { newGame, step } from '../src/engine/step';
 import { WORLD } from '../src/world';
 
 describe('cues (spec2 §10)', () => {
-  it('toggle is two notes up, toggle-off two notes down, survey a ding-dong, curse descends', () => {
+  it('toggle is two notes up, toggle-off two notes down, survey a ding-dong', () => {
     expect(CUES.toggle.map((n) => n[0])).toEqual([659.25, 783.99]);
     expect(CUES['toggle-off'].map((n) => n[0])).toEqual([783.99, 659.25]);
     expect(CUES.survey).toHaveLength(2);
-    expect(CUES.curse.length).toBeGreaterThanOrEqual(3);
-    expect(CUES.curse[0]![0]).toBeGreaterThan(CUES.curse[CUES.curse.length - 1]![0]);
   });
   it('a flip asks for toggle / toggle-off; a survey turn asks for survey', () => {
     const s = { ...newGame(WORLD, 1), room: 'monastery.sacristy' };

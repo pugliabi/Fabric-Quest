@@ -34,12 +34,12 @@ describe('every gettable item has a blurb and a remembered repeat (spec1 §5.2)'
     expect(problems).toContain('item candle: missing blurb');
     expect(problems).not.toContain('item candle: missing again');
   });
-  it("get mug while carrying it is the mug's own line, and the second time differs", () => {
+  it("get mug while carrying it is the mug's own line, and the second time says it again, alone", () => {
     const s = { ...newGame(WORLD, 3), inventory: ['license', 'mug'], flags: { 'taken.mug': true } };
     const a = step(s, 'get mug', WORLD);
     expect(a.output[0]).toBe(typeof WORLD.items.mug!.again === 'function' ? WORLD.items.mug!.again(s) : WORLD.items.mug!.again);
     const b = step(a.state, 'get mug', WORLD);
-    expect(b.output.join('\n')).not.toBe(a.output.join('\n'));
+    expect(b.output).toEqual(a.output);
   });
   it('every gettable item answers a second get with its own line, not the generic pocket-pat', () => {
     for (const item of takeable) {
@@ -164,12 +164,6 @@ describe('milestones and the win', () => {
     const r = step({ ...newGame(WORLD, 3), room: 'village.square', inventory: ['license', 'mug'] }, 'give mug to jeff', WORLD);
     expect(r.output[0]).toMatch(/^Jeff takes the mug\. 'World's Okayest Analyst\.' He reads it twice\./);
     expect(r.output[0]).toMatch(/He develops a severe DAX problem and blames you for never being there\.$/);
-  });
-  it('the epilogue keeps the curse prefix when the mug is the undo', () => {
-    const r = step({ ...newGame(WORLD, 3), room: 'village.square', inventory: ['license', 'mug'], flags: { 'curse.jeff': true } }, 'give mug to jeff', WORLD);
-    expect(r.output[0]).toMatch(/^You hand Jeff the mug and, in doing so, stop being Jeff\./);
-    expect(r.output[0]).toMatch(/blames you for never being there\.$/);
-    expect(r.state.flags['curse.jeff']).toBe(false);
   });
   it('wearing the hoodie names you', () => {
     const r = step({ ...newGame(WORLD, 3), inventory: ['license', 'hoodie'] }, 'wear hoodie', WORLD);
