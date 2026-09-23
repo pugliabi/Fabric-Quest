@@ -34,7 +34,7 @@ describe('wrapped commands in play', () => {
   it('i want to get mug picks up the mug and adds an intent line', () => {
     const { s, last } = run(['i want to get mug']);
     expect(s.inventory).toContain('mug');
-    expect(last[0]).toContain('Taken');
+    expect(last[0]).toMatch(/take the|get that|pocket the|acquired|grab the/i);
     expect(last.length).toBe(2);
     expect(s.flags['wrap.intent']).toBe(1);
   });

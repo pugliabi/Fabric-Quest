@@ -318,6 +318,12 @@ export const SNARK: string[] = [
   'I understood the verb. I understood the noun. I am choosing not to.',
   'That is a feature request. It has been added to the backlog, which is also a swamp.',
   'The narrator has seen many peasants try that. None of them are narrators now.',
+  "Something went wrong. That's the whole error. Microsoft has been notified; you have not.",
+  'Direct Lake can\'t do that. It falls back to DirectQuery, and then to you.',
+  'The SQL endpoint hasn\'t synced that yet. Check back in a minute. Or a week.',
+  'Your capacity is throttled. Interactive operations are delayed, and that was one.',
+  'A gateway is required for that. The gateway is on a laptop. The laptop is closed.',
+  "That's in preview. Preview means it works, on a Tuesday, for the person who demoed it.",
   // The voice pass (spec1 §5.2): the same narrator, less patient.
   "I don't understand. Type HELP, or open a ticket like a real professional.",
   'Two words, Ctrl-Shift-Enter. Verb, then the thing. Like a measure, but shorter.',

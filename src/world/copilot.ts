@@ -129,7 +129,7 @@ export const RESTART_TEXT = 'Restart the whole quest, or the chat? Say NEW CHAT 
  * Order within the list: `copilot.here`, `copilot.gallery-copilot`, `copilot.clear`, `copilot.restart`.
  */
 export const COPILOT_PHRASES: PhraseRule[] = [
-  { id: 'copilot.here', room: 'copilot.pane', test: /^(ask |open |talk to |hey )?copilot$/, text: 'Copilot is right here. Type a question.' },
+  { id: 'copilot.here', room: 'copilot.pane', test: /^(ask |open |talk to |hey )?copilot$/, text: 'Copilot is right here. It has been right here since the sparkle. Type a question; it has 1,204 answers ready, and one of them is yours.' },
   { id: 'copilot.gallery-copilot', room: 'copilot.gallery', test: /^(ask |open |talk to )?copilot\b/, text: 'Copilot is west, in the pane. It can see these models. It will not look at them unless you name one.' },
   // `start over` / `clear` / `new chat` / `reset` (and their longer forms), anywhere in the realm: the slots go, the pane
   // reads as empty, and the next prompt starts a fresh chat.

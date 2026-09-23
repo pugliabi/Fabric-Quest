@@ -66,7 +66,10 @@ function gameplay(): void {
 const DIRS: Record<string, string> = { n: 'north', s: 'south', e: 'east', w: 'west', u: 'up', d: 'down', in: 'in', out: 'out' };
 const words = (t: string): number => t.split(/\s+/).filter(Boolean).length;
 /** The narrator's line in full when it is short (≤ 20 words); otherwise its leading sentences, trimmed to about 20 words. */
-function short(t: string, max = 20): string {
+/** The first real narrator line: the Peaks prepend an interactive-delay marker. */
+function firstLine(out: string[]): string { return out.find((l) => !/^\(…interactive delay…\)/.test(l)) ?? out[0] ?? ''; }
+
+function short(t: string, max = 60): string {
   t = flat(t);
   if (words(t) <= max) return t;
   const sentences = t.match(/[^.!?]+[.!?]+['"’)]*\s*/g) ?? [t];
@@ -150,7 +153,7 @@ const FLAG_WORDS: Record<string, string> = {
   '!refresh.done': 'before the Big Refresh is fed', 'scroll.lent': 'once you have borrowed the scroll', '!scroll.lent': 'before you borrow the scroll',
   'shrine.open': 'once the Shrine is open', '!shrine.open': 'before the Shrine opens', 'stare.done': 'after you win the staring contest',
   '!stare.done': 'before you win the staring contest', 'trial.hoodie': 'once you wear the hoodie', 'trial.moat': 'once you smell like a Warehouse',
-  '!trial.moat': 'before the Duke throws you in the moat', 'trial.key': 'once you have the standard key', 'model.m2m': 'after the many-to-many mistake',
+  '!trial.moat': 'before the Duke throws you in the moat', 'trial.key': 'once you have the standard key', 'model.m2m': 'after the many-to-many mistake', 'model.date': 'once the date table is marked',
   'seed.planted': 'once the seed is planted', 'pebble.skipped': 'after you skip the pebble', 'card.looked': 'after you have looked at the Card',
   'ts.xmla=false': 'while the XMLA endpoint is off', 'ts.fabricItems=false': 'while Fabric items are off', 'ts.workloads=false': 'while workloads are off',
   'ts.publishToWeb=false': 'once Publish to web is off', 'talk.jeff=7': 'on the eighth talk with nothing given', 'duke.wrong=3': 'on the third wrong answer',
@@ -230,13 +233,17 @@ const REGION_NAME: Record<string, string> = {
   excel: "Jeff's Excel", copilot: 'Copilot',
 };
 const CAP = 15;
+const SETTING_RE = /XMLA|Fabric items|workloads|Export|Copilot is|flood|Autoscale|Publish to web|survey|usage|monitoring|Discover|surge/i;
 
 function renderLines(out: string[], lines: Line[], s: GameState, skip: Set<string>, cap = CAP, heading = 'Things to try'): void {
   const seen = new Set(skip);
   const uniq = lines.filter((l) => !seen.has(l.cmd) && (seen.add(l.cmd), true));
-  const deaths = uniq.filter((l) => l.death);
-  const curses = uniq.filter((l) => !l.death && (l.curse || l.cure));
-  const rest = uniq.filter((l) => !l.death && !l.curse && !l.cure);
+  const SETTING = /XMLA|Fabric items|workloads|Export|Copilot is|flood|Autoscale|Publish to web|survey|usage|monitoring|Discover|surge/i;
+  const gated = uniq.filter((l) => !l.death && SETTING.test(l.cond));
+  const ungated = uniq.filter((l) => !gated.includes(l));
+  const deaths = ungated.filter((l) => l.death);
+  const curses = ungated.filter((l) => !l.death && (l.curse || l.cure));
+  const rest = ungated.filter((l) => !l.death && !l.curse && !l.cure);
   const scored = rest.filter((l) => l.points || l.bonus);
   const tries = rest.filter((l) => !l.points && !l.bonus).sort((a, b) => (a.cond ? 1 : 0) - (b.cond ? 1 : 0));
   if (scored.length) { out.push('', '**Also scores:**', ''); for (const l of scored) out.push(`${say(l)}${pts(l)}`); }
@@ -247,6 +254,7 @@ function renderLines(out: string[], lines: Line[], s: GameState, skip: Set<strin
   }
   if (deaths.length) { out.push('', '**Ways to die ☠:**', ''); for (const l of deaths) out.push(say(l)); }
   if (curses.length) { out.push('', '**Curses:**', ''); for (const l of curses) out.push(`${say(l)}${l.cure ? ' *(the cure)*' : ''}`); }
+  if (gated.length) { out.push('', '*Only after a Sacristy setting is changed:*', ''); for (const l of gated) out.push(`${say(l)}${pts(l)}`); }
   void s;
 }
 
@@ -302,13 +310,17 @@ function rooms(): void {
         const it = WORLD.items[id]!;
         if (it.visibleWhen && !safe(() => it.visibleWhen!(s))) continue; // not here at the start (the flood's Jeffs, the Eventhouse)
         const d = safe(() => (typeof it.describe === 'function' ? it.describe(s) : it.describe));
-        out.push(`- **${it.name}**${it.takeable ? ' (you can take it)' : ''} — ${short(d, 30)}`);
+        out.push(`- **${it.name}**${it.takeable ? ' (you can take it)' : ''} — ${short(d, 60)}`);
         if (it.takeable) {
           const got = step(s, `get ${it.name}`, WORLD);
-          out.push(`  - \`get ${it.name}\` — ${short(got.output[0] ?? '', 20)}`);
+          out.push(`  - \`get ${it.name}\` — ${short(firstLine(got.output), 60)}`);
           if (it.again) out.push(`  - \`get ${it.name}\` again — ${short(typeof it.again === 'function' ? safe(() => (it.again as (s: GameState) => string)(got.state)) : it.again, 24)}`);
         }
-        for (const l of itemLines.get(id) ?? []) out.push(`  ${say(l).replace(/^- /, '- ')}${pts(l)}${l.death ? ' ☠' : ''}`);
+        // Plain actions first, then the ones with a condition — a player reads "look at bridge" before "look at bridge (after…)".
+        const acts = [...(itemLines.get(id) ?? [])].sort((a, b) => (a.cond ? 1 : 0) - (b.cond ? 1 : 0));
+        for (const l of acts.filter((l) => !SETTING_RE.test(l.cond))) out.push(`  ${say(l).replace(/^- /, '- ')}${pts(l)}${l.death ? ' ☠' : ''}`);
+        const gatedActs = acts.filter((l) => SETTING_RE.test(l.cond));
+        if (gatedActs.length) { out.push('  - *only after a Sacristy setting is changed:*'); for (const l of gatedActs) out.push(`    ${say(l).replace(/^- /, '- ')}${pts(l)}`); }
       }
     }
     // People.
@@ -322,7 +334,7 @@ function rooms(): void {
         const said = new Set<string>();
         for (let k = 1; k <= 4; k++) {
           const r = step(st, `talk to ${alias}`, WORLD); st = r.state;
-          const line = short(r.output.join(' '), 30);
+          const line = short(r.output.join(' '), 60);
           if (!said.has(line)) { said.add(line); out.push(`${k}. ${line}`); }
         }
         out.push('', `Ask about anything else: ${short(safe(() => brushOffLine(s, n.brushOff)), 30)}`);

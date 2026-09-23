@@ -271,7 +271,14 @@ export function handle(s: GameState, cmd: ParsedCommand, world: World): Handled 
       next.inventory.push(r.item.id);
       next.flags[`taken.${r.item.id}`] = true;
       delete next.flags[`droppedIn.${r.item.id}`];
-      return { state: next, output: [`Taken: ${r.item.name}.`], outcome: 'success' };
+      const n = r.item.name;
+      return { state: next, output: [vary(s, [
+        `You take the ${n}. Nobody stops you. Nobody was going to.`,
+        `Yeah! Get that ${n}!`,
+        `You pocket the ${n}. It's yours now, the way things are yours when nobody else wanted them.`,
+        `${n.charAt(0).toUpperCase() + n.slice(1)}: acquired. Your inventory grows. Your prospects don't.`,
+        `You grab the ${n} like someone who read the ledger and is pretending they didn't.`,
+      ])], outcome: 'success' };
     }
     case 'drop': {
       const r = resolveNoun(s, world, cmd.noun);

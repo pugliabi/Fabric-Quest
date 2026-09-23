@@ -14,7 +14,7 @@ describe('chirps: shouting', () => {
   it('a trailing "!" still parses the command and adds a reaction line', () => {
     const { s, last } = play(['get mug!']);
     expect(s.inventory).toContain('mug');
-    expect(last[0]).toContain('Taken');
+    expect(last[0]).toMatch(/take the|get that|pocket the|acquired|grab the/i);
     expect(last.length).toBe(2);
   });
   it('get ye flask! gets the flask-specific reaction', () => {
@@ -62,7 +62,7 @@ describe('chirps: the repeat chirp only when the answer did not change (Task F4b
   const mugAgain = WORLD.items.mug!.again as string;
   it('(a) get mug twice: the second answer is the mug\'s own line, and that IS the repeat joke — no generic chirp', () => {
     const { outs } = play(['get mug', 'get mug']);
-    expect(outs[0]).toEqual(['Taken: mug.']);
+    expect(outs[0]).toHaveLength(1); expect(outs[0]![0]).toMatch(/take the|get that|pocket the|acquired|grab the/i);
     expect(outs[1]).toEqual([mugAgain]);
   });
   it('(a\') the third get mug says the same words again, so the ladder is back — and the counter kept climbing', () => {
@@ -85,7 +85,7 @@ describe('chirps: the repeat chirp only when the answer did not change (Task F4b
   });
   it('(d) get mug! twice: the shout line as before, and no repeat chirp under the mug\'s line', () => {
     const { outs } = play(['get mug!', 'get mug!']);
-    expect(outs[0]![0]).toBe('Taken: mug.');
+    expect(outs[0]![0]).toMatch(/take the|get that|pocket the|acquired|grab the/i);
     expect(outs[0]!.length).toBe(2);
     expect(outs[1]![0]).toBe(mugAgain);
     expect(outs[1]!.length).toBe(2); // the shout reaction only
