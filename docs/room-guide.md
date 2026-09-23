@@ -25,7 +25,7 @@ You're hanging out in My Workspace. Nobody else can see in, which is the only re
 **The way to 200 here:**
 
 - `get mug` — You pocket the mug. It's yours now, the way things are yours when nobody else wanted them.
-- `read report` — Sales_v3_FINAL_final2.pbix. There is also a Sales_v3_FINAL_final3.pbix, but you don't talk about that one. Built with Dataflows Gen1 Classic.
+- `read report` — Sales_v3_FINAL_final2.pbix. There is also a Sales_v3_FINAL_final3.pbix, but you don't talk about that one.
 
 **Rules — what this room answers to:**
 
@@ -34,13 +34,13 @@ You're hanging out in My Workspace. Nobody else can see in, which is the only re
 
 **Items:**
 
-- **report** — Sales_v3_FINAL_final2.pbix. There is also a Sales_v3_FINAL_final3.pbix, but you don't talk about that one. Built with Dataflows Gen1 Classic.
+- **report** — Sales_v3_FINAL_final2.pbix. There is also a Sales_v3_FINAL_final3.pbix, but you don't talk about that one.
   - `open report` — You open the report. 47 pages. 46 of them are a table. Page 12 is a pie chart with 31 slices. You close the report.
   - `use report` — You click Publish. A dialog asks which workspace. There is only one, and you are standing in it. `publish`, if you must.
   - `use sticky note on report` (once you have the sticky note) — You stick DO NOT REFRESH on the report. The report has not refreshed since spring. Jeff, somehow, is already satisfied.
 - **mug** (you can take it) — 'World's Okayest Analyst.' It has never been washed.
   - `get mug` — You take the mug. Nobody stops you. Nobody was going to.
-  - `get mug` again — We've been through this. You took it off the desk, next to the seventeen printouts. There's a ring. We all saw.
+  - `get mug` again — You already have the mug. There's a ring on your desk where it was, and we all saw.
   - `use mug` (once you have the mug) — You drink from the mug. It has been empty since the last refresh. You feel refreshed. You are not.
 - **bed** — A narrow bed. The blanket is a decommissioned Report Server banner. You have not slept in it since the refresh schedule moved to 2 AM.
   - `use bed` — You lie down. Not now. There is a dragon. Also the 2 AM refresh would run across your face.
@@ -48,18 +48,18 @@ You're hanging out in My Workspace. Nobody else can see in, which is the only re
   - `use candle` — You hold the candle up. The room gets no bigger. The report gets no shorter.
   - `light candle` — Already lit. Both ends. You want a THIRD?
   - `blow out candle` — You blow. It relights. It's on a trial; trials don't end when you want them to.
-- **desk** — A desk. On it: the report, and a mug. Under it: seventeen printouts of the same DAX error. Next to those, the pie chart you made in 2014. It is still on the intranet.
-  - `use desk` — You sit at the desk and open the report. Page 12 is still a pie chart with 31 slices. You close the report. Somewhere, a dragon throttles.
-  - `sit desk` — You sit at the desk and open the report. Page 12 is still a pie chart with 31 slices. You close the report. Somewhere, a dragon throttles.
-- **window** — Through the window: the Village Square, a well, and a man holding an empty spreadsheet toward the sky as if it might fill on its own. Through the window, past the square, a hill. Green. Rolling. Somebody set it as a wallpaper once.
+- **desk** — A desk. On it: the report, and a mug. Under it: seventeen printouts of the same DAX error.
+  - `use desk` — You sit at the desk. Page 12 is still a pie chart with 31 slices. Somewhere, a dragon throttles.
+  - `sit desk` — You sit at the desk. Page 12 is still a pie chart with 31 slices. Somewhere, a dragon throttles.
+- **window** — Through the window: the Village Square, a well, and a man holding an empty spreadsheet toward the sky as if it might fill on its own.
   - `use window` — You open the window. Jeff from Finance, in the square, looks up hopefully. You close the window.
   - `open window` — You open the window. Jeff from Finance, in the square, looks up hopefully. You close the window.
 - **door** — The door. It is out, to the east. It has never been locked; nobody in the realm wants what is in here.
   - `open door` — Yeah, totally! Except it's already open, you moron. Try: out.
 - **sticky note** (you can take it) — A yellow sticky note: DO NOT REFRESH — JEFF. You have no idea how it got on your desk. You have a pretty good idea.
   - `get sticky note` — You take the sticky note. Nobody stops you. Nobody was going to.
-  - `get sticky note` again — You already peeled the note off your desk. There is a sticky rectangle where it was, and it is somehow also Jeff's.
-- **Eventhouse** — It has already logged that you looked.
+  - `get sticky note` again — You already have the note. The sticky rectangle it left on your desk is somehow also Jeff's.
+- **Eventhouse** — An Eventhouse. It has already logged that you looked.
   - `use eventhouse` — You query the Eventhouse. It returns every command you've typed, with timestamps. You close it before turn 12.
 
 **Phrases — other things you can say here:**
@@ -71,8 +71,8 @@ You're hanging out in My Workspace. Nobody else can see in, which is the only re
 
 **Ways to die ☠:**
 
-- `entire internet` — You publish to web. The embed code is beautiful. The dragon has your report. So does everyone. You published to web. The prophecy said nothing about this, because the prophecy is also on the web now. The dialog listed two options and you picked the one with the word ENTIRE in it.
-- `merge` — You merge the FINAL files. There is now a Sales_v3_FINAL_final4 and you are not in it. Two files called FINAL, and you thought the fix was a third.
+- `entire internet` — You publish to web. The embed code is beautiful. The dragon has your report. So does everyone. You published to web. The dialog listed two options and you picked the one with the word ENTIRE in it.
+- `merge` — You merge the FINAL files into Sales_v3_FINAL_final4 and you are not in it. Two files called FINAL, and you thought the fix was a third.
 
 ## Village Square
 
@@ -102,7 +102,7 @@ The Village Square. A well, a board, and a Jeff. You're the fourth thing. Exits:
 
 **Items:**
 
-- **notice board** — A notice board. Someone has written the Prophecy on it, and someone else has written 'export to excel' under that. Try reading it. Someone has drawn Clippy in the corner. It looks like it's writing a measure.
+- **notice board** — A notice board with the Prophecy on it. Try reading it. Someone has drawn Clippy in the corner, and it looks like it's writing a measure.
   - `read board` — THE PROPHECY When the Dragon throttles the Refreshes of the night, One shall climb the Peaks and set the Model right. But the Shrine door opens only for the Worthy Three: Look like an Engineer. Smell like a Warehouse. Hold the Gateway Key. Below it, in different handwriting: "export to excel". **+5**
   - `use board` — You pin up OUT OF OFFICE. Jeff reads it and waits for you to get back. You are standing right there.
   - `open board` — It's nailed shut. To a well.
@@ -123,7 +123,7 @@ The Village Square. A well, a board, and a Jeff. You're the fourth thing. Exits:
 
 1. "Hey! Hey. Can you export this to Excel? Just the whole thing. All of it. Also, the numbers don't match the report. Come look. I have Excel open." (Say: help jeff.)
 2. "Export? Excel? Either. Both. I'm flexible," says Jeff, who is not.
-3. "You know what would help? Not Excel. Well, also Excel. But that mug on your desk. West. I can see it through your window." Jeff from Finance clears his throat. "Just a quick export. Whenever."
+3. "That mug on your desk would help. West; I can see it through your window." Jeff from Finance clears his throat. "Just a quick export. Whenever."
 4. "Still no mug, Mister Star Schema."
 
 Ask about anything else: "Is it in Excel? Then I don't know it."
@@ -156,15 +156,15 @@ The Dataflow Gen1 Mill. Deprecated, like your first semantic model, which was on
 
 - `say dax` — You say 'DAX' in the Mill. The Miller covers the wheel's ears. 'She only knows M.'
 - `use mug` (once you have the mug) — You drink from the empty mug. 'Empty since 2019?' asks the Miller. 'Spring.' 'Close.'
-- `use credentials` (once you have the credentials) — Good idea. Wrong screen. The man who weeps for these is at the dock, and he has been practicing his face.
+- `use credentials` (once you have the credentials) — Good idea. Wrong screen. The man who weeps for these is at the dock.
 - `give credentials to miller` (once you have the credentials) — You hand them back. He won't take them. 'They're yours now. That's what decommissioned means.'
 - `give license to miller` (once you have the Pro License Card) — 'Pro,' the Miller reads. 'We were all Pro once.' He hands it back like a photograph.
 
 **Items:**
 
-- **mill wheel** — The wheel turns once every scheduled refresh. It creaks in Power Query M. Nobody has clicked 'Edit' on it since 2019. A plaque reads: Dataflows Gen1 Classic — the taste you remember.
+- **mill wheel** — The wheel turns once every scheduled refresh, creaking in Power Query M. A plaque reads: Dataflows Gen1 Classic — the taste you remember.
   - `use mill` — You try to edit the Mill. A dialog appears: "Dataflow Gen1 is in maintenance mode. Consider upgrading." You consider it.
-  - `turn wheel` — You turn the wheel by hand. One refresh. It succeeds, which nobody has seen since 2019, and nobody saw now.
+  - `turn wheel` — You turn the wheel by hand. One refresh. It succeeds. Nobody has seen that since 2019.
   - `stop wheel` — You lean on the wheel. It stops. Then it starts again; the schedule is stronger than you.
   - `use usb stick on wheel` (once you have the USB stick) — You plug FINAL_v2 into the Mill. The Mill accepts it. Nothing changes. It was already running that.
 - **banner** — DECOMMISSION: Q3. The year has been painted over four times.
@@ -176,7 +176,7 @@ The Dataflow Gen1 Mill. Deprecated, like your first semantic model, which was on
   - `open chest` (once you have the credentials) — Already open. Already empty. Already yours.
 - **USB stick** (you can take it) — A USB stick labelled FINAL_v2. It contains a dataflow. Gen1. Of course it does.
   - `get USB stick` — You take the USB stick. Nobody stops you. Nobody was going to.
-  - `get USB stick` again — You already picked FINAL_v2 up off the Mill floor, under the DECOMMISSION banner. FINAL_v3 is still down there somewhere. Nobody has ever found it.
+  - `get USB stick` again — You already have FINAL_v2. Nobody has ever found FINAL_v3.
   - `give usb stick to miller` (once you have the USB stick) — The Miller turns FINAL_v2 over in his hands. 'I wrote this,' he says. 'In 2019. There is a FINAL_v3. Nobody has ever found it.' He hands it back.
   - `open usb stick` (once you have the USB stick) — You open FINAL_v2. Inside: a dataflow, and a folder called old. The folder called old is bigger.
 
@@ -186,7 +186,7 @@ The Dataflow Gen1 Mill. Deprecated, like your first semantic model, which was on
 
 1. "Ah, a Report Builder. The Mill's being decommissioned, you know. Only thing left in here is the Gen1 credentials. Been stored here since 2019. Take 'em — nobody else remembers the password." He hands you the credentials.
 2. "Q3," says the Miller, shorter. "Take care of those creds."
-3. "The Ferryman. South to the square, south to the lake, east to the dock. Those creds are his. He's been OFFLINE since 2021 and I've been sad about it since Q3."
+3. "Those creds are the Ferryman's. South to the square, south to the lake, east to the dock."
 4. "Still carrying my creds, Mister Star Schema. The dock's that way."
 
 Ask about anything else: "I don't know nothing about no whatever you just said. Ask me after Q3. Oh wait."
@@ -224,18 +224,18 @@ The Refresh Fields. Rows of failures, and you, standing among them like you belo
 **Items:**
 
 - **refreshes** — Rows of scheduled refreshes, swaying. About a third are green. The rest are the colour of a 2 AM email.
-  - `get refresh` — You pick a refresh. It fails in your hand. Error: the gateway is offline. Somewhere, a ferryman weeps. Not enough capacity.
+  - `get refresh` — You pick a refresh. It fails in your hand. Error: the gateway is offline. Somewhere, a ferryman weeps.
   - `schedule refresh` — You schedule the refresh for 2 AM. It will fail at 2 AM, quietly, with nobody standing in it. That is what schedules are for.
   - `refresh manual` — You trigger Manual by hand. He refreshes. It takes eleven minutes. Nothing was waiting on it.
   - `water crops` — You water the refreshes. They fail, but wetter.
-  - `pick refresh` — You pick a refresh. It fails in your hand. Error: the gateway is offline. Somewhere, a ferryman weeps. Not enough capacity.
-  - `run refresh` — You kick off a full refresh at 9:02 a.m. on a Monday. Every report in the village goes grey at once. The villagers find you before the capacity does. The sundial said 9:02 and the scarecrow said Monday, and you clicked anyway. ☠
+  - `pick refresh` — You pick a refresh. It fails in your hand. Error: the gateway is offline. Somewhere, a ferryman weeps.
+  - `run refresh` — You kick off a full refresh at 9:02 a.m. on a Monday, and every report in the village goes grey at once. The sundial said 9:02 and the scarecrow said Monday, and you clicked anyway. ☠
 - **seed** (you can take it) — A refresh seed. Plant it and in 24 hours you have another failed refresh. Nature is a scheduler.
   - `get seed` — You take the seed. Nobody stops you. Nobody was going to.
-  - `get seed` again — We did the Fields already. You dug the seed out from between two failed refreshes while Manual watched, and it hasn't sprouted since.
+  - `get seed` again — You already have the seed. It hasn't sprouted since the Fields.
   - `use seed` (once you have the seed) — You plant it. A tiny refresh sprouts, considers its options, and fails. It had its whole life ahead of it. Most of that was retries.
   - `use seed` (once the seed is planted) — You already planted it. It already failed. You are standing over its tiny grave, holding nothing, which is also how most on-call rotations end.
-- **sundial** — A sundial. It reads 9:02. It has read 9:02 since the migration, which was also on a Monday. Every report in the village opens at nine, and a full refresh at 9:02 would find all of them at once.
+- **sundial** — A sundial. It reads 9:02 on a Monday, just after every report in the village opens. A full refresh now would find all of them at once.
   - `use sundial` — You turn the sundial to 2 AM. The sun checks its refresh schedule and declines.
 
 **People:**
@@ -243,8 +243,8 @@ The Refresh Fields. Rows of failures, and you, standing among them like you belo
 *Manual* (`talk to manual`, again and again):
 
 1. Manual says nothing. He is waiting for someone to click him.
-2. Manual says nothing, again. He is very consistent for a scarecrow that has to be triggered by hand.
-3. Manual says nothing. You could use him; he refreshes when clicked. That is his whole thing and his whole tragedy. Jeff from Finance clears his throat. "Just a quick export. Whenever."
+2. Manual says nothing, again. He is very consistent, for a scarecrow.
+3. You could use him; Manual refreshes when clicked. That is his whole thing, and his whole tragedy. Jeff from Finance clears his throat. "Just a quick export. Whenever."
 4. Manual, Mister Star Schema, is a scarecrow. He is not going to open up.
 
 Ask about anything else: Manual says nothing. Manual would need to be triggered to say nothing about that specifically.
@@ -253,7 +253,7 @@ Ask about anything else: Manual says nothing. Manual would need to be triggered 
 
 1. "Hey! Hey. Can you export this to Excel? Just the whole thing. All of it. Also, the numbers don't match the report. Come look. I have Excel open." (Say: help jeff.)
 2. "Export? Excel? Either. Both. I'm flexible," says Jeff, who is not.
-3. "You know what would help? Not Excel. Well, also Excel. But that mug on your desk. West. I can see it through your window." Jeff from Finance clears his throat. "Just a quick export. Whenever."
+3. "That mug on your desk would help. West; I can see it through your window." Jeff from Finance clears his throat. "Just a quick export. Whenever."
 4. "Still no mug, Mister Star Schema."
 
 Ask about anything else: "Is it in Excel? Then I don't know it."
@@ -279,13 +279,13 @@ The OneLake Shore. One lake. You've counted twice. Still one. Exits: north to th
 - `look at house` — A house. On a lake. From here, it's a house on a lake. Distance doesn't help.
 - `look at dock` — East: a dock, a boat, and a man who's been OFFLINE since 2021. You can see the lamp from here. It's the sad red.
 - `talk to ferryman` — He's east, on the dock. You wave. He mouths something. It's 'OFFLINE'; it carries.
-- `say dax` — You say 'DAX' at the lake. Lakes don't do measures. The reflection flinches; it's a workspace.
+- `say dax` — You say 'DAX' at the lake. Lakes don't do measures.
 
 **Items:**
 
 - **pebble** (you can take it) — A smooth, flat pebble. Perfect for skipping. The OneLake would take it. The OneLake takes everything, once.
   - `get pebble` — You take the pebble. Nobody stops you. Nobody was going to.
-  - `get pebble` again — You already picked up the pebble. It is one pebble. There is only ever one; they were very clear about that.
+  - `get pebble` again — You already have the pebble. There is only ever one.
   - `throw pebble` — It's at your feet. Pick it up first; the OneLake does not accept throws by reference.
   - `use pebble on lake` (once you have the pebble) — Skip. Skip. Sink. Three hops, then it becomes a Delta file. Somewhere a table gains one row: pebble, 1, you.
   - `skip pebble` (once you have the pebble) — Skip. Skip. Sink. Three hops, then it becomes a Delta file. Somewhere a table gains one row: pebble, 1, you.
@@ -293,7 +293,7 @@ The OneLake Shore. One lake. You've counted twice. Still one. Exits: north to th
 
 **Ways to die ☠:**
 
-- `import lake` — You attempt to Import the OneLake into Power BI Desktop. Your laptop becomes a small sun. Nice one, Import Mode Ishmael.
+- `import lake` — You Import the OneLake into Power BI Desktop, and your laptop becomes a small sun. Nice one, Import Mode Ishmael.
 
 ## Ferryman's Dock
 
@@ -319,7 +319,7 @@ The Ferryman's Dock. OFFLINE, like the guy who set up the gateway and left for a
 - `say offline` — You say 'OFFLINE.' The Ferryman nods. It is the first time anyone has agreed with the lamp.
 - `say dax` — You say 'DAX' on the dock. The Ferryman mouths it back. He doesn't know what it is; he mouths everything.
 - `look at lake` — The OneLake, from the dock. One lake wide. You could swim it; the Ferryman has watched people try. They're in Bronze now.
-- `drink lake` — You drink from the OneLake, dock side. One lake. The Ferryman watches, OFFLINE, and does not stop you; stopping people takes a gateway.
+- `drink lake` — You drink from the OneLake, dock side. The Ferryman does not stop you; stopping people takes a gateway.
 - `use credentials` (once you have the credentials) — On whom? There's one man on this dock, and his hand has been out since 2021.
 - `board` (once the ferry is online) — You board the GATEWAY. The crossing takes exactly as long as the first refresh after a gateway update.
 - `east` (before the ferry is online) — The boat is tied up and the Ferryman is OFFLINE. Nothing crosses the OneLake without a gateway.
@@ -344,7 +344,7 @@ The Ferryman's Dock. OFFLINE, like the guy who set up the gateway and left for a
   - `open boat` (once the ferry is online) — It is a boat. Boats are boarded, not opened. `board`, and the Ferryman does the rest, weeping.
 - **timetable** (you can take it) — FERRY TIMETABLE. Departures: 8 per day (Pro), 48 per day (Premium). Every departure this year has been crossed out and replaced with OFFLINE.
   - `get timetable` — You take the timetable. Nobody stops you. Nobody was going to.
-  - `get timetable` again — You already peeled the timetable off the post at the dock, right under the Ferryman's lamp. He watched you do it.
+  - `get timetable` again — You already have the timetable. Every departure is still OFFLINE.
   - `use timetable` — You consult the timetable. Next departure: OFFLINE. The one after: OFFLINE. It is the most reliable schedule in the realm.
   - `give timetable to ferryman` (once you have the timetable) — The Ferryman reads the timetable. 'Eight departures a day. On a Pro license.' He laughs until his lamp flickers, then stops, because it did not flicker ONLINE.
 
@@ -354,7 +354,7 @@ The Ferryman's Dock. OFFLINE, like the guy who set up the gateway and left for a
 
 1. The Ferryman's lamp reads OFFLINE. He mouths: 'Credentials expired.' A tear runs down his cheek in a way that suggests a scheduled refresh failed.
 2. "Credentials," he mouths again, slower, the way you mouth a word to someone across a very wide lake. "Expired."
-3. "Gen1 credentials. The Mill has them. West to the shore, north to the square, north again. Talk to the Miller, or open his chest; he stopped caring in 2019."
+3. "The Mill has Gen1 credentials," he mouths. "West, north, north. Ask the Miller, or open his chest."
 4. Still no creds, Mister Star Schema. The Mill. West, north, north.
 
 Ask about anything else: He mouths: 'CREDENTIALS. EXPIRED.' He mouthed it at his own wedding.
@@ -362,7 +362,7 @@ Ask about anything else: He mouths: 'CREDENTIALS. EXPIRED.' He mouthed it at his
 **Phrases — other things you can say here:**
 
 - `throw pebble` — You mime a throw. The Ferryman is not fooled; he has seen every mime.
-- `hum` — You hum. He mouths along. He doesn't know the tune; he mouths everything.
+- `hum` — You hum. He mouths along. He doesn't know the tune.
 - `cry` — You weep. He weeps. The lamp stays red; it doesn't do sympathy, it does status.
 
 ## Isle of Gateway
@@ -393,19 +393,19 @@ The Isle of Gateway. Two keys, one plinth, and a decision you'll be explaining i
 
 - **personal key** (you can take it) — A Personal Mode gateway key. It only works for you, and only while your laptop is open.
   - `get personal key` — You take the PERSONAL key. It only works for you, and only while your laptop is open. You feel a strong urge to close your laptop.
-  - `get personal key` again — You already took the personal key. It was a mistake then. It is a mistake you are now holding.
+  - `get personal key` again — You already took the personal key. It was a mistake then, and now you are holding it.
   - `get personal key` — You take the PERSONAL key. It only works for you, and only while your laptop is open. You feel a strong urge to close your laptop.
   - `say personal` — You say 'personal.' The plinth has heard that one too, usually from people with one laptop and no friends.
   - `use personal key on plinth` (once you have the personal key) — It fits. It is yours alone. Nobody else can ever use it. That is the problem.
 - **standard key** (you can take it) — A Standard Mode gateway key. Heavy, cold, enterprise-grade.
   - `get standard key` — You take the STANDARD key. It is heavy in the way things are heavy when many people depend on them.
-  - `get standard key` again — We did the island already.
+  - `get standard key` again — You already have the STANDARD key. You have been patting your pocket since the island.
   - `get standard key` — You take the STANDARD key. It is heavy in the way things are heavy when many people depend on them. **+20**
   - `use standard key on plaque` — The plaque doesn't take keys. It takes decisions, and it has yours on file.
-  - `say standard` — You say 'standard.' Good choice. Saying it isn't taking it, and the plinth has heard a lot of good choices.
+  - `say standard` — You say 'standard.' Good choice. Now take it; saying isn't taking.
   - `use standard key on plinth` (once you have the standard key) — It fits. It fits everyone's hand, which is the point, and also why it is cold.
 - **plinth** — A stone plinth with two hollows shaped like keys. One says PERSONAL. One says STANDARD. Only one hollow has ever been used.
-  - `use plinth` — You put your hand in the STANDARD hollow. It fits. Everyone fits. That is what shared means. The PERSONAL hollow has no capacity for that.
+  - `use plinth` — You put your hand in the STANDARD hollow. Everyone fits; that is what shared means. The PERSONAL hollow has no capacity for that.
   - `open plinth` — The hollows are as open as they get.
 - **plaque** — CHOOSE. THEN LIVE WITH IT. — the Gateway Council. Below, smaller: 'Personal mode cannot be shared. Standard mode cannot be unshared.'
   - `read plaque` — CHOOSE. THEN LIVE WITH IT. — The Gateway Council, 2018
@@ -426,11 +426,11 @@ The Bronze Marsh. Everything here is a string, including your plan. Exits: north
 **Rules — what this room answers to:**
 
 - `label columns` — You name Column1. It becomes Column1 (2). The marsh applauds, unstructured.
-- `say dax` — You say 'DAX' in the Bronze. Nothing here has a type, so nothing can be filtered. The strings don't look up.
+- `say dax` — You say 'DAX' in the Bronze. Nothing here has a type. The strings don't even look up.
 
 **Ways to die ☠:**
 
-- `drink capacityade` (once you have the energy drink) — Electrolytes. Autoscale. Your heart hits 64 CUs and the bill arrives before you do. The label said not on a capacity. Everything in this realm is on a capacity. That is what the dragon is FOR.
+- `drink capacityade` (once you have the energy drink) — Electrolytes, autoscale, and your heart hits 64 CUs; the bill arrives before you do. The label said not while standing on a capacity, and you were standing on one.
 - `drink` — You drink raw data. Nothing is typed. Everything is a string. You are a string. Your mom told you never to drink from the Bronze layer. And NOW look.
 
 **Items:**
@@ -447,7 +447,7 @@ The Bronze Marsh. Everything here is a string, including your plan. Exits: north
   - `use name tag on csv` (once you have the name tag) — You stick 'Column3' on the CSV. It already had a Column3. Power Query notices and helpfully renames yours Column3_1. You have made it worse, with a suffix.
 - **stress ball** (you can take it) — A stress ball shaped like a cube. 'OLAP' is printed on one face. The other five faces are dimensions nobody asked for.
   - `get stress ball` — You take the stress ball. Nobody stops you. Nobody was going to.
-  - `get stress ball` again — You already have the cube. You could squeeze it. You have squeezed it. Your forearm is a star schema.
+  - `get stress ball` again — You already have the cube. You could squeeze it. You will.
 
 **Phrases — other things you can say here:**
 
@@ -466,7 +466,7 @@ The Silver Marsh. Things have names now. Yours is still 'peasant'. Exits: north 
 
 **Rules — what this room answers to:**
 
-- `drink` — You drink Silver water. It has been deduplicated. You feel slightly less redundant. You feel refreshed.
+- `drink` — You drink Silver water. It has been deduplicated. You feel slightly less redundant.
 - `read column names` — Column1 became CustomerName. Column2 became Customer_Name. Column3 is still Column3. Its name tag is floating nearby, unclaimed.
 - `look at column names` — Column1 became CustomerName. Column2 became Customer_Name. Column3 is still Column3. Its name tag is floating nearby, unclaimed.
 - `look at water` — Silver water. Cleaner, and it knows it. It reflects you once; the duplicates were removed.
@@ -476,19 +476,19 @@ The Silver Marsh. Things have names now. Yours is still 'peasant'. Exits: north 
 
 **Ways to die ☠:**
 
-- `drink capacityade` (once you have the energy drink) — Electrolytes. Autoscale. Your heart hits 64 CUs and the bill arrives before you do. The label said not on a capacity. Everything in this realm is on a capacity. That is what the dragon is FOR.
+- `drink capacityade` (once you have the energy drink) — Electrolytes, autoscale, and your heart hits 64 CUs; the bill arrives before you do. The label said not while standing on a capacity, and you were standing on one.
 
 **Items:**
 
 - **log** — Transaction logs float past in the Silver Marsh. Each one is a JSON file that knows exactly what happened.
-  - `use log` — You open a transaction log. It knows exactly what happened. It knows what you did on turn 0, too, and filed it next to your Hotmail password.
-  - `open log` — You open a transaction log. It knows exactly what happened. It knows what you did on turn 0, too, and filed it next to your Hotmail password.
-  - `read log` — You read one. {"add": "you"}. Then {"remove": "you"}. It has done this with other Report Builders, and it will again.
+  - `use log` — You open a transaction log. It knows exactly what happened. It also knows your Hotmail password.
+  - `open log` — You open a transaction log. It knows exactly what happened. It also knows your Hotmail password.
+  - `read log` — You read one. {"add": "you"}. Then {"remove": "you"}.
   - `talk to log` — You talk to the log. It writes that down. It writes everything down; that's the whole personality.
-  - `use name tag on log` (once you have the name tag) — You stick Column3 on the log. It logs it: add, Column3. It never takes it off; it just never counts it.
+  - `use name tag on log` (once you have the name tag) — You stick Column3 on the log. It logs it: add, Column3.
 - **name tag** (you can take it) — A name tag, peeled off a column somewhere upstream: HELLO MY NAME IS Column3. It has been renamed so many times the ink gave up.
   - `get name tag` — You take the name tag. Nobody stops you. Nobody was going to.
-  - `get name tag` again — You already fished the name tag out of the Silver Marsh while the transaction logs drifted past and judged you. It still says Column3.
+  - `get name tag` again — You already have the name tag. It still says Column3.
   - `use name tag on water` (once you have the name tag) — You drop the tag in the Silver. It comes back: Column3, once. There was only ever one.
 
 **Phrases — other things you can say here:**
@@ -523,13 +523,13 @@ The Gold Marsh. Clean, typed, modeled. You lower the tone just by standing here.
 
 **Ways to die ☠:**
 
-- `drink capacityade` (once you have the energy drink) — Electrolytes. Autoscale. Your heart hits 64 CUs and the bill arrives before you do. The label said not on a capacity. Everything in this realm is on a capacity. That is what the dragon is FOR.
+- `drink capacityade` (once you have the energy drink) — Electrolytes, autoscale, and your heart hits 64 CUs; the bill arrives before you do. The label said not while standing on a capacity, and you were standing on one.
 
 **Items:**
 
 - **shortcut** (you can take it) — A OneLake Shortcut. It weighs nothing. It's just a pointer.
   - `get shortcut` — You pick up the Shortcut. It weighs nothing. It's just a pointer.
-  - `get shortcut` again — You picked up the Shortcut already. It weighed nothing then and it weighs nothing now. That is its whole deal.
+  - `get shortcut` again — You already have the Shortcut. It weighs nothing; that's its whole deal.
   - `get shortcut` — You pick up the Shortcut. It weighs nothing. It's just a pointer. **+10**
   - `read shortcut` — SHORTCUT, it says, pointing everywhere at once. Below: 'no data was moved.' Below that, smaller: 'no data was moved.'
   - `talk to shortcut` — You talk to the signpost. It points somewhere else. It's not rude; it's a pointer.
@@ -540,7 +540,7 @@ The Gold Marsh. Clean, typed, modeled. You lower the tone just by standing here.
 **Phrases — other things you can say here:**
 
 - `throw pebble` — You mime a throw. The marsh is not fooled; it has ingested every mime.
-- `smell marsh` — You sniff. It smells like a well-named measure. You didn't know they had a smell. They do; it's expensive.
+- `smell marsh` — You sniff. It smells like a well-named measure. You didn't know they had a smell.
 - `swim` — You wade into the Gold. You come out with a business name and a data type. Neither is flattering.
 - `dig` — You dig. You hit a shortcut. It points at the hole.
 
@@ -572,9 +572,9 @@ The Lake House. A house. On a lake. You keep saying it like it'll start meaning 
   - `use sign` — The sign's not a control. It's a compromise, in two fonts.
   - `open sign` — It's two fonts. Neither opens.
 - **chair** — A deck chair. Adirondack. Lakehouse-adjacent.
-  - `use chair` — You sit on the deck. The lake refreshes. It is lovely. You are billed. It is the Windows XP hill with a deck chair on it.
+  - `use chair` — You sit on the deck. The view is the Windows XP hill, with a lake. The lake refreshes. You are billed.
 - **mailbox** — Mailbox: 1 new. It is a CSV. It has been in the mailbox since bronze.
-  - `open mailbox` — One new CSV. It has been in there since bronze. You leave it; the mailbox is also a Lakehouse, legally.
+  - `open mailbox` — One new CSV. You leave it; the mailbox is also a Lakehouse, legally.
   - `use mailbox` — You put the flag up. Outgoing: nothing. The mailbox lowers it again; it knows you.
   - `talk to mailbox` — '1 new,' says the mailbox. It is the only thing it has ever said, and it has never been wrong.
 - **door** — A door. Behind it, files and tables in the same building. Nobody thought that was strange until the invoice.
@@ -582,7 +582,7 @@ The Lake House. A house. On a lake. You keep saying it like it'll start meaning 
 
 **Phrases — other things you can say here:**
 
-- `sit` — You sit on the deck. The lake refreshes. It is lovely. You are billed. It is the Windows XP hill with a deck chair on it.
+- `sit` — You sit on the deck. The view is the Windows XP hill, with a lake. The lake refreshes. You are billed.
 - `swim` — You wade in. It is a lake. It is also, somehow, a house. You are now inside a house while swimming. You get out.
 - `knock` — Nobody answers. A Spark session starts inside, out of politeness.
 - `buy` — It is not for sale. It is for storage. Very different, the realtor insists, without making eye contact.
@@ -598,7 +598,7 @@ The Monastery Gate. A session is starting. It was starting when you got here and
 
 **The way to 200 here:**
 
-- `open gate` — You push the gate. It's a Spark session; you can't push a session. But your hand on the gate is apparently what it was waiting for. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open. **+10**
+- `open gate` — You push the gate. You can't push a Spark session, but it was apparently waiting for a hand. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open. **+10**
 
 **Also scores:**
 
@@ -612,19 +612,19 @@ The Monastery Gate. A session is starting. It was starting when you got here and
 
 *Only after a Sacristy setting is changed:*
 
-- `south` (while the XMLA endpoint is off) — The back gate is an XMLA endpoint. Your capacity admin set it to Off. From this side it is a wall, and the monks are using it to lean on.
+- `south` (while the XMLA endpoint is off) — The back gate is an XMLA endpoint. Your capacity admin set it to Off. Your capacity admin is you.
 
 **Items:**
 
 - **gate** — A stone gate with a stone progress bar. SESSION STARTING… 0%. Not enough capacity to hurry it. Enough to open a gate, though.
   - `look at back gate` — The Keep's back gate, south: the XMLA endpoint, Read Write. Through it, the Model View, Sir Cardinality, and one eyebrow, already raised.
   - `ring gate` — Shut. The session is starting. Open the gate, or wait for it; either one gets you in.
-  - `open gate` (before the gate opens) — You push the gate. It's a Spark session; you can't push a session. But your hand on the gate is apparently what it was waiting for. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open. **+10**
-  - `use gate` (before the gate opens) — You push the gate. It's a Spark session; you can't push a session. But your hand on the gate is apparently what it was waiting for. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open. **+10**
+  - `open gate` (before the gate opens) — You push the gate. You can't push a Spark session, but it was apparently waiting for a hand. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open. **+10**
+  - `use gate` (before the gate opens) — You push the gate. You can't push a Spark session, but it was apparently waiting for a hand. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open. **+10**
   - `open gate` (once the gate is open) — Yeah, totally! Except it's already open, you moron. Try: north.
 - **pamphlet** (you can take it) — SPARK: A BEGINNER'S GUIDE. Chapter 1: Waiting. Chapter 2: Waiting, Continued. Chapter 3 has not started yet.
   - `get pamphlet` — You take the pamphlet. Nobody stops you. Nobody was going to.
-  - `get pamphlet` again — You already took the pamphlet off the gatekeeper monk while he pointed at the progress bar. Chapter 3 still hasn't started.
+  - `get pamphlet` again — You already have the pamphlet. Chapter 3 still hasn't started.
   - `give pamphlet to monk` (once you have the pamphlet) — The monk glances at the pamphlet and hands it back. He already has one. He wrote it. Chapter 3 is still starting.
 - **bricks** — Bricks, where the Keep's back gate was. XMLA is chalked on them, and under it, smaller: OFF. Three monks lean on it. It is the most support the endpoint has had.
 
@@ -634,7 +634,7 @@ The Monastery Gate. A session is starting. It was starting when you got here and
 
 1. The monk points at the progress bar without a word. 'Session starting…'
 2. The monk points at the progress bar again, a little harder. It is still starting.
-3. "Open it," the monk says, quietly, so the session doesn't hear. "Or wait. Either one. It counts your patience, and it counts your hands."
+3. "Open it, or wait," the monk says, quietly, so the session doesn't hear. "Either one counts."
 4. Still not opening it, Mister Star Schema. The bar noticed.
 
 Ask about anything else: The monk points at the progress bar. It is his answer to everything, and it is always the same percent.
@@ -642,7 +642,7 @@ Ask about anything else: The monk points at the progress bar. It is his answer t
 **Phrases — other things you can say here:**
 
 - `count` — One. Two. The session hears you counting and restarts.
-- `push session` — It's starting. Open the gate, or wait. That's the puzzle. Really.
+- `push session` — Open the gate, or wait; the session is starting. That's the puzzle. Really.
 
 ## Cloister
 
@@ -655,7 +655,7 @@ The Cloister. Monks in a circle, chanting. You're in the loop now. There's no br
 **The way to 200 here:**
 
 - `talk to abbot` — 'Brother Pandas' notebook runs,' says the Abbot, 'and the Lakehouse is free of pandas. Kneel.' He drapes the Hoodie of Spark over your shoulders. It is warm, and slightly too big, as is tradition. **+15**
-- `wear hoodie` — You pull on the Hoodie of Spark. You look like a Data Engineer. You have never written a notebook in your life. Nobody can tell. Now you're lookin' like a serious Engineer, Clippy.
+- `wear hoodie` — You pull on the Hoodie of Spark. You look like a Data Engineer, and nobody can tell you have never written a notebook. Now you're lookin' like a serious Engineer, Clippy.
 
 **Rules — what this room answers to:**
 
@@ -663,10 +663,10 @@ The Cloister. Monks in a circle, chanting. You're in the loop now. There's no br
 
 **Items:**
 
-- **cloister floor** — Worn in a perfect circle by monks pacing 'spark dot read'. The centre stone has a burn mark shaped like a cluster starting. The monks have refreshed themselves into a circle.
+- **cloister floor** — Worn in a perfect circle by monks pacing 'spark dot read'. The centre stone has a burn mark shaped like a cluster starting.
 - **laminated KPI** (you can take it) — A laminated KPI card. Target: 100%. Actual: (Blank). Somebody laminated (Blank). On purpose. To keep it.
   - `get laminated KPI` — You take the laminated KPI. Nobody stops you. Nobody was going to.
-  - `get laminated KPI` again — You already picked the KPI up off the cloister floor, from the middle of the circle the monks pace in. They stepped around you.
+  - `get laminated KPI` again — You already have the KPI. It's still (Blank).
   - `give kpi to abbot` (once you have the laminated KPI) — The Abbot looks at (Blank) for a long time. 'Yes,' he says. 'This is the realm.' He hands it back. Some things are meant to be carried.
 - **stair** — A spiral stair, up to the Sacristy. Worn in the middle by admins who went up to fix one thing and came down having fixed several.
   - `climb stair` — You climb the spiral stair. Every step is worn in the middle by an admin who went up to change one thing.
@@ -677,7 +677,7 @@ The Cloister. Monks in a circle, chanting. You're in the loop now. There's no br
 
 1. "Brother Pandas has put pandas in the Lakehouse again. Fix his notebook and the Hoodie of Spark is yours."
 2. "Pandas," the Abbot says, with the weariness of a man who has said it at every standup. "In the Lakehouse. Fix the notebook."
-3. "The scroll is in the Library, west, in a case. Your license opens the case. Then east, east, use the scroll on the notebook. Then kneel."
+3. "The scroll is in the Library, west; your license opens the case. Then east, east, and use the scroll on the notebook."
 4. "Still pandas, Mister Star Schema."
 
 Ask about anything else: "Either we don't know anything about that, or you're real boring. The monks are voting."
@@ -701,7 +701,7 @@ The Spark Session Chamber. Warm, humming, billed. Like a hot tub with an invoice
 
 *Only after a Sacristy setting is changed:*
 
-- `give scroll to pandas` (before the notebook is fixed, while Fabric items are off, once you have the scroll) — Notebook creation is disabled for your tenant. Brother Pandas creates a Power BI report instead. It has one card. It says 1.
+- `give scroll to pandas` (before the notebook is fixed, while Fabric items are off, once you have the scroll) — Notebook creation is disabled for your tenant. Brother Pandas makes a Power BI report instead: one card, and it says 1.
 
 **Items:**
 
@@ -713,8 +713,8 @@ The Spark Session Chamber. Warm, humming, billed. Like a hot tub with an invoice
   - `use on notebook` (before the notebook is fixed) — You stare at the cell. You don't know Spark. The cell knows you don't know Spark.
   - `use notebook` (before the notebook is fixed) — You click Run All. The cell was already running. Now it is running twice. Brother Pandas gives you a look.
   - *only after a Sacristy setting is changed:*
-    - `use scroll on notebook` (before the notebook is fixed, while Fabric items are off, once you have the scroll) — Notebook creation is disabled for your tenant. Brother Pandas creates a Power BI report instead. It has one card. It says 1.
-    - `use scroll on notebook` (before the notebook is fixed, while workloads are off, once you have the scroll) — Notebook creation is disabled for your tenant. Brother Pandas creates a Power BI report instead. It has one card. It says 1. (Delegated. Also off.)
+    - `use scroll on notebook` (before the notebook is fixed, while Fabric items are off, once you have the scroll) — Notebook creation is disabled for your tenant. Brother Pandas makes a Power BI report instead: one card, and it says 1.
+    - `use scroll on notebook` (before the notebook is fixed, while workloads are off, once you have the scroll) — Notebook creation is disabled for your tenant. Brother Pandas makes a Power BI report instead: one card, and it says 1. (Delegated. Also off.)
 - **bamboo** (you can take it) — A bamboo shoot. Brother Pandas' lunch. He insists it is also a dependency.
   - `get bamboo` — You take the bamboo. Nobody stops you. Nobody was going to.
   - `get bamboo` again — You already took his lunch. He has noticed. He has said nothing, which is worse.
@@ -726,8 +726,8 @@ The Spark Session Chamber. Warm, humming, billed. Like a hot tub with an invoice
 *Brother Pandas* (`talk to pandas`, again and again):
 
 1. "It works on my laptop."
-2. "It works on my laptop," Brother Pandas repeats. "My laptop is not here. That is the problem, or one of them."
-3. "pd.read_csv. That's the cell. It wants spark.read. There's a scroll in the Library that says so. West, west."
+2. "It works on my laptop," Brother Pandas repeats. "My laptop is not here."
+3. "The cell says pd.read_csv; it wants spark.read. The Library, west, west, has a scroll that says so."
 4. "Still running, Mister Star Schema. Forty-one minutes. Forty-two."
 
 Ask about anything else: "Does it work on my laptop? No? Then I don't know it either."
@@ -762,7 +762,7 @@ The Library of Deprecated Notebooks. One of them is yours. She knows. Exits: eas
   - `open case` (once you have borrowed the scroll) — The case is open and empty. You open it wider. The Librarian writes something down.
 - **bookmark** (you can take it) — A bookmark from the Synapse wing. It marks a page nobody will return to.
   - `get bookmark` — You take the bookmark. Nobody stops you. Nobody was going to.
-  - `get bookmark` again — You already slid the bookmark out of the Synapse wing while the Librarian shushed you. Nobody has gone back for the page. Nobody will.
+  - `get bookmark` again — You already have the bookmark. Nobody has gone back for the page, and nobody will.
   - `give bookmark to librarian` (once you have the bookmark) — 'From the Synapse wing?' She files it under 'legacy'. Gently. The way you would close the eyes of a notebook.
 
 **People:**
@@ -770,9 +770,9 @@ The Library of Deprecated Notebooks. One of them is yours. She knows. Exits: eas
 *the Librarian* (`talk to librarian`, again and again):
 
 1. "The Spark Scroll? Library card only. Any license will do. Well. Any license we accept."
-2. "Library card," she says again. "Any license. Yours. The one in your pocket, which you keep touching."
-3. "Give me the license. Say: give license to librarian. I will keep it as collateral. That is what collateral is for."
-4. "Still no card, Mister Star Schema. It's in your inventory. I can see it from here."
+2. "Library card," she says again. "Yours. The one in your pocket, which you keep touching."
+3. "Give me your license: give license to librarian. I will keep it as collateral."
+4. "Still no card, Mister Star Schema. It's in your inventory; I can see it from here."
 
 Ask about anything else: "Shh." Then, quieter: "Shh."
 
@@ -791,7 +791,7 @@ The Sacristy. The Admin Portal. You have the keys to the tenant and the judgment
 
 **Rules — what this room answers to:**
 
-- `say dax` — You say 'DAX' in the Admin Portal. Nothing here is filtered. Nothing here is even a measure. It is all switches.
+- `say dax` — You say 'DAX' in the Admin Portal. Nothing here is a measure. It is all switches.
 
 **The books** (`read <book>` for the long version; `turn on <book>` / `turn off <book>` to flip one):
 
@@ -852,7 +852,7 @@ The Power BI Desktop Gate. Still updating. 1 of 3. It's been 1 of 3 since Window
 - `say pro` — The guard: 'Pro gets you a report. It does not get you a Keep.'
 - `say f2` — 'Pause it or lose it,' mutters the guard. The bridge stays up. Not enough capacity.
 - `say sign in` — You are already signed in. Twice. On two tenants. One of them is wrong.
-- `north` (before the bridge is down) — The drawbridge is up. It is updating (1 of 3). The moat below is deep and full of GROUP BY. The guard is right there. He wants a SKU.
+- `north` (before the bridge is down) — The drawbridge is up, and the guard wants a SKU. The moat below is deep and full of GROUP BY.
 - `give license to guard` (once you have the Pro License Card) — He reads it. 'Pro.' He hands it back like a wet napkin.
 - `give mug to guard` (once you have the mug) — He has a mug. It says WORLD'S OKAYEST GUARD.
 
@@ -899,7 +899,7 @@ Ask about anything else: "Is it a SKU? No? Then it's not my department, and my d
 
 **Ways to die ☠:**
 
-- `swim` — You dive into the Moat of T-SQL. It is deeper than it looks and made entirely of nested subqueries. You are still in there. You will always be in there. Report Builders can't swim. Like, it's in the license.
+- `swim` — You dive into the Moat of T-SQL, which is made entirely of nested subqueries, and you will always be in there. Report Builders can't swim; it's in the license.
 
 ## Power Query Hall
 
@@ -922,17 +922,17 @@ Power Query Hall. Seven doors, one order, and you, trying them like a raccoon at
   - `get advanced editor` — The door is load-bearing. So is everything behind it.
   - `enter m` — The Advanced Editor opens. It is a wall of `let`. You close it gently.
 - **Applied Steps** — Applied Steps, one doorway each, in order: ✗ Source (waiting) · yellow: Navigation, Promoted Headers, Changed Type, Filtered Rows, Removed Other Columns, Renamed Columns
-  - `use steps` — You click a step. The preview jumps back in time. Every step after it greys out, waiting. That is the whole hall.
+  - `use steps` — You click a step. The preview jumps back in time. Every step after it greys out, waiting.
   - `get steps` — You try to lift a step. Every step after it turns yellow. You put it back.
   - `open source` — The Source door is waiting; it's next. `source` or `apply source`.
   - `source` — Source: the server name is wrong. It has been wrong since the migration. It connects anyway.
   - `remove other columns` — Formula.Firewall: Query 'Sales' (step 'Source') references other queries or steps, so it may not directly access a data source. Please rebuild this data combination. Every step after it turns yellow. You are back at the start. There is no Source.
   - `rename columns` — Formula.Firewall: Query 'Sales' (step 'Source') references other queries or steps, so it may not directly access a data source. Please rebuild this data combination. Every step after it turns yellow. You are back at the start. There is no Source.
-  - `changed type` — Changed Type. Changed Type. Changed Type. The hall echoes it back. It has seven words now, and that one is still its favourite.
+  - `changed type` — Changed Type. Changed Type. Changed Type. The hall echoes it back. It is still the hall's favourite step.
 - **doorways** — Seven doorways, each labelled with a step. ✗ Source (waiting) · yellow: Navigation, Promoted Headers, Changed Type, Filtered Rows, Removed Other Columns, Renamed Columns. Open means applied. Waiting means next, where the query stopped. Yellow means not yet, and Power Query means it.
   - `use doorways` — You walk through the open doorways, in order. The waiting one stops you like a turnstile that wants exact change.
   - `get doorways` — You cannot take a doorway. Power Query applied it; only Power Query removes it, and only by accident.
-- **portraits** — Portraits of the founding steps. SOURCE, stern, in a server-room collar. NAVIGATION, pointing at a table just out of frame. And a blank frame labelled CUSTOM1. In the corner of the Source portrait, a paperclip with eyes. 'It looks like you're writing a measure.'
+- **portraits** — Portraits of the founding steps. SOURCE, in a server-room collar; NAVIGATION, pointing at a table out of frame; a blank frame labelled CUSTOM1. In the corner of SOURCE, a paperclip with eyes. 'It looks like you're writing a measure.'
   - `use portraits` — You straighten the portrait of Source. The server name on it is wrong. It has been wrong since the migration.
   - `get portraits` — The portraits are the query. Take one down and the whole hall errors.
 
@@ -948,7 +948,7 @@ Power Query Hall. Seven doors, one order, and you, trying them like a raccoon at
 
 **Ways to die ☠:**
 
-- `type dax` — You type DAX into the M editor. The hall does not error. It does something worse: it evaluates. Seven Applied Steps on the wall, all of them M, and you looked right at them.
+- `type dax` — You type DAX into the M editor, and the hall does something worse than error: it evaluates. Seven Applied Steps on the wall, all of them M, and you looked right at them.
 
 ## The Model View
 
@@ -983,7 +983,7 @@ The Model View. Tables on plinths, lines between them, and one bridge that wobbl
 
 - **incremental refresh policy** (you can take it) — An incremental refresh policy on a laminated card: 'Refresh rows from the last 10 days. Archive the rest.' Small steps. Bursting steps, one might say.
   - `get incremental refresh policy` — An incremental refresh policy: 'Refresh rows from the last 10 days.' Small steps. Bursting steps, one might say.
-  - `get incremental refresh policy` again — You already have the policy. It was on a lectern; now it is in your pocket.
+  - `get incremental refresh policy` again — You already have the policy. Sir Cardinality watched you take it and said nothing, pointedly.
   - `get policy` — An incremental refresh policy: 'Refresh rows from the last 10 days.' Small steps. Bursting steps, one might say.
   - `use policy` (once you have the incremental refresh policy) — Not here. The model is fine with its refresh; it is the Big Refresh in the Report Studio that has been at 97% since 2019.
 - **bridge** — A many-to-many bridge. It wobbles. Do not stand on it. Do not build a report on it.
@@ -991,13 +991,13 @@ The Model View. Tables on plinths, lines between them, and one bridge that wobbl
   - `say many to many` — You set it to Both. The model sighs. Somewhere a measure becomes ambiguous. Sir Cardinality writes your name down.
   - `use bridge` — You step onto the bridge. It filters both ways at once. You step off, ambiguously.
   - `get bridge` — You lift one end. The other end filters both ways. You put it down.
-  - `enable bidirectional` — You set every relationship to Both. The model finds a path from Sales to Sales through Sales. So do you. Ambiguous path. Sir Cardinality told you three times, and you heard 'Both' and thought it sounded thorough. ☠
+  - `enable bidirectional` — You set every relationship to Both, and the model finds an ambiguous path from Sales to Sales through Sales. You heard 'Both' and thought it sounded thorough. ☠
   - `look at bridge` (after you have looked at the bridge) — The wobble is a many-to-many. Your totals will be right, until someone filters by Territory.
 - **date table** (you can take it) — A date table. It has every day from 1900 to 2099. It has not been marked as a date table. Time intelligence is sulking.
   - `get date table` — You take the date table. Every day from 1900 to 2099. Heavier than it looks; most of it is weekends.
   - `get date table` again — You have the date table. It's the only table in the realm that knows what day it is.
   - `get date table` — You take the date table. Every day from 1900 to 2099. Heavier than it looks; most of it is weekends.
-  - `use date table` — You mark the date table as a date table. Time intelligence, which had been sulking, starts working. No points. It should have been done already. Time intelligence feels refreshed.
+  - `use date table` — You mark the date table as a date table. Time intelligence, which had been sulking, starts working. No points. It should have been done already.
   - `use date table` (once the date table is marked) — It is already marked. You mark it again. Time intelligence sighs: "I heard you the first time."
 - **plinths** — Stone plinths, each with a table on top: Sales in the middle, big and square; Product, Customer and Date around it. Almost a star. One stray plinth holds a table called Sheet1.
   - `use plinths` — You push a plinth into a neater star. Somebody, somewhere, presses Auto-layout.
@@ -1019,7 +1019,7 @@ The Model View. Tables on plinths, lines between them, and one bridge that wobbl
 
 1. "One. To. Many."
 2. "Star schema. Not snowflake. Not… whatever that is."
-3. "The dragon will ask you a question. The answer is two words. I have said them already." He looks toward the north gate. 'The monks are that way. The Duke is east, then north. Take him the date table; he has opinions. Go be humiliated in the correct order.'
+3. "The dragon will ask you a question. The answer is two words. I have said them already." He looks toward the north gate. 'The monks are that way. The Duke is east, then north; take him the date table.'
 4. "One. To. Many, Mister Star Schema."
 
 Ask about anything else: "One to many," says Sir Cardinality, to a question that was not about that.
@@ -1048,15 +1048,15 @@ The Duke's Chamber. Filter context only. Your outside voice doesn't work in here
 
 **Rules — what this room answers to:**
 
-- `say dax` — You say 'DAX' to the Duke of DAX. He says nothing. You have been filtered; it feels like a filter you cannot see.
-- `say select *` — The Duke blinks. 'SELECT? This is a semantic model. We EVALUATE here.' He does not throw you. He corrects you, which is worse.
+- `say dax` — You say 'DAX' to the Duke of DAX. He says nothing. You have been filtered out.
+- `say select *` — 'SELECT? We EVALUATE here.' The Duke does not throw you; he corrects you, which is worse.
 - `say evaluate` — 'Correct,' says the Duke, disappointed. 'And useless.'
-- `say bidirectional` — 'Both directions,' says the Duke, 'is how ambiguity gets a seat at the table.' He does not throw you. He wants you to hear that again on the way out.
+- `say bidirectional` — 'Both directions,' says the Duke, 'is how ambiguity gets a seat at the table.'
 - `say userelationship` — 'USERELATIONSHIP,' says the Duke. 'The inactive one. You are the inactive one.'
 - `say select 1` — 'Adequate,' says the Duke, and returns to his throne.
 - `say select … from` — 'A column list. How… proper.' The Duke seems disappointed. 'Nobody gets thrown in the moat for a column list.'
 - `say join` — 'JOINs,' says the Duke, 'are for the moat.'
-- `say calculate` — 'CALCULATE,' says the Duke. 'The one true function.' He nods; the guards relax. 'With no filter, though. A context transition, and nothing else. You may sit.' You may not sit.
+- `say calculate` — 'CALCULATE,' says the Duke, 'with no filter. A context transition, and nothing else. You may sit.' You may not sit.
 - `say sumx` — 'SUMX,' the Duke corrects, 'iterates. SUM aggregates. You, peasant, do neither.'
 - `say divide` — 'DIVIDE,' says the Duke, 'handles zero. Unlike you.'
 - `say evaluation context` — The Duke's eyes narrow. 'Which one?' You do not know. Nobody does, the first six times.
@@ -1065,14 +1065,14 @@ The Duke's Chamber. Filter context only. Your outside voice doesn't work in here
 - `wait` — Still spinning. The Duke hums a measure.
 - `attack duke` — You swing at the Duke. He wraps your fist in CALCULATE and removes its filters. It hurts in every context.
 - `give scroll to duke` (once you have the scroll) — 'PySpark?' The Duke holds it at arm's length. 'In the Keep?' You are not thrown in the moat, but it is close.
-- `give policy to duke` (once you have the incremental refresh policy) — 'Ten days at a time? I compute everything, every time, always.' He does not want it. Keep it for the Studio.
+- `give policy to duke` (once you have the incremental refresh policy) — 'Ten days at a time? I compute everything, every time, always.' He does not want it.
 
 **Items:**
 
 - **throne** — A throne carved as a giant formula bar. Across the back, in gold: CALCULATE( — and nothing after it. The Duke is still waiting for the filter argument.
   - `use throne` — You reach for the throne. It is a formula bar. It autocompletes your hand to SUMX( and you back away.
   - `get throne of calculates` — The Duke is on it. He would like you to try.
-  - `open throne` — The Duke throws people from that window for one sin. Say it.
+  - `open throne` — The Duke throws people from that window for one sin. Say it, or hand him a table he can despise.
 - **DAX query view** — A tall DAX query view beside the throne. Line 1: CALCULATE(. Line 2: a blinking cursor. Line 3: a red squiggle under nothing in particular.
   - `say implicit measure` — The Duke shudders. 'Implicit.' But he has heard worse today.
   - `say measure` — The Duke waits for the rest of the measure. It does not come. He closes the DAX query view on your fingers.
@@ -1095,7 +1095,7 @@ The Duke's Chamber. Filter context only. Your outside voice doesn't work in here
 
 1. 'CALCULATE(,' says the Duke, and waits. He is waiting for your filter argument. He will wait forever.
 2. 'CALCULATE(,' says the Duke, slower, and waits. You have brought nothing to put in the parentheses.
-3. 'There is one thing,' says the Duke, 'that I will not hear in this chamber. It has two words. It goes in a table. Say it, and see what happens.'
+3. 'Say the one thing I will not hear in this chamber,' says the Duke. 'Two words. It goes in a table.'
 4. 'Still no sin, Mister Star Schema. Say the two words, or hand me a table I can despise.'
 
 Ask about anything else: The Duke waits for a filter argument. Whatever that was, it was not one.
@@ -1130,26 +1130,26 @@ The Report Studio. A pie with 31 slices and a Card that says (Blank), which is a
 - `give policy to card` (once you have the incremental refresh policy) — The Card does not take input. That is the Card's whole thing.
 - `give mug to card` (once you have the mug) — The Card shows (Mug). Then (Blank).
 - `give license to card` (once you have the Pro License Card) — The Card shows (Pro). Then (Blank). It is not impressed either.
-- `use policy` (once you have the incremental refresh policy) — On what? The Big Refresh is right there, at 97%. Use the policy on the refresh.
+- `use policy` (once you have the incremental refresh policy) — On what? The Big Refresh is right there, at 97%.
 
 **Items:**
 
-- **the Big Refresh** — A progress bar, 97%, since 2019. It is refreshing everything, every time, all at once. It needs smaller steps. A sticky note on it reads DO NOT TOUCH — JEFF.
-  - `use refresh` — It refreshes. Ten days, one minute. It is almost boring. You miss the drama.
+- **the Big Refresh** — A progress bar, 97%, since 2019. It is stuck on one visual, and the visual is round. A sticky note on it reads DO NOT TOUCH — JEFF.
+  - `use refresh` — It refreshes in a minute. It is almost boring. You miss the drama.
   - `get refresh` — It is 97% of the way through 2019. Leave it.
   - `refresh` — Refresh failed: The column 'Column1' of the table wasn't found. It was found last week. Jeff renamed it. Jeff denies this.
-  - `use policy on refresh` (before the Big Refresh is fed, once you have the incremental refresh policy) — The Big Refresh doesn't want a policy. It wants the pie gone. Thirty-one slices is what it has been chewing on since 2019.
-  - `give policy to refresh` (before the Big Refresh is fed, once you have the incremental refresh policy) — The Big Refresh reads the policy twice and hands it back. 97%. It is not a policy problem. It is a pie problem.
+  - `use policy on refresh` (before the Big Refresh is fed, once you have the incremental refresh policy) — The Big Refresh doesn't want a policy. It wants the pie gone.
+  - `give policy to refresh` (before the Big Refresh is fed, once you have the incremental refresh policy) — The Big Refresh reads the policy twice and hands it back. It is not a policy problem; it is a pie problem.
   - `use on refresh` (before the Big Refresh is fed) — The Big Refresh looks at you. 97%. It needs the pie gone, not encouragement.
   - `use refresh` (before the Big Refresh is fed) — Refresh failed: The column 'Column1' of the table wasn't found. It was found last week. Jeff renamed it. Jeff denies this.
-  - `use refresh` (before the Big Refresh is fed) — You click Refresh. It was already refreshing. It is now refreshing harder. (The policy in your pocket is not helping from there.)
-- **pie chart** — A pie with 31 slices. Twelve of them are 'Other'. You could fix it: use it, and it could be a bar chart. You could also leave it and let it be someone else's problem in Q3.
+  - `use refresh` (before the Big Refresh is fed) — You click Refresh. It was already refreshing. It is now refreshing harder.
+- **pie chart** — A pie with 31 slices. Twelve of them are 'Other'. You could fix it and make it a bar chart. You could also leave it and let it be someone else's problem in Q3.
   - `use pie` — It's a bar chart. It's been a bar chart for a minute. Leave it.
   - `use pie` — You click a slice. It is 'Other'. Inside 'Other' is more 'Other'.
   - `get pie` — The pie is 31 slices. You cannot take it in one trip, and nobody wants a slice.
   - `eat pie` — You eat a slice. It is 'Other'. It tastes like the other eleven 'Other's.
-  - `fix pie` — A pie with 31 slices. Twelve of them are 'Other'. You could fix it. You could also leave it and let it be someone else's problem in Q3.
-  - `open other page` — You open the other page. 400 visuals. Your laptop fan hits a note only dogs and Throttlor can hear. The fan wins. The tab said DO NOT OPEN. You read it as a dare. ☠
+  - `fix pie` — You fix the pie. Visualizations pane: clustered bar. Thirty-one slices unroll into bars, longest first, and for the first time you can read December. Three stakeholders weep. The fourth sends a thumbs-up. In the corner, the Big Refresh, stuck on that pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots. **+15**
+  - `open other page` — You open the other page: 400 visuals, and your laptop fan hits a note only dogs and Throttlor can hear. The tab said DO NOT OPEN, and you read it as a dare. ☠
   - `use pie` (before the Big Refresh is fed) — You click the pie. Visualizations pane: clustered bar. Thirty-one slices unroll into bars, longest first, and for the first time you can read December. Three stakeholders weep. The fourth sends a thumbs-up. In the corner, the Big Refresh, stuck on that pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots. **+15**
   - `open pie` (before the Big Refresh is fed) — You open the pie. Visualizations pane: clustered bar. Thirty-one slices unroll into bars, longest first, and for the first time you can read December. Three stakeholders weep. The fourth sends a thumbs-up. In the corner, the Big Refresh, stuck on that pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots. **+15**
 - **slicers** — A stack of eight slicers: Year, Month, Region, Region (Old), Product, Colour, "Test", and one with no field at all. It filters everything, including itself.
@@ -1185,8 +1185,8 @@ The Report Studio. A pie with 31 slices and a Card that says (Blank), which is a
 
 1. The Card says (Blank). It is not being rude. It has no measure.
 2. (Blank). Again. The Card is not stalling; it has nothing to stall with.
-3. The Card shows (Blank). It will show a number if you look at it and do not blink. Blink and it wins.
-4. Still (Blank), Mister Star Schema. A hollow voice adds: "It's a staring contest. Look at the Card and don't blink."
+3. Look at the Card and do not blink; it will show a number. Blink and it wins.
+4. Still (Blank), Mister Star Schema.
 
 Ask about anything else: The Card shows (Blank). It is its answer to that, and to everything.
 
@@ -1206,12 +1206,12 @@ The Foothills. The air's thin and so is the excuse you'll give Finance. Exits: w
 
 **Items:**
 
-- **sign** — CAPACITY PEAKS — INTERACTIVE OPERATIONS MAY BE DELAYED. BACKGROUND OPERATIONS WILL BE SMOOTHED OVER 24 HOURS. PLEASE DO NOT FEED THE DRAGON. BRING CAPACITY.
+- **sign** — CAPACITY PEAKS — INTERACTIVE OPERATIONS MAY BE DELAYED. BACKGROUND OPERATIONS WILL BE SMOOTHED OVER 24 HOURS. PLEASE DO NOT FEED THE DRAGON.
   - `use sign` — You lean on the sign. It leans back. Neither of you is going anywhere fast.
   - `use flat rock on sign` (once you have the flat rock) — You tap the sign with the rock. It says INTERACTIVE OPERATIONS MAY BE DELAYED. The tap arrives a moment later.
 - **flat rock** (you can take it) — A flat rock from the Foothills. It is exactly as useful as it looks, which is the most honest thing in the Peaks.
   - `get flat rock` — You take the flat rock. Nobody stops you. Nobody was going to.
-  - `get flat rock` again — You already have the rock. It was a rock then. Rocks are stable. Unlike you.
+  - `get flat rock` again — You already have the rock. Rocks are stable, unlike you.
 
 **Phrases — other things you can say here:**
 
@@ -1219,7 +1219,7 @@ The Foothills. The air's thin and so is the excuse you'll give Finance. Exits: w
 
 ## Throttling Pass
 
-Throttling Pass. Every step costs more than the last one, like a consultant, or you, eventually. Exits: west to the Foothills; north to the Bursting Ledge.
+Throttling Pass. Every step costs more than the last one, like a consultant. Exits: west to the Foothills; north to the Bursting Ledge.
 
 **Goal:** Pass through north (boots help). Bring: boots (Report Studio).
 
@@ -1231,16 +1231,16 @@ Throttling Pass. Every step costs more than the last one, like a consultant, or 
   - `get rock` — You reach for a rock. The reach is queued. The rock is delivered to you 24 hours later, smoothed.
 - **receipt** (you can take it) — A receipt, blowing down the Pass. CU consumption: 1 step, 400 CU-seconds. Smoothed over 24 hours. Payable now.
   - `get receipt` — You take the receipt. Nobody stops you. Nobody was going to.
-  - `get receipt` again — You already have the receipt. Picking it up again is a second step. That is another 400 CU-seconds. Itemized.
+  - `get receipt` again — You already have the receipt. Picking it up again is another 400 CU-seconds, itemized.
   - `read receipt` — CU consumption: 1 step, 400 CU-seconds. 1 reach for a rock, queued. 1 thought about turning back, 0 CU-seconds; nobody bills for that, because nobody has ever done it.
 - **energy drink** (you can take it) — A bottle of energy drink. Electrolytes and autoscale. 'Now with 64 CUs.' The label warns against drinking it while standing on a capacity.
   - `get energy drink` — You take the energy drink. Nobody stops you. Nobody was going to.
-  - `get energy drink` again — You already picked the energy drink up on the Pass, and the reach was billed per second. Do not drink it.
-  - `drink capacityade` — Electrolytes. Autoscale. Your heart hits 64 CUs and the bill arrives before you do. The label said not on a capacity. Everything in this realm is on a capacity. That is what the dragon is FOR. ☠
+  - `get energy drink` again — You already have the energy drink. Don't drink it; I know you will.
+  - `drink capacityade` — Electrolytes, autoscale, and your heart hits 64 CUs; the bill arrives before you do. The label said not while standing on a capacity, and you were standing on one. ☠
 
 **Phrases — other things you can say here:**
 
-- `open sign` — Interactive operations may be delayed. Boots help. The Studio's Big Refresh drops a pair.
+- `open sign` — Boots beat the delay. The Studio's Big Refresh drops a pair.
 - `pay` — You try to pay the receipt. The Pass accepts Capacity Units only. You have a Pro license and, at this altitude, opinions.
 - `run` — You try to hurry. The Pass queues the hurry and delivers it tomorrow, as a stroll.
 
@@ -1262,7 +1262,7 @@ The Bursting Ledge. A door that checks three things about you. It's found more t
 
 **Items:**
 
-- **door** — A great door carved with three sigils: a HOODIE, three wavy STINK LINES, and a KEY. The hoodie sigil is dark. The stink-lines sigil is dark. The key sigil is dark. The door refreshed its sigils while you were not looking.
+- **door** — A great door carved with three sigils: a HOODIE, three wavy STINK LINES, and a KEY. The hoodie sigil is dark. The stink-lines sigil is dark. The key sigil is dark.
   - `look at sigils` — A great door carved with three sigils: a HOODIE, three wavy STINK LINES, and a KEY. The hoodie sigil is dark. The stink-lines sigil is dark. The key sigil is dark.
   - `read door` — WORTHY ONLY. Below, smaller: 'and no interactive delay'. A great door carved with three sigils: a HOODIE, three wavy STINK LINES, and a KEY. The hoodie sigil is dark. The stink-lines sigil is dark. The key sigil is dark.
   - `attack door` — You kick the door. The door is a mountain. The mountain does not notice.
@@ -1273,12 +1273,12 @@ The Bursting Ledge. A door that checks three things about you. It's found more t
   - `use carabiner on door` (once you have the carabiner) — You clip onto the door. You are now attached to a door you cannot open. This is called governance.
 - **carabiner** (you can take it) — A carabiner stamped F64. Rated for any capacity except yours.
   - `get carabiner` — You take the carabiner. Nobody stops you. Nobody was going to.
-  - `get carabiner` again — You already unclipped the carabiner from the Ledge, under the three sigils. It was clipped to nothing then. It's clipped to nothing now.
+  - `get carabiner` again — You already have the carabiner. It's still clipped to nothing.
   - `use carabiner` (once you have the carabiner) — You clip the carabiner to yourself. Rated F64. You are, at best, F2.
 
 ## The Shrine
 
-The Shrine. A dragon, a model, and a peasant who read the walkthrough. Two of you are impressive. Exits: south to the Bursting Ledge.
+The Shrine. A dragon, a model, and you. Two of you are impressive. Exits: south to the Bursting Ledge.
 
 **Goal:** Answer the dragon (+10); take the model (+5, the win). You leave with: the Golden Semantic Model.
 
@@ -1291,7 +1291,7 @@ The Shrine. A dragon, a model, and a peasant who read the walkthrough. Two of yo
 
 **Rules — what this room answers to:**
 
-- `say calculate` — Throttlor yawns. Context transition means nothing to a dragon. You have been filtered by a dragon. Add it to the bill.
+- `say calculate` — Throttlor yawns. Context transition means nothing to a dragon.
 - `say flat table` — Throttlor purrs. 'Yes. YES. Feed me.' The pedestal glows brighter. You have made things worse.
 - `say direct lake` — 'That is a storage mode, peasant, not a model.' Throttlor sighs a small, patient flame.
 - `say S` — '?' Throttlor bills you for the syllables. 'Wrong, Power Query Pete. Two words. One of them is up in the sky.'
@@ -1302,13 +1302,13 @@ The Shrine. A dragon, a model, and a peasant who read the walkthrough. Two of yo
 
 **Ways to die ☠:**
 
-- `attack dragon` — You charge Throttlor. He breathes a single, precise jet of flame. Your refresh has been throttled. Permanently. You knew you were supposed to TALK to him, right? You read the ledger.
+- `attack dragon` — You charge Throttlor. He breathes a single, precise jet of flame. Your refresh has been throttled. Permanently. You knew you were supposed to TALK to him, right?
 
 **Items:**
 
 - **golden semantic model** (you can take it) — The Golden Semantic Model. It glows. Somehow it also has a 'Column1'.
   - `get golden semantic model` — You reach for the Model. Throttlor's tail slaps your hand away without his even looking. 'Answer the question, peasant.'
-  - `get golden semantic model` again — You are holding the Model. You have been holding it since the mountain. Put it down and the village refreshes stop.
+  - `get golden semantic model` again — You are holding the Model. You have been holding it since the mountain.
   - `use model` — You reach past a dragon for the Model. He clears his throat, in smoke.
   - `get model` — You reach for the Model. Throttlor's tail slaps your hand away without his even looking. 'Answer the question, peasant.'
   - `look at model` — The Golden Semantic Model glows behind the dragon. From here it looks perfect. From here.
@@ -1322,9 +1322,9 @@ The Shrine. A dragon, a model, and a peasant who read the walkthrough. Two of yo
 *Throttlor* (`talk to dragon`, again and again):
 
 1. "WHO DARES— oh. Oh no. You smell like a Warehouse." The dragon gags. "Answer me this, peasant: WHAT IS THE ONE TRUE MODEL?"
-2. "WHAT IS THE ONE TRUE MODEL," Throttlor repeats, slower, with more smoke. He does not like repeating himself. He is billing you for it.
-3. "Two words, peasant. One fact table. Some dimensions. A shape. Sir Cardinality said it three times; I heard him from here."
-4. "Still no answer, Mister Star Schema. The question has not changed. Neither has the fee."
+2. "WHAT IS THE ONE TRUE MODEL," Throttlor repeats, slower, with more smoke. He is billing you for the repeat.
+3. "Two words, peasant. One fact table, some dimensions, a shape; Sir Cardinality said it, and I heard him from here."
+4. "Still no answer, Mister Star Schema. The question has not changed, and neither has the fee."
 
 Ask about anything else: "I bill for questions like that," says Throttlor. "Ask me about the model."
 
@@ -1340,7 +1340,7 @@ These work in every room of Jeff's Excel.
 
 **Things to try:**
 
-- `goal` — Jeff's export says $4.7M. The report says $4.2M. Jeff: "I'll keep what's in my export. I trust it more." Help Jeff find the truth. +20 bonus. EXIT leaves any time. Talk to Jeff first. `talk to jeff`.
+- `goal` — Help Jeff find the truth. His export says $4.7M, the report says $4.2M, and Jeff says: 'I'll keep what's in my export. I trust it more.' +20 bonus. EXIT leaves any time. Talk to Jeff first. `talk to jeff`.
 - `no filter` — Jeff nods approvingly. That is not a good sign.
 - `show me a table` — You are already in Excel. Any further in and it's VBA. The table is PivotTable1, east of Sheet1.
 - `pivot` — You click over to PivotTable1.
@@ -1372,7 +1372,7 @@ Sheet1. Jeff's desk. Grid paper to the horizon and a SUM that's wrong to four de
 
 **Items:**
 
-- **export** — Sales_export (3).csv. Every row of the visual, plus the Total row, plus three years of history, plus Returns counted as sales. SUM: 4,712,331. Jeff trusts it. It has no more capacity.
+- **export** — Sales_export (3).csv. Every row of the visual, plus the Total row, plus three years of history, plus Returns counted as sales. SUM: 4,712,331. Jeff trusts it.
 - **monitor** — Two monitors. The left one has the export and a SUM. The right one has the report and is angled away, the way you angle a mirror you have stopped trusting.
   - `look at second monitor` — The report. Net Sales, Northeast, this year: $4.2M. Certified. It has a little badge and everything.
 - **report** — The report. Net Sales, Northeast, this year: $4.2M. Certified. It has a little badge and everything.
@@ -1385,10 +1385,10 @@ Sheet1. Jeff's desk. Grid paper to the horizon and a SUM that's wrong to four de
 
 *Jeff* (`talk to jeff`, again and again):
 
-1. "It's 4.7. The report says 4.2. I exported the visual, I summed it, it's 4.7. Look, I trust my export. IT said something about 'Analyze in Excel' — that it connects to the actual model. It's on the Data tab. North. I never go north."
+1. "The report says 4.2; my export says 4.7, and I trust my export. IT says 'Analyze in Excel', on the Data tab, connects to the real model. It's north. I never go north."
 2. "The Data tab. North. It's a ribbon, not a country."
 3. "North. Up. The tab with the buttons on it. I don't click them; that's what you're for."
-4. "You have walked past the Data tab twice now. It is the one that says Data."
+4. "The Data tab is north. It is the one that says Data."
 
 Ask about anything else: "Is it in Sheet1? No? Then it's not real."
 
@@ -1417,7 +1417,7 @@ The Data tab. Where the good buttons are, away from Jeff. He's watching you use 
 
 - **connection** — Analyze in Excel (.odc). Sign-in required.
   - `use license on connection` (before you connect, once you have the Pro License Card) — You sign in with your Pro license. The connection thinks about it, then: Connected — Sales (Certified). A field list unfolds in the pivot like a map.
-  - `use license on connection` (once you have borrowed the scroll, before you connect) — You pat your pockets. The card is at the Library, being collateral. Doesn't matter. Your Pro license is a library card here — and the card is still signed in. Connected — Sales (Certified). A field list unfolds in the pivot like a map.
+  - `use license on connection` (once you have borrowed the scroll, before you connect) — Your license is at the Library, being collateral, but it never signed out. Connected — Sales (Certified). A field list unfolds in the pivot like a map.
   - `use analyze in excel` (once Excel is connected) — Already connected. Sales (Certified). The pivot is south, then east.
   - `use analyze in excel` (before you connect) — Analyze in Excel: Sign-in required. A tiny dialog. A tinier Sign in link.
 - **ribbon** — Home · Insert · Data · Analyze in Excel. The last one is new. Jeff has not clicked it.
@@ -1434,10 +1434,10 @@ PivotTable1. Jeff named it. Jeff names everything 1, including, briefly, his son
 
 **Rules — what this room answers to:**
 
-- `use measure` — You add a measure to a pivot. You have filtered a spreadsheet. Jeff will never forgive you, and he will never notice.
+- `use measure` — You add a measure to a pivot. Jeff will never forgive you, and he will never notice.
 - `say sign in` — Right idea, wrong tab. The sign-in dialog is on the Data tab, west, then north. Nothing here takes a license.
 - `use license` — Right idea, wrong tab. The sign-in dialog is on the Data tab, west, then north. Nothing here takes a license.
-- `use sales region` (once the pivot has its rows) — Sales Region is already in Rows. Northeast is in there exactly once. Twice is how Jeff got Region A.
+- `use sales region` (once the pivot has its rows) — Sales Region is already in Rows, with Northeast in there exactly once. Twice is how Jeff got Region A.
 - `use net sales` (once the pivot has its values) — Net Sales is already in Values. Two of it would put Returns right back in, by another name.
 - `use year` (once the pivot is filtered) — The year filter is already on. Filtering it twice doesn't make it any more this year.
 - `use region` (once the pivot exists) — Region A is the legacy column. Jeff's favorite. It has 14 regions and two of them are 'Northeast'.
@@ -1458,7 +1458,7 @@ PivotTable1. Jeff named it. Jeff names everything 1, including, briefly, his son
 
 - `analyse in excel` — Analyze in Excel is a button on the Data tab, west, then north. Here, it is three words you said out loud to a spreadsheet.
 - `drag sales region column to rows` — Jeff's pivot only knows Jeff's export. Connect Analyze in Excel first (Data tab, north of Sheet1).
-- `refresh` — You refresh the pivot. It says the same number, but bolder. It feels refreshed.
+- `refresh` — You refresh the pivot. It says the same number, but bolder.
 
 ## Anywhere in Copilot
 
@@ -1466,7 +1466,7 @@ These work in every room of Copilot.
 
 **Things to try:**
 
-- `goal` — Get one number out of Copilot: Q4 2025 Northeast net sales, from the certified model. It will show you everything else first. Tell it what you want, a piece at a time, or all at once. +25 bonus. EXIT leaves any time. Say SALES and answer its questions one at a time. The Model Gallery, east, has the names.
+- `goal` — Get one number out of Copilot: Q4 2025 Northeast net sales, from the certified model. Tell it a piece at a time, or all at once; it will show you everything else first. +25 bonus. EXIT leaves any time. Say SALES and answer its questions one at a time. The Model Gallery, east, has the names.
 - `restart` (as an answer, right after the question) — Restart the whole quest, or the chat? Say NEW CHAT for the chat. Say RESTART again for the quest.
 
 ## The Copilot Pane
@@ -1479,18 +1479,18 @@ The Copilot Pane. A sparkle that would like to help. It has helped four people. 
 
 **Items:**
 
-- **prompt box** — A rounded prompt box. "Ask Copilot anything," it says. It does not promise to answer the thing you asked. Above it, your last answer is empty. It is waiting for you. It has capacity to spare and nothing to spend it on.
+- **prompt box** — A rounded prompt box. "Ask Copilot anything," it says. It does not promise to answer the thing you asked. Above it, your last answer is empty. It is waiting for you.
   - `talk to prompt box` — You talk to the prompt box. It listens beautifully. It is the best listener in the realm and it has never once heard you.
   - `click sparkle` — You click the sparkle. It sparkles harder. That is the entire feature, and it shipped on time.
 
 **Phrases — other things you can say here:**
 
 - `hint` — A hollow voice adds: "Say SALES and answer its questions one at a time. The Model Gallery, east, has the names. Copilot does not; it has confidence."
-- `copilot` — Copilot is right here. It has been right here since the sparkle. Type a question; it has 1,204 answers ready, and one of them is yours.
+- `copilot` — Copilot is right here. Type a question; it has 1,204 answers ready, and one of them is yours.
 - `thanks` — Copilot: You're welcome! I've logged your gratitude as feedback. It will be reviewed.
 - `who are you` — Copilot: I'm Copilot! I can help with data, questions, and, if you ask nicely, a sourdough starter.
 - `are you ai` — Copilot: I'm a large language model, but I'm also here for you. Mostly the first thing.
-- `write measure` — Copilot: Here's a measure! It returns BLANK(). You have been filtered by a sparkle.
+- `write measure` — Copilot: Here's a measure! It returns BLANK().
 - `where` — The Copilot Pane. A sparkle that would like to help. It has helped four people. They're in a meeting about it.
 
 ## The Model Gallery
@@ -1499,7 +1499,7 @@ The Model Gallery. Three models on plinths. One's certified. Guess which one Cop
 
 **Goal:** Read the certified model's name and measures. You leave with: the words Copilot wants.
 
-**Hint:** The one with the badge. Its name is the word Copilot is waiting for. Look at its measures, too.
+**Hint:** Give Copilot the name of the model with the badge; it is the word it is waiting for. Look at its measures, too.
 
 **Rules — what this room answers to:**
 
@@ -1511,9 +1511,9 @@ The Model Gallery. Three models on plinths. One's certified. Guess which one Cop
   - `use plinth` — You lean on a plinth. The model on it recalculates a measure out of nerves.
 - **Sales (Certified)** — Sales (Certified). Gold endorsement badge. Measures: Net Sales · Sales Amount · Returns. Net Sales is the one with the checkmark next to it. The checkmark was earned.
   - `look at certified` — Sales (Certified). Gold endorsement badge. Measures: Net Sales · Sales Amount · Returns. Net Sales is the one with the checkmark next to it. The checkmark was earned.
-  - `use badge` — You polish the badge. The certified model feels refreshed. It was already certified; now it is shiny.
-- **Sales_v3_FINAL_final2** — Sales_v3_FINAL_final2. No badge. Last refreshed by someone who has left the company. Copilot likes it because it has the most rows. Last refreshed through a personal-mode gateway on a laptop that is closed.
-  - `look at final2` — Sales_v3_FINAL_final2. No badge. Last refreshed by someone who has left the company. Copilot likes it because it has the most rows. Last refreshed through a personal-mode gateway on a laptop that is closed.
+  - `use badge` — You polish the badge. It was already certified; now it is shiny.
+- **Sales_v3_FINAL_final2** — Sales_v3_FINAL_final2. No badge. Last refreshed by someone who has left the company. Copilot likes it because it has the most rows.
+  - `look at final2` — Sales_v3_FINAL_final2. No badge. Last refreshed by someone who has left the company. Copilot likes it because it has the most rows.
 - **sales_test_DO_NOT_USE** — sales_test_DO_NOT_USE. A small sign: DO NOT USE. Its total is $12. Someone used it anyway, in a board deck.
   - `look at test` — sales_test_DO_NOT_USE. A small sign: DO NOT USE. Its total is $12. Someone used it anyway, in a board deck.
 
@@ -1539,19 +1539,19 @@ The Town Hall. The queue has one person in it and it's you and you're not moving
 
 - **ticket** (you can take it) — SEV-3: 'report is wrong'. No further details.
   - `get ticket` — You take the ticket. Nobody stops you. Nobody was going to.
-  - `get ticket` again — You already took the ticket off the counter, next to the bell, while the Clerk stamped something else.
-  - `give ticket to clerk` — The ticket is on the counter, which is the Clerk's side. Pick it up first. Then it is your problem, and you can make it his.
+  - `get ticket` again — You already have the ticket. Taking it again would be a duplicate, and the Clerk would close it as one.
+  - `give ticket to clerk` — Pick it up first; it's on the Clerk's side of the counter. Then it's your problem, and you can make it his.
   - `check ticket` — The ticket is on the counter and it isn't filed. Its status is In Progress anyway. It came that way.
   - `give ticket to clerk` (once you have the ticket) — Your ticket has been escalated. Estimated response: three business dragons.
 - **bell** — A desk bell. Polished by the hopeful.
   - `use bell` — The clerk looks up. 'That's an admin setting.'
   - `ring bell` — The clerk looks up. 'That's an admin setting.'
-- **poster** — A poster in a frame: TENANT SETTINGS ARE NOT A SECURITY MEASURE. Try reading it; it does not get shorter.
+- **poster** — A poster in a frame: TENANT SETTINGS ARE NOT A SECURITY MEASURE. Try reading it.
   - `read poster` — TENANT SETTINGS ARE NOT A SECURITY MEASURE. — the Learn docs, on the wall, in a frame.
 - **rope** — A velvet queue rope, zig-zagging to the counter. Nobody in it. It has never had anybody in it.
   - `use rope` — You unclip the rope and clip it back. The queue is unchanged: you.
 - **counter** — A counter with a bell, a ticket, and a stamp. The stamp says ADMIN SETTING.
-  - `use counter` — You lean on the counter. The Clerk slides a form across. It is blank. That is the form. The form has been refreshed since you last looked; it is still blank.
+  - `use counter` — The Clerk slides a form across the counter. It is blank. That is the form.
   - `climb counter` — You climb the counter. The Clerk does not look up. 'That's an admin setting.' It is.
 
 **People:**
@@ -1561,7 +1561,7 @@ The Town Hall. The queue has one person in it and it's you and you're not moving
 1. That's an admin setting.
 2. That would be an admin setting.
 3. Admin setting. Next.
-4. …the admins are at the Monastery. Up the stair from the Cloister. In the Sacristy. They do not come out, and they do not answer tickets.
+4. …the admins are at the Monastery. In the Sacristy, up the stair from the Cloister. They do not answer tickets.
 
 Ask about anything else: That's an admin setting.
 
@@ -1580,12 +1580,12 @@ These work in every room. The replies shown are from the start of the game; most
 - `goal` — Find the Golden Semantic Model. Read the notice board if you forgot how. (Inside a side quest, GOAL tells you that quest's goal.)
 - `where` — You're hanging out in My Workspace. Nobody else can see in, which is the only reason you're allowed to look like that.
 - `why` — I wish I knew.
-- `inventory` — You are carrying: Pro License Card.   Pro License Card: A Pro license. Gets you in the building and absolutely no capacity. Framed next to a participation ribbon.
-- `dance` — You dance. Your Pro license does not include dancing. You dance anyway, poorly, in a way that will be discussed at standup.
+- `inventory` — You are carrying: Pro License Card.   Pro License Card: A Pro license. Gets you in the building and absolutely no capacity.
+- `dance` — You dance, poorly. It will be discussed at standup.
 - `sing` — You sing the DAX song. It has one verse, and the verse is CALCULATE. Birds leave.
 - `xyzzy` — A hollow voice says: 'Direct Lake.'
 - `cheat` — Meh.
-- `die` — You die. Just like that. No dragon required. The realm makes a note of your efficiency.
+- `die` — You die, just like that, no dragon required. Your mom told you this game had a dragon in it and you did this instead. You dead. Refresh failed.
 
 **Also scores:**
 
@@ -1597,19 +1597,19 @@ These work in every room. The replies shown are from the start of the game; most
 - `say star schema` — You say "star schema" to no one in particular. A nearby table quietly normalizes itself.
 - `drink coffee` — The mug is empty. It has been empty since the last refresh. You drink the idea of coffee.
 - `drink` — Drink what? The realm is dry. Even the moat is mostly syntax.
-- `attack jeff` — You hit Jeff from Finance. Jeff just wanted an export. The narrator is disappointed in you, and, more quietly, so is Jeff. He asks for the export again.
+- `attack jeff` — You hit Jeff from Finance. He just wanted an export, and he asks for it again, more quietly.
 - `talk to dragon` — You address the dragon. The dragon is on a mountain. You are not. This is, for now, the best arrangement.
 - `open inventory` — You open your pockets. See "inventory". See also: a mug-shaped absence.
 - `attack everything` — You attack the realm. The realm is a managed service. It scales. You do not.
 - `show me a table` — (This opens Jeff's Excel, a side quest.)
 - `what are my sales` — (This opens Copilot, a side quest.)
 - `exit` — Leaves the side quest, back to where you came in.
-- `fhqwhgads` — Come on. Everybody. To the Lakehouse. That is the whole song now. It is not a good song.
+- `fhqwhgads` — Come on, everybody, to the Lakehouse. It is not a good song.
 - `the system is down` — The system is not down. It is throttled. There is a difference, and the dragon would like you to learn it.
 - `delete` — DELETED! …the command, that is. Your quest remains, regrettably, undeleted.
 - `preow` — That is the sound of a scheduled refresh starting. Or a floppy disk. Nobody alive remembers which.
 - `throw baby` — There is no baby in this realm. This is a data platform. Please stop looking for one.
-- `strong bad` — You call out a name from another realm. A monk looks up, briefly hopeful. Then no. Different realm. Different guy. Better computer.
+- `strong bad` — You call out a name from another realm. A monk looks up, hopeful, then no: different realm, better computer.
 - `consummate v` — The dragon here has no beefy arm. He has an F2 and opinions.
 - `email` — You check your email. 47 unread. All of them are Jeff. All of them say "Excel?"
 - `dir` — This is not that kind of prompt. It is a worse kind.
@@ -1620,18 +1620,18 @@ These work in every room. The replies shown are from the start of the game; most
 - `sudo` — You are not in the sudoers file. This incident will be reported to your capacity admin.
 - `export excel` — The game exports itself to Excel. 1,048,576 rows later, it stops. Nothing has changed.
 - `calculate` — CALCULATE what? Context is everything.
-- `ask ai` — Copilot, uninvited: 'Great question! To bake sourdough, first feed your starter…' It has confidently answered a different question. Nobody asked it.
+- `ask ai` — Copilot, uninvited: 'Great question! To bake sourdough, first feed your starter…' It has confidently answered a different question.
 - `refresh` — You refresh. Nothing changes, but it feels productive.
 - `dax` — You write a measure. It returns BLANK(). It always returns BLANK(). You are beginning to suspect the problem is you.
 - …and 52 more.
 
 **Ways to die ☠:**
 
-- `drink capacityade` (once you have the energy drink) — Electrolytes. Autoscale. Your heart hits 64 CUs and the bill arrives before you do. The label said not on a capacity. Everything in this realm is on a capacity. That is what the dragon is FOR.
-- `attack me` — You attack yourself. Nobody in the realm tries to stop you; the art budget didn't cover a bystander. It works. Efficient, if bleak.
-- `delete workspace` — You delete the workspace. You were in it. Somewhere a director's bookmark breaks and a Teams message begins composing itself.
-- `rm -rf` — You run it. The realm, to its credit, had a backup. You did not. You typed it with feeling, too.
-- `paginated jeff` — You offer Jeff a paginated report. Jeff's eyes go dark. He was not built for this. Neither were you. Dumb, dumb, dumb.
+- `drink capacityade` (once you have the energy drink) — Electrolytes, autoscale, and your heart hits 64 CUs; the bill arrives before you do. The label said not while standing on a capacity, and you were standing on one.
+- `attack me` — You attack yourself, and nobody in the realm tries to stop you. It works, which is a first for one of your plans.
+- `delete workspace` — You delete the workspace. You were in it.
+- `rm -rf` — You run it, and the realm, to its credit, had a backup. You did not.
+- `paginated jeff` — You offer Jeff a paginated report, and his eyes go dark. He was not built for this, and neither were you.
 
 **God mode:** type `burninate`. Then `godhelp` lists everything; `warp <room>` takes you anywhere, `summon <item>` puts
 anything in your pocket, `locate <thing>` finds anything, `prompts` lists what the room you are in answers to, `settings`

@@ -10,11 +10,11 @@ describe('Power Query Hall reads as seven steps (spec1 §4.2)', () => {
   it('the room text lists the seven, in order, and says the first is waiting', () => {
     const out = step(hall(), 'look', WORLD).output[0]!;
     expect(out).toContain('Seven doorways in a row, each an Applied Step: Source, Navigation, Promoted Headers, Changed Type, Filtered Rows, Removed Other Columns, Renamed Columns.');
-    expect(out).toContain('The first is waiting. The rest are yellow — you go through them in order, or the hall errors.');
+    expect(out).toContain('The first is waiting. The rest are yellow — you apply them in order, or the hall errors.');
     expect(WORLD.rooms['fortress.hall']!.enterQuip!(hall())).toBe("Seven steps. In order. That's the whole idea of a query.");
   });
   it('mid-chain, the applied ones are open and the next one waits: number words, and no "rest" at the last door', () => {
-    expect(step(hall({ 'pq.step': 1 }), 'look', WORLD).output[0]).toContain('The first is open; the next is waiting. The rest are yellow — you go through them in order, or the hall errors.');
+    expect(step(hall({ 'pq.step': 1 }), 'look', WORLD).output[0]).toContain('The first is open; the next is waiting. The rest are yellow — you apply them in order, or the hall errors.');
     expect(step(hall({ 'pq.step': 3 }), 'look', WORLD).output[0]).toContain('The first three are open; the next is waiting. The rest are yellow');
     expect(step(hall({ 'pq.step': 5 }), 'look', WORLD).output[0]).toContain('The first five are open; the next is waiting. The rest are yellow');
     const last = step(hall({ 'pq.step': 6 }), 'look', WORLD).output[0]!;

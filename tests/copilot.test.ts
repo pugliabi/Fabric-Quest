@@ -47,7 +47,7 @@ describe('in the pane: commands vs prompts (controller rulings)', () => {
     for (const r of rs) expect(r.stepId).toMatch(/^copilot\.stage\./);
   });
   it('bare copilot in the pane is not the sourdough egg', () => {
-    for (const c of ['copilot', 'ask copilot', 'talk to copilot']) expect(at([c]).rs[0]!.output[0]).toMatch(/^Copilot is right here. It has been right here since the sparkle./);
+    for (const c of ['copilot', 'ask copilot', 'talk to copilot']) expect(at([c]).rs[0]!.output[0]).toMatch(/^Copilot is right here\. Type a question/);
   });
   it('get ye flask, get prompt, help and e still work as commands', () => {
     const { rs } = at(['get ye flask', 'get prompt', 'help', 'e']);
@@ -82,7 +82,7 @@ describe('in the pane: commands vs prompts (controller rulings)', () => {
     expect(rs[2]!.output[0]).toMatch(/west, in the pane/);
     expect(rs[3]!.output[0]).toMatch(/Net Sales · Sales Amount · Returns/);
   });
-  it('hey copilot is Copilot, not a greeting', () => expect(at(['hey copilot']).rs[0]!.output[0]).toMatch(/^Copilot is right here. It has been right here since the sparkle./));
+  it('hey copilot is Copilot, not a greeting', () => expect(at(['hey copilot']).rs[0]!.output[0]).toMatch(/^Copilot is right here\. Type a question/));
   it('the prompt box shows the last answer', () => {
     const { rs } = at(['show me sales', 'read the answer', 'look at reply']);
     expect(rs[1]!.output[0]).toMatch(/is a list/); expect(rs[2]!.output[0]).toMatch(/is a list/);

@@ -167,7 +167,7 @@ describe('milestones and the win', () => {
   });
   it('wearing the hoodie names you', () => {
     const r = step({ ...newGame(WORLD, 3), inventory: ['license', 'hoodie'] }, 'wear hoodie', WORLD);
-    expect(r.output[0]).toMatch(/^You pull on the Hoodie of Spark\. You look like a Data Engineer\./);
+    expect(r.output[0]).toMatch(/^You pull on the Hoodie of Spark\. You look like a Data Engineer, and nobody can tell/);
     expect(r.output[0]).toMatch(/Now you're lookin' like a serious Engineer, .+\.$/);
     expect(r.state.worn).toContain('hoodie');
   });

@@ -12,22 +12,22 @@ import { ADE, ADE_DEATH } from './deaths';
 export const PHRASE_RULES: PhraseRule[] = [
   // ---- Instant deaths (Press X to die) ----
   // The skill's death shape (spec1 §5.4): the kill sentence, then the blame sentence; the engine appends the sign-off.
-  { id: 'death.die', test: /^(die|kill me|kill myself|end it|perish)$/, text: 'You die. Just like that. No dragon required. The realm makes a note of your efficiency. Your mom told you this game had a dragon in it and you did this instead.', death: 'death.die' },
-  { id: 'death.attack-self', test: /^(attack|hit|punch|fight|stab|kill)\s+(me|myself|self|yourself)$/, text: "You attack yourself. Nobody in the realm tries to stop you; the art budget didn't cover a bystander. It works. Efficient, if bleak.", death: 'death.attack-self' },
-  { id: 'death.delete-workspace', test: /^(delete|drop|remove|nuke)\b.*workspace/, text: "You delete the workspace. You were in it. Somewhere a director's bookmark breaks and a Teams message begins composing itself.", death: 'death.delete-workspace' },
-  { id: 'death.rm-rf', test: /rm -rf|format c:|drop database/, text: 'You run it. The realm, to its credit, had a backup. You did not. You typed it with feeling, too.', death: 'death.rm-rf' },
-  { id: 'death.paginated', test: /paginated.*jeff|jeff.*paginated/, text: "You offer Jeff a paginated report. Jeff's eyes go dark. He was not built for this. Neither were you. Dumb, dumb, dumb.", death: 'death.paginated' },
-  { id: 'death.import', test: /^import\b.*(lake|onelake)|^(use|get|take|open)\b(?!.*\b(pebble|stone)\b).*(the )?(onelake|lake)$/, room: 'lake.shore', text: 'You attempt to Import the OneLake into Power BI Desktop. Your laptop becomes a small sun. Nice one, Import Mode Ishmael.', death: 'death.import' },
-  { id: 'death.swim-moat', test: /^(swim|dive|jump)\b.*(moat|in)?/, room: 'fortress.bridge', text: "You dive into the Moat of T-SQL. It is deeper than it looks and made entirely of nested subqueries. You are still in there. You will always be in there. Report Builders can't swim. Like, it's in the license.", death: 'death.swim-moat' },
+  { id: 'death.die', test: /^(die|kill me|kill myself|end it|perish)$/, text: 'You die, just like that, no dragon required. Your mom told you this game had a dragon in it and you did this instead.', death: 'death.die' },
+  { id: 'death.attack-self', test: /^(attack|hit|punch|fight|stab|kill)\s+(me|myself|self|yourself)$/, text: 'You attack yourself, and nobody in the realm tries to stop you. It works, which is a first for one of your plans.', death: 'death.attack-self' },
+  { id: 'death.delete-workspace', test: /^(delete|drop|remove|nuke)\b.*workspace/, text: 'You delete the workspace. You were in it.', death: 'death.delete-workspace' },
+  { id: 'death.rm-rf', test: /rm -rf|format c:|drop database/, text: 'You run it, and the realm, to its credit, had a backup. You did not.', death: 'death.rm-rf' },
+  { id: 'death.paginated', test: /paginated.*jeff|jeff.*paginated/, text: "You offer Jeff a paginated report, and his eyes go dark. He was not built for this, and neither were you.", death: 'death.paginated' },
+  { id: 'death.import', test: /^import\b.*(lake|onelake)|^(use|get|take|open)\b(?!.*\b(pebble|stone)\b).*(the )?(onelake|lake)$/, room: 'lake.shore', text: 'You Import the OneLake into Power BI Desktop, and your laptop becomes a small sun. Nice one, Import Mode Ishmael.', death: 'death.import' },
+  { id: 'death.swim-moat', test: /^(swim|dive|jump)\b.*(moat|in)?/, room: 'fortress.bridge', text: "You dive into the Moat of T-SQL, which is made entirely of nested subqueries, and you will always be in there. Report Builders can't swim; it's in the license.", death: 'death.swim-moat' },
 
   // ---- Classic verbs the parser was always going to be asked ----
   // ---- Greetings from another realm (triggers only; the lines are ours) ----
-  { id: 'egg.fhqwhgads', test: /fhqwhgads/, text: 'Come on. Everybody. To the Lakehouse. That is the whole song now. It is not a good song.' },
+  { id: 'egg.fhqwhgads', test: /fhqwhgads/, text: 'Come on, everybody, to the Lakehouse. It is not a good song.' },
   { id: 'egg.system-down', test: /^the system is down/, text: 'The system is not down. It is throttled. There is a difference, and the dragon would like you to learn it.' },
   { id: 'egg.deleted', test: /^deleted?!?$/, text: 'DELETED! …the command, that is. Your quest remains, regrettably, undeleted.' },
   { id: 'egg.preeow', test: /^pre+e*ow/, text: 'That is the sound of a scheduled refresh starting. Or a floppy disk. Nobody alive remembers which.' },
   { id: 'egg.throw-baby', test: /^throw (the )?baby/, text: 'There is no baby in this realm. This is a data platform. Please stop looking for one.' },
-  { id: 'egg.other-realm', test: /^(strong ?bad|homestar|the cheat|kerrek|jhonka|dennis|marzipan|coach z|bubs|pom pom|king of town|poopsmith)\b/, text: 'You call out a name from another realm. A monk looks up, briefly hopeful. Then no. Different realm. Different guy. Better computer.' },
+  { id: 'egg.other-realm', test: /^(strong ?bad|homestar|the cheat|kerrek|jhonka|dennis|marzipan|coach z|bubs|pom pom|king of town|poopsmith)\b/, text: 'You call out a name from another realm. A monk looks up, hopeful, then no: different realm, better computer.' },
   { id: 'egg.beefy', test: /(consummate v|beefy arm|majesty)/, text: 'The dragon here has no beefy arm. He has an F2 and opinions.' },
   { id: 'egg.email', test: /^(check )?(sb)?e-?mail\b/, text: 'You check your email. 47 unread. All of them are Jeff. All of them say "Excel?"' },
   { id: 'egg.dos', test: /^(dir|ls|cd |cd$|reboot|ctrl.?alt.?del|format|defrag)\b/, text: 'This is not that kind of prompt. It is a worse kind.' },
@@ -59,12 +59,12 @@ export const PHRASE_RULES: PhraseRule[] = [
   },
   { id: 'egg.calculate', test: /^calculate\b/, text: 'CALCULATE what? Context is everything.' },
   // Not "ask copilot …": that opens the Copilot side quest. This is for asking some other AI, which Copilot answers anyway.
-  { id: 'egg.copilot', test: /^(ask|hey|use|talk to) (the |an? )?(ai|chat ?gpt|chatbot|llm|robot)\b/, text: "Copilot, uninvited: 'Great question! To bake sourdough, first feed your starter…' It has confidently answered a different question. Nobody asked it." },
+  { id: 'egg.copilot', test: /^(ask|hey|use|talk to) (the |an? )?(ai|chat ?gpt|chatbot|llm|robot)\b/, text: "Copilot, uninvited: 'Great question! To bake sourdough, first feed your starter…' It has confidently answered a different question." },
   { id: 'egg.xyzzy', test: /^(xyzzy|plugh|plover)$/, text: "A hollow voice says: 'Direct Lake.'" },
   { id: 'egg.refresh', test: /^refresh\b/, text: 'You refresh. Nothing changes, but it feels productive.' },
   { id: 'egg.dax', test: /^(dax|write dax|write a measure|measure)\b/, text: 'You write a measure. It returns BLANK(). It always returns BLANK(). You are beginning to suspect the problem is you.' },
   { id: 'egg.select-star', test: /^select \*/, text: (s) => (s.room === 'fortress.throne' ? 'The Duke did not hear you. Say it louder.' : 'Not here. This is not even a Warehouse. Say it to the Duke and get corrected.') },
-  { id: 'egg.dance', test: /^(dance|boogie|jig)\b/, text: 'You dance. Your Pro license does not include dancing. You dance anyway, poorly, in a way that will be discussed at standup.' },
+  { id: 'egg.dance', test: /^(dance|boogie|jig)\b/, text: 'You dance, poorly. It will be discussed at standup.' },
   { id: 'egg.sing', test: /^(sing|hum|whistle)\b/, text: 'You sing the DAX song. It has one verse, and the verse is CALCULATE. Birds leave.' },
   { id: 'egg.jump', test: /^(jump|hop|leap)\b/, text: 'You jump. Owing to interactive delay, you land next Tuesday.' },
   { id: 'egg.sit', test: /^(sit|sit down|rest|relax|chill)\b/, text: 'You sit. Ah. Nice. This is the most productive you have been all quest.' },
@@ -127,7 +127,7 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.boo', test: /^(boo|scare|spook)\b/, text: 'Boo. Nobody is scared. The realm has seen a 400-column table.' },
   { id: 'egg.dad', test: /^(who are you|who is this|narrator)\b/, text: 'I am the narrator. I have watched eleven thousand Report Builders die in the Bronze Marsh. You are not special. You are, so far, alive.' },
   { id: 'egg.magic', test: /^(cast|abracadabra|magic|spell|alakazam)\b/, text: 'You cast a spell. It is CALCULATETABLE. Nothing in the realm is prepared for it, least of all you.' },
-  { id: 'egg.count', test: /^(count|how many)\b/, text: 'count() is not supported. Select fewer fields and compute results.length, peasant.' },
+  { id: 'egg.count', test: /^(count|how many)\b/, text: 'COUNT is not supported here, peasant. Select fewer fields and count them yourself.' },
 ];
 
 /** The 'get ye flask' egg: a nudge in every room. */
@@ -176,7 +176,7 @@ const JEFF = ['jeff', 'jeff from finance', 'finance', 'man'];
 const SQUEEZES = [
   'You squeeze. It is oddly calming. It is also oddly deprecated.',
   'You squeeze the cube. The OLAP face stares back. It has been processing since 2008. So, you realize, have you.',
-  'Squeeze. Release. Squeeze. This is the most you have processed all quest. Your forearm is now a star schema.',
+  'Squeeze. Release. Squeeze. Your forearm is now a star schema.',
 ];
 
 export const GLOBAL_RULES: Rule[] = [
@@ -192,7 +192,7 @@ export const GLOBAL_RULES: Rule[] = [
     when: { verb: 'wear', noun: ['hoodie', 'hoodie of spark', 'spark hoodie', 'black hoodie'], has: ['hoodie'], flags: [{ flag: 'trial.hoodie', not: true }] },
     then: {
       // The milestone names you (spec1 §5.2, Task F3): the canon "Now you're lookin like a serious peasant" shape, with a nickname.
-      text: (s) => `You pull on the Hoodie of Spark. You look like a Data Engineer. You have never written a notebook in your life. Nobody can tell. Now you're lookin' like a serious Engineer, ${nick(s)}.`,
+      text: (s) => `You pull on the Hoodie of Spark. You look like a Data Engineer, and nobody can tell you have never written a notebook. Now you're lookin' like a serious Engineer, ${nick(s)}.`,
       set: { 'trial.hoodie': true }, wear: ['hoodie'], sfx: 'item',
     },
   },
@@ -265,7 +265,7 @@ export const GLOBAL_RULES: Rule[] = [
   {
     id: 'global.attack-jeff',
     when: { verb: 'attack', noun: JEFF },
-    then: { text: 'You hit Jeff from Finance. Jeff just wanted an export. The narrator is disappointed in you, and, more quietly, so is Jeff. He asks for the export again.', outcome: 'fail' },
+    then: { text: 'You hit Jeff from Finance. He just wanted an export, and he asks for it again, more quietly.', outcome: 'fail' },
   },
   {
     id: 'global.give-jeff-anything',
@@ -307,7 +307,7 @@ export const SNARK: string[] = [
   'The realm has smoothed your request over the next 24 hours.',
   'I understood the verb. I understood the noun. I am choosing not to.',
   'That is a feature request. It has been added to the backlog, which is also a swamp.',
-  'The narrator has seen many peasants try that. None of them are narrators now.',
+  'The narrator has seen many peasants try that. None of them are here now.',
   "Something went wrong. That's the whole error. Microsoft has been notified; you have not.",
   'Direct Lake can\'t do that. It falls back to DirectQuery, and then to you.',
   'The SQL endpoint hasn\'t synced that yet. Check back in a minute. Or a week.',
@@ -316,7 +316,7 @@ export const SNARK: string[] = [
   "That's in preview. Preview means it works, on a Tuesday, for the person who demoed it.",
   // The voice pass (spec1 §5.2): the same narrator, less patient.
   "I don't understand. Type HELP, or open a ticket like a real professional.",
-  'Two words, Ctrl-Shift-Enter. Verb, then the thing. Like a measure, but shorter.',
+  'Two words, Ctrl-Shift-Enter. Verb, then the thing.',
   'Naw.',
   'Listen to you. What kinda gaming is that? Two words.',
 ];

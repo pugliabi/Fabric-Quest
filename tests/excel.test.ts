@@ -71,7 +71,7 @@ describe("Jeff's Excel after the Monastery (final review I1)", () => {
   it.each(['sign in', 'use license on connection'])('%s works with the license on loan to the Librarian', (cmd) => {
     const { s, last } = lent(['show me a table', 'n', cmd]);
     expect(s.flags['excel.connected']).toBe(true);
-    expect(last[0]).toMatch(/library card here — and the card is still signed in/);
+    expect(last[0]).toMatch(/it never signed out\. Connected — Sales \(Certified\)\./);
   });
   it('the Data tab flask hint never claims a license you do not have', () => {
     const on = play(['show me a table', 'talk to jeff', 'n', 'get ye flask']).last.join(' ');

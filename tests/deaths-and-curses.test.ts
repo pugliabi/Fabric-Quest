@@ -13,14 +13,14 @@ const run = (room: string, cmds: string[], extra: Partial<GameState> = {}) => { 
 describe('blame beats on the nine (spec1 §5.4)', () => {
   it.each([
     ['village.cottage', 'die', /Your mom told you this game had a dragon in it and you did this instead\./],
-    ['village.cottage', 'attack me', /the art budget didn't cover a bystander/i],
-    ['village.cottage', 'delete workspace', /Somewhere a director's bookmark breaks and a Teams message begins composing itself\./],
-    ['village.cottage', 'format c:', /You typed it with feeling, too\./],
-    ['village.square', 'give paginated report to jeff', /Dumb, dumb, dumb\./],
+    ['village.cottage', 'attack me', /It works, which is a first for one of your plans\./],
+    ['village.cottage', 'delete workspace', /You delete the workspace\. You were in it\./],
+    ['village.cottage', 'format c:', /had a backup\. You did not\./],
+    ['village.square', 'give paginated report to jeff', /He was not built for this, and neither were you\./],
     ['lake.shore', 'import onelake', /Nice one, Import Mode Ishmael\./],
-    ['fortress.bridge', 'swim moat', /Report Builders can't swim\. Like, it's in the license\./],
+    ['fortress.bridge', 'swim moat', /Report Builders can't swim; it's in the license\./],
     ['swamp.bronze', 'drink water', /Your mom told you never to drink from the Bronze layer\. And NOW look\./],
-    ['peaks.shrine', 'attack dragon', /You knew you were supposed to TALK to him, right\? You read the ledger\./],
+    ['peaks.shrine', 'attack dragon', /You knew you were supposed to TALK to him, right\?/],
   ])('%s: %s', (room, cmd, blame) => {
     const r = one(room, cmd);
     expect(r.state.dead).toBe(true);
@@ -45,7 +45,7 @@ describe('the new deaths', () => {
   it.each([
     ['village.fields', ['refresh'], 'death.monday', /9:02 a\.m\. on a Monday/],
     ['fortress.model', ['set both on everything'], 'death.both', /Sales to Sales through Sales/],
-    ['fortress.model', ['enable bidirectional on all relationships'], 'death.both', /Ambiguous path/],
+    ['fortress.model', ['enable bidirectional on all relationships'], 'death.both', /ambiguous path/],
     ['fortress.yard', ['open other page'], 'death.400', /only dogs and Throttlor can hear/],
     ['fortress.yard', ['open 400 visuals'], 'death.400', /400/],
     ['village.cottage', ['merge the final files'], 'death.final4', /Sales_v3_FINAL_final4 and you are not in it/],
@@ -87,7 +87,7 @@ describe('the new deaths', () => {
     expect(s.dead).toBe(false); expect(s.flags['model.calc']).toBe(9);
     expect(step(at('fortress.model'), 'add column', WORLD).output[0]).toMatch(/circular dependency/);
     const tenth = step(s, 'add calculated column', WORLD);
-    expect(tenth.state.dead).toBe(true); expect(tenth.deathCause).toBe('death.word'); expect(tenth.output.join(' ')).toMatch(/It opens in Word\. You are in it\./);
+    expect(tenth.state.dead).toBe(true); expect(tenth.deathCause).toBe('death.word'); expect(tenth.output.join(' ')).toMatch(/a Word document now, and you are in it\./);
     expect(last.output[0]).toMatch(/You can hear Word opening\./);
   });
   it('the nine column lines are nine different lines', () => {
@@ -230,10 +230,10 @@ describe('fix round 1: the rulings that stay', () => {
     const blames: [string, string, Partial<GameState>, RegExp][] = [
       ['village.fields', 'refresh', {}, /and you clicked anyway\./],
       ['fortress.model', 'set both on everything', {}, /thought it sounded thorough\./],
-      ['fortress.yard', 'open other page', {}, /You read it as a dare\./],
+      ['fortress.yard', 'open other page', {}, /you read it as a dare\./],
       ['village.cottage', 'merge the final files', {}, /you thought the fix was a third\./],
       ['fortress.hall', 'type dax', {}, /you looked right at them\./],
-      ['peaks.pass', 'drink capacityade', {}, /That is what the dragon is FOR\./],
+      ['peaks.pass', 'drink capacityade', {}, /you were standing on one\./],
       ['fortress.model', 'add column', { flags: { 'model.calc': 9 } }, /you wanted a round number\./],
     ];
     for (const [room, cmd, extra, re] of blames) {

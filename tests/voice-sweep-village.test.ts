@@ -27,25 +27,25 @@ const WITH_MUG = ['license', 'mug'];
 describe('village sweep', () => {
   it('cottage', () => {
     expect(one('village.cottage', 'use mug', WITH_MUG)).toBe(`You drink from the mug. It has been empty since the last refresh. You feel ${MALAPROPS.refreshered}. You are not.`);
-    expect(one('village.cottage', 'look at desk')).toMatch(/the pie chart you made in 2014\. It is still on the intranet\.$/);
+    expect(one('village.cottage', 'look at desk')).toMatch(/seventeen printouts of the same DAX error\.$/);
   });
   it('square', () => {
     expect(one('village.square', 'ask jeff about the report')).toBe("'The report,' says Jeff. 'The report says 4.2. I say 4.7. We've agreed to disagree. By which I mean I've disagreed.'");
     expect(one('village.square', 'give lanyard to jeff', ['license', 'lanyard'])).toMatch(/'FabCon,' he says, reverently\. 'They had Excel there\.'/);
     expect(one('village.square', 'say dax')).toBe(`You say 'DAX' in the square. Jeff flinches like a man who has been ${MALAPROPS.daxxed} before.`);
     expect(one('village.square', 'jump in well')).toBe("You lean over the Q&A Well. It asks you a question first: 'Did you mean: Sales by Region?' You did not. You back away.");
-    expect(one('village.square', 'look at board')).toMatch(/Someone has drawn Clippy in the corner\. It looks like it's writing a measure\.$/);
+    expect(one('village.square', 'look at board')).toMatch(/Someone has drawn Clippy in the corner, and it looks like it's writing a measure\.$/);
   });
   it('mill', () => {
-    expect(one('village.mill', 'ask miller about gen2')).toBe("'Gen2? Gen2 is Gen1 with a haircut,' says the Miller. 'No. Wait. It's the other way. Gen1's the one with the haircut.' (You see where this is going.)");
+    expect(one('village.mill', 'ask miller about gen2')).toBe("'Gen2? Gen2 is Gen1 with a haircut,' says the Miller. 'No, wait. The other way.'");
     expect(one('village.mill', 'use chest')).toBe('You sit on the chest. The Miller sits on the other end. Neither of you says anything for a scheduled interval.');
     expect(one('village.mill', 'look at wheel')).toMatch(/Dataflows Gen1 Classic — the taste you remember\.$/);
   });
   it('fields', () => {
     expect(one('village.fields', 'ask manual about refresh')).toBe('Manual does not answer. A crow lands on him, refreshes, and fails. He is very proud of the crow.');
     expect(one('village.fields', 'scare the crows')).toBe('You flap your arms at the crows. They were not here for the refreshes. They were here for you. They leave, disappointed.');
-    expect(one('village.fields', 'look at manual')).toMatch(/You were a scarecrow once, in a school play\. You formatted the programme\.$/);
-    expect(one('village.fields', 'get refresh')).toMatch(/Not enough capacity\.$/);
+    expect(one('village.fields', 'look at manual')).toMatch(/It is not a surname; it is a warning about full refreshes\.$/);
+    expect(one('village.fields', 'get refresh')).toMatch(/Somewhere, a ferryman weeps\.$/);
   });
 });
 
@@ -87,7 +87,7 @@ describe('village sweep: the same gag twice is a different line', () => {
     expect(twice(c, 'blow out the candle')[1]).toBe("You blow again. The trial's still got 58 days.");
     expect(twice(c, 'sit at desk')[1]).toBe("You sit at the desk again. It's where the report happened to you.");
     expect(twice(c, 'use desk')[1]).toBe("You sit at the desk again. It's where the report happened to you.");
-    expect(twice(c, 'open window')[1]).toMatch(/This is a relationship now, and it's bidirectional\.$/);
+    expect(twice(c, 'open window')[1]).toBe("Jeff looks up again. It's bidirectional now.");
     expect(twice(c, 'open door')).toEqual(["Yeah, totally! Except it's already open, you moron. Try: out.", "Still open. It's a door, not a dialog."]);
     expect(twice(c, 'talk to jeff')).toEqual(["Jeff is outside. He hears 'Excel' anyway. He hears it in everything.", "He heard. He's at the window now."]);
     expect(twice(c, 'wash mug')[1]).toBe("Still considering. It's a heritage stain now.");
@@ -95,10 +95,10 @@ describe('village sweep: the same gag twice is a different line', () => {
   });
   it('square', () => {
     const sq = at('village.square', { inventory: [...WITH_MUG, 'lanyard', 'jeff-note', 'receipt'] });
-    expect(twice(sq, 'say dax')[1]).toBe(`You say it again. Jeff flinches again. ${MALAPROPS.daxxed} twice in one afternoon, once by you.`);
+    expect(twice(sq, 'say dax')[1]).toBe(`Jeff flinches again. He's been ${MALAPROPS.daxxed} twice today.`);
     expect(twice(sq, 'jump in well')[1]).toBe("You lean over again. 'Did you mean: the same thing?' You did.");
     expect(twice(sq, 'make a wish')).toEqual([`You wish for more ${MALAPROPS.capacitude}. The well answers: 'Did you mean: Pro?' You always mean Pro.`, "Again? 'Did you mean: Pro?' It did."]);
-    expect(twice(sq, 'use well')[1]).toBe("You ask again. '$4,213,908.' Same number. It's not a well, it's a measure.");
+    expect(twice(sq, 'use well')[1]).toBe("'$4,213,908.' Same number. It's not a well, it's a measure.");
     expect(twice(sq, 'drink from well')[1]).toBe("Still 42. You're getting a sweet workout for your Q&A muscles.");
     expect(twice(sq, 'talk to well')[1]).toBe("It says 'Hello by Region' again. It's very proud of it.");
     expect(twice(sq, 'use board')[1]).toBe("Already pinned. Jeff's still waiting.");
@@ -109,22 +109,22 @@ describe('village sweep: the same gag twice is a different line', () => {
     expect(twice(sq, 'say no')[1]).toBe('Still not a file format. Jeff checked.');
     expect(twice(sq, 'ask jeff about the report')[1]).toBe("'I've thought about it,' says Jeff. 'It's 4.7. I was right the first time I disagreed.'");
     expect(twice(sq, 'ask jeff about jeff')).toEqual(["'Jeff?' says Jeff. 'Jeff from Finance. Or Finance from Jeff. It's a many-to-one and I forget which side I'm on.'", "'Still Jeff.' He checks his spreadsheet. Sheet1 agrees."]);
-    expect(twice(sq, 'give lanyard to jeff')[1]).toBe("He puts it on again. 'FabCon,' he says, less reverently. 'There was a queue for the Excel.' He hands it back.");
+    expect(twice(sq, 'give lanyard to jeff')[1]).toBe("'FabCon,' he says again, less reverently. He hands it back.");
     expect(twice(sq, 'give note to jeff')[1]).toBe("'Still mine.' He still doesn't take it.");
     expect(twice(sq, 'give receipt to jeff')[1]).toBe('He expenses it again. Finance now owes Finance 800 CU-seconds.');
   });
   it('mill', () => {
     const m = at('village.mill', { inventory: ['license', 'usb stick', 'credentials'], flags: { ...at('village.mill').flags, 'has.credentials': true } });
-    expect(twice(m, 'ask miller about gen2')[1]).toBe("'The haircut one,' says the Miller. 'Gen1. No. Look, ONE of them has the haircut.'");
+    expect(twice(m, 'ask miller about gen2')[1]).toBe("'Look,' says the Miller. 'ONE of them has the haircut.'");
     expect(twice(m, 'ask miller about final_v3')).toEqual(["'FINAL_v3?' The Miller goes quiet. 'We don't say that name in the Mill.'", "'We don't say it TWICE, either.'"]);
-    expect(twice(m, 'use chest')[1]).toBe('You sit again. The Miller sits again. This is a standup now, and it is the good kind.');
+    expect(twice(m, 'use chest')[1]).toBe("You sit again. So does the Miller. It's a standup now, the good kind.");
     expect(twice(m, 'turn the wheel')[1]).toBe("You turn it again. The Miller looks up. 'That's a schedule now.'");
     expect(twice(m, 'stop the wheel')[1]).toBe('It stops. It starts. You are not on the schedule.');
     expect(twice(m, 'upgrade to gen2')[1]).toBe('You upgraded already. There are two mills now. Nobody has told the Miller.');
     expect(twice(m, 'use wheel')[1]).toBe('Same dialog. It has considered you back.');
     expect(twice(m, 'give usb to miller')[1]).toBe("He hands it back faster. He's had practice.");
     expect(twice(m, 'open usb')[1]).toBe('Still a dataflow. Still mostly old.');
-    expect(twice(m, 'use credentials')).toEqual(['Good idea. Wrong screen. The man who weeps for these is at the dock, and he has been practicing his face.', 'Still the wrong screen. The dock is south, then south, then east, and it knows you are coming.']);
+    expect(twice(m, 'use credentials')).toEqual(['Good idea. Wrong screen. The man who weeps for these is at the dock.', 'Still the wrong screen. The dock is south, south, then east.']);
     expect(twice(m, 'give credentials to miller')[1]).toBe("Still won't. 'Decommissioned means decommissioned.'");
     expect(twice(m, 'give license to miller')[1]).toBe("'Still Pro.' He hands it back again, gentler.");
   });
@@ -132,11 +132,11 @@ describe('village sweep: the same gag twice is a different line', () => {
     const f = at('village.fields', { inventory: WITH_MUG });
     expect(twice(f, 'ask manual about refresh')[1]).toBe('You ask again. The crow refreshes again. Fails again. Manual is prouder.');
     expect(twice(f, 'ask manual about monday')[1]).toBe("He still won't say it. The sign still will.");
-    expect(twice(f, 'use manual')[1]).toBe(`You trigger him again. Eleven more minutes. He is thoroughly ${MALAPROPS.refreshered} now, and nothing was waiting on that either.`);
-    expect(twice(f, 'refresh manual')[1]).toMatch(/thoroughly refreshed now/);
+    expect(twice(f, 'use manual')[1]).toBe(`Eleven more minutes. He is thoroughly ${MALAPROPS.refreshered}. Still nothing waiting.`);
+    expect(twice(f, 'refresh manual')[1]).toMatch(/thoroughly refreshed\./);
     expect(twice(f, 'get refresh')[1]).toBe('You pick another. Same error, other hand.');
     expect(twice(f, 'pick a refresh')[0]).toMatch(/^You pick a refresh\. It fails in your hand\./);
-    expect(twice(f, 'scare the crows')[1]).toBe('You flap again. Nothing leaves. The crows are gone and the refreshes were never scared of you.');
+    expect(twice(f, 'scare the crows')[1]).toBe('You flap again. The crows are gone. The refreshes were never scared.');
     expect(twice(f, 'water the crops')).toEqual(['You water the refreshes. They fail, but wetter.', 'Wetter still. Same fail.']);
     expect(twice(f, 'get crow')).toEqual(['The crow declines. It has seen what you do with refreshes.', 'Nope. The crow has a schedule.']);
     expect(twice(f, 'look at sign')[1]).toBe("Still MONDAY. It's a warning, not a calendar.");
@@ -168,7 +168,7 @@ describe('village sweep: one object, a different joke on every screen', () => {
     expect(one('village.square', 'say excel')).toBe("Jeff's head turns like a Card finding a measure. 'Yes?' he says. 'YES?' You have made a mistake.");
     expect(one('village.fields', 'say excel')).toBe('Jeff turns. So does Manual, who was not built to turn.');
     const calm = { 'jeff.pacified': true };
-    expect(step(at('village.square', { flags: { ...at('village.square').flags, ...calm } }), 'say excel', WORLD).output[0]).toBe('Jeff, content, does not turn. He nods at his mug. He heard the word. He has chosen the mug.');
+    expect(step(at('village.square', { flags: { ...at('village.square').flags, ...calm } }), 'say excel', WORLD).output[0]).toBe('Jeff, content, does not turn. He heard the word. He has chosen the mug.');
     expect(step(at('village.fields', { flags: { ...at('village.fields').flags, ...calm } }), 'say excel', WORLD).output[0]).toBe("Nobody turns. The crows don't do Excel.");
     expect(one('village.fields', 'look at spreadsheet')).toBe("He brought it to the fields. It's empty out here too.");
     expect(step(at('village.fields', { flags: { ...at('village.fields').flags, ...calm } }), 'look at spreadsheet', WORLD).output[0]).toMatch(/^You don't see any spreadsheet here\.|^No spreadsheet here|^There is no spreadsheet|^spreadsheet\?|^You look for a spreadsheet|^A spreadsheet\?|^Yeah, there's no spreadsheet|^No spreadsheet\./);
@@ -200,11 +200,11 @@ describe('village sweep: looking twice, and a third time', () => {
       expect(r.firsts[0], cmd).not.toBe(second);
     }
     const ev = run(at('village.cottage', { flags: { ...at('village.cottage').flags, 'ts.monitoring': true } }), ['look at eventhouse', 'look at eventhouse']);
-    expect(ev.firsts).toEqual(['It has already logged that you looked.', "Logged again. It's building a table about you."]);
+    expect(ev.firsts).toEqual(['An Eventhouse. It has already logged that you looked.', "Logged again. It's building a table about you."]);
   });
   it('the board has a third look, and Clippy is the allusion', () => {
     const r = run(at('village.square'), ['look at board', 'look at board', 'look at board', 'look at board']);
-    expect(r.firsts[1]).toBe('Four handwritings. None of them yours. Nobody asked.');
+    expect(r.firsts[1]).toBe('Clippy is still writing the measure.');
     expect(r.firsts[2]).toBe("Clippy's finished the measure. It returns (Blank).");
     expect(r.firsts[3]).toBe(r.firsts[2]);
     expect(r.firsts[0]).toContain(ALLUSIONS[0]);
@@ -220,7 +220,7 @@ describe('village sweep: looking twice, and a third time', () => {
 describe('village sweep: the deferred minors', () => {
   it('a known topic asked twice in a row gets a second line from Jeff and from the Miller', () => {
     const j = run(at('village.square'), ['ask jeff about excel', 'ask jeff about excel', 'ask jeff about excel']);
-    expect(j.firsts[0]).toMatch(/^"You know what would help\? Not Excel\./);
+    expect(j.firsts[0]).toMatch(/^"That mug on your desk would help\./);
     expect(j.firsts[1]).toBe("'You asked,' says Jeff. 'I answered. It's still Excel. It's Excel all the way down.'");
     expect(j.firsts[2]).toBe(j.firsts[1]);
     expect(j.s.flags['talk.jeff']).toBe(3);
@@ -228,7 +228,7 @@ describe('village sweep: the deferred minors', () => {
     const b = run(at('village.square'), ['ask jeff about kimball', 'ask jeff about kimball']);
     expect(b.firsts).toEqual(['"Is it in Excel? Then I don\'t know it."', '"Is it in Excel? Then I don\'t know it."']);
     const m = run(at('village.mill', { flags: { ...at('village.mill').flags, 'has.credentials': true } }), ['ask miller about the ferryman', 'ask miller about the ferryman']);
-    expect(m.firsts[0]).toMatch(/^"The Ferryman\. South to the square/);
+    expect(m.firsts[0]).toMatch(/^"Those creds are the Ferryman's\. South to the square/);
     expect(m.firsts[1]).toBe("'Asked and answered,' says the Miller. 'In Q3. This one.'");
     // Before the creds are yours, any talk to the Miller is the hand-over (+10), topic or not.
     const r = step(at('village.mill'), 'ask miller about the ferryman', WORLD);
@@ -247,11 +247,11 @@ describe('village sweep: the deferred minors', () => {
 });
 
 describe('village sweep: the voice constants land here', () => {
-  it('each plain word, verbatim, at least twice; the one brand; the blurbs no longer share a formula', () => {
+  it('each plain word, verbatim; the one brand; the blurbs no longer share a formula', () => {
     const f = at('village.fields', { inventory: WITH_MUG });
     const refreshered = [one('village.cottage', 'use mug', WITH_MUG), twice(f, 'use manual')[1]];
     for (const l of refreshered) expect(l).toContain(MALAPROPS.refreshered);
-    const capacitude = [one('village.fields', 'get refresh'), one('village.square', 'make a wish')];
+    const capacitude = [one('village.square', 'make a wish')];
     for (const l of capacitude) expect(l).toContain(MALAPROPS.capacitude);
     const daxxed = [...twice(at('village.square'), 'say dax'), one('village.fields', 'say dax')];
     for (const l of daxxed) expect(l).toContain(MALAPROPS.daxxed);

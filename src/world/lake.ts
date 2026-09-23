@@ -64,22 +64,22 @@ const UNKNOWN_TO_FERRYMAN = unknownTopicPattern(NPCS['ferryman']!.knows!);
 
 /** `ask ferryman about the lake`: the one word he is sure of, counted on one finger. */
 const FERRY_LAKE = (s: GameState): string => byLamp(s,
-  ["He mouths: 'ONE.' Then, more slowly: 'LAKE.' He holds up one finger. Then, after thought, no more fingers.",
-    "'ONE,' he mouths again, and stops there. The finger stays up. He has said everything he knows about the lake, twice."],
-  ['"One," he says. "Lake." Out loud, now that he can. He holds up the finger anyway; he has grown fond of the finger.',
-    '"One," he says again, and then, generously, "lake." The finger is up before he is finished.']);
+  ["He mouths: 'ONE.' Then, slower: 'LAKE.' He holds up one finger, to be clear about the number.",
+    "'ONE,' he mouths again. The finger stays up. That is all he knows about the lake."],
+  ['"One lake," he says, out loud, now that he can. He holds up the finger anyway; he has grown fond of it.',
+    '"One lake," he says again. The finger beats him to it.']);
 /** The tears: not crying, in the self-contradiction shape; online, they were scheduled. */
 const FERRY_TEARS = (s: GameState): string => byLamp(s,
   ["He mouths: 'NOT. CRYING.' A tear runs down. 'SCHEDULED,' he mouths. 'REFRESH.'",
     "'NOT,' he mouths. 'CRYING.' Two tears, both scheduled."],
-  ['"Those were scheduled," he says of the tears. "Every one. I put them on a schedule in 2021 and they have run every night since."',
-    '"Every night," he says. "I could turn them off now. I haven\'t." He looks at the lamp.']);
+  ['"Those were scheduled," he says of the tears. "Every night since 2021."',
+    '"I could turn them off now," he says. "I haven\'t."']);
 /** Himself: he flubs his own title, and likes the flub. */
 const FERRY_SELF = (s: GameState): string => byLamp(s,
   ["He mouths: 'GATEWAY.' Then: 'FERRYMAN.' Then, slower and pleased: 'FERRYWAY.' Four years alone with two words.",
     "'FERRYWAY,' he mouths again, firmer. It is going on the boat, next to GATEWAY."],
-  ['"The Ferryman," he says. "The Gateway. Standard mode." He tries them in another order. "Standard Ferryman. Gateway mode." He likes that one less.',
-    '"Gateway mode," he says, testing it again. No. "Standard." He will stick with what the lamp said.']);
+  ['"The Ferryman," he says. "The Gateway. Standard mode." He tries "Standard Ferryman" and likes it less.',
+    '"Standard mode," he says again. He is sticking with that one.']);
 
 /**
  * The pebble, thrown, from any shore of it (the skill's environment variants: the same throw reads differently by marsh
@@ -89,7 +89,7 @@ const THROW = /^(throw|toss|chuck|skim|fling) (the )?(pebble|stone|skipping ston
 const noPebble = (s: GameState, line: string, mime: string): { id: string; then: RuleThen } => {
   // The flat rock (polish round): a rock in your hand is the rock thrown, whatever became of the pebble. It sinks, so it
   // leaves your pockets; `throw rock` after that mourns it.
-  if (/\b(stone|rock)\b/.test(line) && s.inventory.includes('flat-rock')) return { id: 'lake.throw-rock', then: { text: 'You throw the flat rock. It is from the Peaks, and skips are billed per second. Zero skips. It sinks, and you are billed anyway.', remove: ['flat-rock'], set: { 'rock.sunk': true }, outcome: 'snark' } };
+  if (/\b(stone|rock)\b/.test(line) && s.inventory.includes('flat-rock')) return { id: 'lake.throw-rock', then: { text: 'You throw the flat rock. Zero skips. It sinks, billed per second.', remove: ['flat-rock'], set: { 'rock.sunk': true }, outcome: 'snark' } };
   if (/\brock\b/.test(line) && s.flags['rock.sunk']) return { id: 'lake.throw-rock-sunk', then: { text: 'Your flat rock is on the bottom of the OneLake, still being billed.', outcome: 'snark' } };
   if (s.flags['pebble.skipped']) return { id: 'lake.throw-pebble-gone', then: { text: PEBBLE_GONE, outcome: 'snark' } };
   if (s.flags['pebble.bronzed']) return { id: 'swamp.throw-pebble-string', then: { text: "It's a string in the Bronze now. You don't throw strings; you concatenate them.", outcome: 'snark' } };
@@ -105,22 +105,22 @@ const MIME_LAKE = 'You mime a throw. The OneLake is not fooled; it has seen ever
 const MIME_DOCK = 'You mime a throw. The Ferryman is not fooled; he has seen every mime.';
 const MIME_MARSH = 'You mime a throw. The marsh is not fooled; it has ingested every mime.';
 
-/** The Lake House's deck, sat on: the rule (`use chair`) and the phrase (`sit`, ahead of egg.sit). The XP hill is the allusion layer (voice.ts ALLUSIONS). */
-const SIT_DECK = 'You sit on the deck. The lake refreshes. It is lovely. You are billed. It is the Windows XP hill with a deck chair on it.';
+/** The Lake House's deck, sat on: the rule (`use chair`) and the phrase (`sit`, ahead of egg.sit). */
+const SIT_DECK = 'You sit on the deck. The view is the Windows XP hill, with a lake. The lake refreshes. You are billed.';
 const sitDeck = (s: GameState): string => again(s, SIT_DECK, "You sit again. Refreshed again. Billed again. It's a subscription now.");
-const knock = (s: GameState): string => again(s, 'Nobody answers. A Spark session starts inside, out of politeness.', "You knock again. A second Spark session starts. Two now, out of politeness, and you're paying for both.");
+const knock = (s: GameState): string => again(s, 'Nobody answers. A Spark session starts inside, out of politeness.', "You knock again. A second Spark session starts. You're paying for both.");
 const buy = (s: GameState): string => again(s, 'It is not for sale. It is for storage. Very different, the realtor insists, without making eye contact.', "You make a second offer. 'It's for storage,' the realtor repeats, to the lake.");
 const fish = (s: GameState): string => again(s, 'You fish. You catch a Delta log. You put it back; it was not fully committed.', "Another Delta log. Also uncommitted. There's a whole checkpoint of them down there.");
 const goIn = (s: GameState): string => again(s, 'Inside: files on the left, tables on the right, and a shortcut to another house across the lake. You back out slowly.', 'Files left, tables right, shortcut across the lake. You back out again, slower.');
 /** The Bronze's columns, named: the rule (`label columns`) and the phrase (`name the columns`, since `name` is not a parser verb). */
 const nameColumns = (s: GameState): string => again(s, 'You name Column1. It becomes Column1 (2). The marsh applauds, unstructured.', 'Column1 (3). The marsh is out of parentheses.');
 const READ_COLUMNS = 'Column1 became CustomerName. Column2 became Customer_Name. Column3 is still Column3. Its name tag is floating nearby, unclaimed.';
-const readColumns = (s: GameState): string => again(s, READ_COLUMNS, "Two spellings of the customer, both here. Merged in Q3. Which Q3, nobody says.");
+const readColumns = (s: GameState): string => again(s, READ_COLUMNS, 'Two spellings, one customer. The merge is planned for Q3. Nobody says which Q3.');
 /** The signpost is in the Gold Marsh or in your pocket (never taken, carried, or dropped right here). */
 const signHere = (s: GameState, w: World): boolean =>
   !s.flags['taken.shortcut'] || s.inventory.includes('shortcut') || s.flags['droppedIn.shortcut'] === roomIndex('swamp.gold', w);
 /** The Silver's log, opened (`use log` / `open log`): it knows what you did, and when. */
-const useLog = (s: GameState): string => again(s, `You open a transaction log. It knows exactly what happened. It knows what you did on turn ${s.turns}, too, and filed it next to your Hotmail password.`, 'You open the next one. It logged you opening the last one.');
+const useLog = (s: GameState): string => again(s, 'You open a transaction log. It knows exactly what happened. It also knows your Hotmail password.', 'You open the next one. It logged you opening the last one.');
 
 export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
   room({
@@ -141,7 +141,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'lake.swim',
         when: { verb: 'drink', noun: ['lake', 'onelake', 'water'] },
-        then: { text: (s) => again(s, 'You dip a toe in the OneLake. It is exactly one lake deep.', 'You dip the other toe. Also one lake deep. It is consistent, which is more than your report.'), outcome: 'snark' },
+        then: { text: (s) => again(s, 'You dip a toe in the OneLake. It is exactly one lake deep.', 'The other toe. Also one lake deep. More consistent than your report.'), outcome: 'snark' },
       },
       {
         id: 'lake.look-lake',
@@ -149,7 +149,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
         then: {
           text: (s) => looks(s,
             'The OneLake. Every file in the realm is in there, somewhere, once. Reflected in it you see a workspace you forgot you owned.',
-            'Same one. Even the reflection is that one.',
+            'Same lake. Still only the one.',
             "One lake. You've stared at it longer than the guy who named it."),
           outcome: 'success',
         },
@@ -201,7 +201,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'shore.say-dax',
         when: { verb: 'say', noun: ['dax', 'daxx'] },
-        then: { text: (s) => again(s, "You say 'DAX' at the lake. Lakes don't do measures. The reflection flinches; it's a workspace.", 'The lake stays a lake. The reflection left.'), outcome: 'snark' },
+        then: { text: (s) => again(s, "You say 'DAX' at the lake. Lakes don't do measures.", 'Still a lake. Still no measures.'), outcome: 'snark' },
       },
     ],
   }),
@@ -222,7 +222,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       'The Ferryman needs credentials. The Mill has them. Go get them: west, north, north, and talk to the Miller.',
     nudge: {
       plainer: (s) =>
-        s.flags['ferry.online'] ? (s.flags['trial.key'] ? '' : "It's a boat. There's one thing people do with boats, and it isn't admire them.") :
+        s.flags['ferry.online'] ? (s.flags['trial.key'] ? '' : "Board the boat. It's the one thing people do with boats, besides admire them.") :
         s.inventory.includes('credentials') ? "Those credentials in your pocket are his. Hand them over; he's too polite to grab." :
         '',
     },
@@ -294,12 +294,12 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'lake.board-offline',
         when: { verb: 'board', flags: [{ flag: 'ferry.online', not: true }] },
-        then: { text: (s) => again(s, 'The Ferryman shakes his head. OFFLINE. You could swim, but the OneLake is one lake deep, and that is very deep.', "He shakes his head again, slower, so it'll take. OFFLINE. The lake got no shallower while you asked."), outcome: 'fail' },
+        then: { text: (s) => again(s, 'The Ferryman shakes his head. OFFLINE. You could swim, but the OneLake is one lake deep, and that is very deep.', "He shakes his head again, slower, so it'll take. Still OFFLINE."), outcome: 'fail' },
       },
       {
         id: 'lake.east-offline',
         when: { verb: 'go', dir: 'e', flags: [{ flag: 'ferry.online', not: true }] },
-        then: { text: (s) => again(s, 'The boat is tied up and the Ferryman is OFFLINE. Nothing crosses the OneLake without a gateway.', "No. The boat's tied to the dock, the dock to a lamp."), outcome: 'fail' },
+        then: { text: (s) => again(s, 'The boat is tied up and the Ferryman is OFFLINE. Nothing crosses the OneLake without a gateway.', 'Still no. Still OFFLINE.'), outcome: 'fail' },
       },
       {
         id: 'lake.give-lanyard',
@@ -322,8 +322,8 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
         id: 'dock.give-pebble',
         when: { verb: 'give', noun: PEBBLE, noun2: FERRY_NOUNS, has: ['pebble'] },
         then: { text: (s) => byLamp(s,
-          ["He weighs the pebble in his palm and mouths: 'ONE.' He hands it back; he is very strict about the number.", "'ONE,' he mouths again. He hands it back again. The number has not changed, and neither has he."],
-          ['"One," he says, and hands it back. He counts everything now; it is the lamp\'s doing.', '"One," he says again. Back it comes.']), outcome: 'snark' },
+          ["He weighs the pebble in his palm and mouths: 'ONE.' He hands it back; he is very strict about the number.", "'ONE,' he mouths again, and hands it back. The number has not changed."],
+          ['"One," he says, and hands it back. He counts out loud now that he can.', '"One," he says again. Back it comes.']), outcome: 'snark' },
       },
       {
         id: 'dock.give-license',
@@ -392,8 +392,8 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
         id: 'dock.drink-lake',
         when: { verb: 'drink', noun: LAKE_NOUNS },
         then: { text: (s) => byLamp(s,
-          ['You drink from the OneLake, dock side. One lake. The Ferryman watches, OFFLINE, and does not stop you; stopping people takes a gateway.', "Another sip. One lake. He doesn't stop you."],
-          ['You drink from the OneLake, dock side. The Ferryman winces. "ONLINE," he says, which is not a health warning, but it is the closest he has.', 'Another sip. He winces again. Same word.']), outcome: 'snark' },
+          ['You drink from the OneLake, dock side. The Ferryman does not stop you; stopping people takes a gateway.', "Another sip. One lake. He doesn't stop you."],
+          ['You drink from the OneLake, dock side. The Ferryman winces. "ONLINE," he says; it is the only warning he has.', 'Another sip. He winces again. Same word.']), outcome: 'snark' },
       },
       {
         id: 'dock.talk-lamp',
@@ -411,7 +411,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
         id: 'dock.use-timetable',
         when: { verb: 'use', noun: ['timetable', 'ferry timetable', 'schedule', 'ferry schedule'] },
         then: { text: (s) => byLamp(s,
-          ['You consult the timetable. Next departure: OFFLINE. The one after: OFFLINE. It is the most reliable schedule in the realm.', "OFFLINE on paper. Paper's slower than lamps."],
+          ['You consult the timetable. Next departure: OFFLINE. The one after: OFFLINE. It is the most reliable schedule in the realm.', 'OFFLINE, all day. Reliable, at least.'],
           ['You consult the timetable. Every departure still says OFFLINE. The lamp came on four minutes ago; paperwork takes years.', 'OFFLINE on paper, still. Paper is losing.']), outcome: 'fail' },
       },
       // ONLINE, the boat is a boat: `board` (or `enter boat`) is the verb; use and open point at it.
@@ -454,7 +454,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       ? 'Board the boat back. You have the key. The rest of the quest is on the mainland, where you left it.'
       : 'Get the standard key. The personal one works for one person with an open laptop. Choose like a grown-up.'),
     nudge: {
-      plainer: (s) => (s.flags['trial.key'] ? '' : "The Ferryman said it when he came back to life: Standard mode. He wasn't reviewing a hotel."),
+      plainer: (s) => (s.flags['trial.key'] ? '' : "Take the STANDARD key. The Ferryman said 'Standard mode,' and he wasn't reviewing a hotel."),
     },
     rules: [
       {
@@ -502,7 +502,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'island.standard-plinth',
         when: { verb: 'use', noun: KEY_NOUNS, noun2: ['plinth', 'stone plinth', 'stand', 'hollow'], has: ['standard key'] },
-        then: { text: (s) => again(s, 'It fits. It fits everyone\'s hand, which is the point, and also why it is cold.', 'It fits again. Pocket it; the Ledge wants it more than the hollow does.'), outcome: 'snark' },
+        then: { text: (s) => again(s, 'It fits. It fits everyone\'s hand, which is the point, and also why it is cold.', 'It fits again. Pocket it; the quest needs it more than the hollow does.'), outcome: 'snark' },
       },
       {
         id: 'island.use-key-plaque',
@@ -514,7 +514,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'use', noun: PLINTH },
         then: {
           text: (s) => again(s,
-            `You put your hand in the STANDARD hollow. It fits. Everyone fits. That is what shared means. The PERSONAL hollow has no ${MALAPROPS.capacitude} for that.`,
+            `You put your hand in the STANDARD hollow. Everyone fits; that is what shared means. The PERSONAL hollow has no ${MALAPROPS.capacitude} for that.`,
             "It fits again. Shared doesn't stop fitting."),
           outcome: 'fail',
         },
@@ -535,7 +535,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'talk', noun: FERRY_NOUNS },
         then: {
           text: (s, _w, cmd) => (cmd?.noun2 && /key|standard|personal|choose|plinth|plaque/.test(cmd.noun2)
-            ? again(s, "He hums louder. He said it on the dock: standard mode. He's not saying it on an island.", "Louder still. Standard mode was said, once, on a dock. That's the policy.")
+            ? again(s, "He hums louder. He said it on the dock: standard mode. He's not saying it on an island.", 'Louder still. He said it once, on the dock.')
             : again(s, "He hums from the boat. He's not getting out; islands are for choosing, not for ferrymen.", "Same hum. One tune: the boarding call.")),
           outcome: 'snark',
         },
@@ -543,7 +543,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'island.say-standard',
         when: { verb: 'say', noun: ['standard', 'standard mode', 'standard key'] },
-        then: { text: (s) => again(s, "You say 'standard.' Good choice. Saying it isn't taking it, and the plinth has heard a lot of good choices.", 'A good choice, twice. Said, not taken.'), outcome: 'snark' },
+        then: { text: (s) => again(s, "You say 'standard.' Good choice. Now take it; saying isn't taking.", 'A good choice, twice. Said, not taken.'), outcome: 'snark' },
       },
       {
         id: 'island.say-personal',
@@ -596,7 +596,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
     id: 'swamp.bronze', name: 'Bronze Marsh', region: 'swamp',
     enterQuip: () => 'Everything here is a string. Including, briefly, you.',
     describe: () =>
-      "The Bronze Marsh. Raw data pools in every footprint. Nothing has a type. Nothing has a name. A CSV floats by with 'Column1, Column2, Column3' on its face. Your first semantic model was one table. It still is. It is somewhere under here. The shore is north; the marsh silvers to the south.",
+      "The Bronze Marsh. Raw data pools in every footprint. Nothing has a type. Nothing has a name. A CSV floats by with 'Column1, Column2, Column3' on its face. The shore is north; the marsh silvers to the south.",
     exits: { n: 'lake.shore', s: 'swamp.silver' },
     items: ['water', 'csv', 'stress ball'],
     npcs: [],
@@ -630,7 +630,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'bronze.open-csv',
         when: { verb: 'open', noun: CSV },
-        then: { text: (s) => again(s, 'You open the CSV. Nine million rows, all headers. It opens in Excel by default; everything does.', 'All headers, again. Excel asks whether to save your changes. You made none. It asks anyway.'), outcome: 'snark' },
+        then: { text: (s) => again(s, 'You open the CSV. Nine million rows, all headers. It opens in Excel by default; everything does.', 'All headers, again. Excel asks whether to save your changes. You made none.'), outcome: 'snark' },
       },
       {
         id: 'bronze.talk-csv',
@@ -655,7 +655,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'bronze.say-dax',
         when: { verb: 'say', noun: ['dax', 'daxx'] },
-        then: { text: (s) => again(s, `You say 'DAX' in the Bronze. Nothing here has a type, so nothing can be ${MALAPROPS.daxxed}. The strings don't look up.`, 'Strings. Untyped. Not looking up.'), outcome: 'snark' },
+        then: { text: (s) => again(s, "You say 'DAX' in the Bronze. Nothing here has a type. The strings don't even look up.", 'Strings. Untyped. Not looking up.'), outcome: 'snark' },
       },
     ],
   }),
@@ -676,7 +676,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'swamp.drink-silver',
         when: { verb: 'drink' },
-        then: { text: (s) => again(s, `You drink Silver water. It has been deduplicated. You feel slightly less redundant. You feel ${MALAPROPS.refreshered}.`, 'Another sip. Nothing removed; you were already unique, in the bad way.'), outcome: 'snark' },
+        then: { text: (s) => again(s, 'You drink Silver water. It has been deduplicated. You feel slightly less redundant.', 'Another sip. Nothing removed; you were already unique, in the bad way.'), outcome: 'snark' },
       },
       {
         id: 'swamp.read-columns',
@@ -702,7 +702,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'silver.read-log',
         when: { verb: 'read', noun: LOG },
-        then: { text: (s) => again(s, 'You read one. {"add": "you"}. Then {"remove": "you"}. It has done this with other Report Builders, and it will again.', "Same two entries. Not a story; a ledger."), outcome: 'success' },
+        then: { text: (s) => again(s, 'You read one. {"add": "you"}. Then {"remove": "you"}.', "Same two entries. Not a story; a ledger."), outcome: 'success' },
       },
       {
         id: 'silver.talk-log',
@@ -712,7 +712,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'silver.tag-log',
         when: { verb: 'use', noun: ['name tag', 'tag', 'nametag', 'hello tag'], noun2: LOG, has: ['name tag'] },
-        then: { text: (s) => again(s, 'You stick Column3 on the log. It logs it: add, Column3. It never takes it off; it just never counts it.', 'Logged again. add, Column3. Not counted.'), outcome: 'snark' },
+        then: { text: (s) => again(s, 'You stick Column3 on the log. It logs it: add, Column3.', 'Logged again: add, Column3.'), outcome: 'snark' },
       },
       {
         id: 'silver.tag-water',
@@ -745,7 +745,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
     id: 'swamp.gold', name: 'Gold Marsh', region: 'swamp',
     enterQuip: () => 'Gold Marsh. Clean, modeled, and suspiciously quiet.',
     describe: (s) =>
-      `The Gold Marsh. Everything here has a business name and a data type. It is beautiful. Nothing here has been ${MALAPROPS.daxxed} yet. Give it time.` +
+      'The Gold Marsh. Everything here has a business name and a data type. It is beautiful.' +
       (s.flags['taken.shortcut'] ? ' Where the signpost stood, the marsh is somehow unchanged.' : ' A signpost reading SHORTCUT stands at the water\'s edge, pointing everywhere at once.') +
       ' Silver is north; east, a path climbs to a monastery.',
     exits: { n: 'swamp.silver', e: 'monastery.gate' },
@@ -757,7 +757,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       : s.inventory.includes('shortcut') ? 'Use the shortcut to get back to the shore, no data moved. Or go east, if the monks still owe you a hoodie.'
         : 'Go east to the Monastery, or north the long way. You dropped your pointer somewhere, which is very on brand.'),
     nudge: {
-      plainer: (s) => (!s.flags['taken.shortcut'] ? "That signpost is a OneLake shortcut. Nobody has ever moved a byte by picking one up." : ''),
+      plainer: (s) => (!s.flags['taken.shortcut'] ? 'Pick up the signpost. It is a OneLake shortcut; picking one up has never moved a byte.' : ''),
     },
     rules: [
       {
@@ -769,7 +769,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
         // Room rules run before the global use-shortcut teleport, so this one stays put.
         id: 'swamp.shortcut-marsh',
         when: { verb: 'use', noun: SIGNPOST, noun2: MARSH, has: ['shortcut'] },
-        then: { text: (s) => again(s, 'The shortcut points at itself. The marsh briefly contains the marsh. No data was moved. Nothing was learned.', 'It points at itself again. The marsh contains the marsh, which contains the marsh. No data moved, three times.'), outcome: 'snark' },
+        then: { text: (s) => again(s, 'The shortcut points at itself. The marsh briefly contains the marsh. No data was moved. Nothing was learned.', 'It points at itself again. Still no data moved.'), outcome: 'snark' },
       },
       ...adeInSwamp('gold'),
       {
@@ -784,14 +784,14 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
         then: {
           text: (s, w) => (!signHere(s, w)
             ? 'Nothing to read where it stood. It is wherever you put it down, pointing at here.'
-            : again(s, "SHORTCUT, it says, pointing everywhere at once. Below: 'no data was moved.' Below that, smaller: 'no data was moved.'", "SHORTCUT. 'no data was moved.' 'no data was moved.' Read twice; still nothing moved, including you.")),
+            : again(s, "SHORTCUT, it says, pointing everywhere at once. Below: 'no data was moved.' Below that, smaller: 'no data was moved.'", 'SHORTCUT. No data was moved. Neither were you.')),
           outcome: 'success',
         },
       },
       {
         id: 'gold.talk-signpost',
         when: { verb: 'talk', noun: SIGNPOST },
-        then: { text: (s, w) => (!signHere(s, w) ? 'You talk to where the signpost was. It points somewhere else, from wherever it is; that is the whole idea.' : again(s, `You talk to the ${s.inventory.includes('shortcut') ? 'shortcut in your pocket' : 'signpost'}. It points somewhere else. It's not rude; it's a pointer.`, "Pointing away. Pointers don't do eye contact.")), outcome: 'snark' },
+        then: { text: (s, w) => (!signHere(s, w) ? 'You talk to where the signpost was. It points somewhere else now; that is the whole idea.' : again(s, `You talk to the ${s.inventory.includes('shortcut') ? 'shortcut in your pocket' : 'signpost'}. It points somewhere else. It's not rude; it's a pointer.`, "Pointing away. Pointers don't do eye contact.")), outcome: 'snark' },
       },
       {
         id: 'gold.open-signpost',
@@ -827,7 +827,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'gold.look-path',
         when: { verb: 'look', noun: ['path', 'monastery', 'east', 'the path', 'trail', 'the monastery'] },
-        then: { text: (s) => again(s, "East, a path climbs to a monastery. You can hear a session starting from here. You'll hear it for a while.", 'You can hear the percent from here.'), outcome: 'success' },
+        then: { text: (s) => again(s, "East, a path climbs to a monastery. You can hear a session starting from here. You'll hear it for a while.", 'Still starting. You can hear it from here.'), outcome: 'success' },
       },
       {
         id: 'gold.say-dax',
@@ -851,7 +851,7 @@ export const LAKE_ROOMS: Record<string, Room> = Object.fromEntries([
       { id: 'lake.house.buy', when: { verb: 'use', noun: ['buy', 'buy house', 'house', 'purchase'] }, then: { text: buy, outcome: 'fail' } },
       { id: 'lake.house.fish', when: { verb: 'use', noun: ['fish', 'fishing', 'rod'] }, then: { text: fish, outcome: 'fail' } },
       // The voice sweep (Task F5): the mailbox, the sign, the house itself, each answering the obvious verbs, no points anywhere.
-      { id: 'lake.house.mailbox', when: { verb: 'open', noun: ['mailbox', 'mail box', 'post box'] }, then: { text: (s) => again(s, 'One new CSV. It has been in there since bronze. You leave it; the mailbox is also a Lakehouse, legally.', 'One new. You leave it again. Legally, a Lakehouse.'), outcome: 'fail' } },
+      { id: 'lake.house.mailbox', when: { verb: 'open', noun: ['mailbox', 'mail box', 'post box'] }, then: { text: (s) => again(s, 'One new CSV. You leave it; the mailbox is also a Lakehouse, legally.', 'One new. You leave it again. Legally, a Lakehouse.'), outcome: 'fail' } },
       { id: 'house.use-mailbox', when: { verb: 'use', noun: ['mailbox', 'mail box', 'post box', 'flag'] }, then: { text: (s) => again(s, 'You put the flag up. Outgoing: nothing. The mailbox lowers it again; it knows you.', 'Up. Down. It has a policy about you.'), outcome: 'fail' } },
       { id: 'house.get-mail', when: { verb: 'get', noun: ['mail', 'csv', 'letter', 'post', 'the mail', 'new mail', 'the csv'] }, then: { text: (s) => again(s, "You reach in. It's the same CSV. You know it. It knows you. You leave it.", 'Same CSV. Same you. Still leaving it.'), outcome: 'fail' } },
       { id: 'house.talk-mailbox', when: { verb: 'talk', noun: ['mailbox', 'mail box', 'post box'] }, then: { text: (s) => again(s, "'1 new,' says the mailbox. It is the only thing it has ever said, and it has never been wrong.", "'1 new.' Not a conversation. A status."), outcome: 'snark' } },
@@ -907,8 +907,8 @@ export const LAKE_PHRASES: PhraseRule[] = [
       : 'You throw the pebble at the Ferryman. It gets a foot from him, remembers he has no gateway, and comes back to your hand.'), outcome: 'snark' } }
     : { id: 'dock.skip-pebble', then: { ...SKIP, text: `Skip. Skip. Sink. Three hops off the dock, then a Delta file. The Ferryman watches, ${online(s) ? 'ONLINE, and nods once, professionally' : "OFFLINE, like a man watching someone else's refresh succeed"}.` } })),
   { id: 'lake.sit-boat', room: 'lake.dock', test: SIT_BOAT, text: (s) => byLamp(s,
-    ['You sit in the boat. It does not move. Neither does the Ferryman. You are all OFFLINE together, which is almost company.', 'You sit again. Nobody is shamed into a crossing, least of all a lamp.'],
-    ['You sit in the boat. The Ferryman clears his throat. Sitting is not boarding, and he has waited four years for someone to know the difference.', "He waits. He has one word this year, and it isn't 'board.'"]) },
+    ['You sit in the boat. It does not move. Neither does the Ferryman. You are all OFFLINE together, which is almost company.', 'You sit again. The lamp is not shamed into anything.'],
+    ['You sit in the boat. The Ferryman clears his throat. Sitting is not boarding, and he has waited four years for someone to know the difference.', "He waits. Sitting still isn't boarding."]) },
   { id: 'dock.row-boat', room: 'lake.dock', test: /^((row|paddle)( the)? (boat|ferry|gateway)|row|paddle)$/, text: (s) => byLamp(s,
     ["You row. The boat's tied to the dock, the dock's tied to the lamp, and the lamp says no.", "You row again. The lamp's still the anchor."],
     ["You row. The Ferryman takes the oars from you, gently, the way you'd take a mouse from a director.", "He takes the oars again, faster."]) },
@@ -916,7 +916,7 @@ export const LAKE_PHRASES: PhraseRule[] = [
     ['The boat comes untied. It stays. A rope was never what was holding it.', 'Untied, and here. It was never the rope.'],
     ["The boat comes untied. The Ferryman ties it again, and waits. He'd rather you boarded.", 'Untied, retied. He can do this all day; he has.']) },
   { id: 'dock.hum', room: 'lake.dock', test: /^(hum|whistle)( (the )?(boarding call|tune|along))?$/, text: (s) => byLamp(s,
-    ["You hum. He mouths along. He doesn't know the tune; he mouths everything.", 'He mouths along again. No tune yet.'],
+    ["You hum. He mouths along. He doesn't know the tune.", 'He mouths along again. No tune yet.'],
     ["You hum. The Ferryman hums back. Same tune; it's the only one he has, and it's the boarding call.", "A duet now, and it's the boarding call."]) },
   { id: 'dock.weep', room: 'lake.dock', test: /^(cry|weep|sob)( with (the )?ferryman)?$/, text: (s) => byLamp(s,
     ["You weep. He weeps. The lamp stays red; it doesn't do sympathy, it does status.", "More weeping. The lamp's unmoved; it's a lamp."],
@@ -929,8 +929,8 @@ export const LAKE_PHRASES: PhraseRule[] = [
   throwPebble('silver.throw-pebble', 'swamp.silver', MIME_MARSH, (s) => ({ id: 'silver.pebble-back', then: { text: again(s, 'You throw the pebble into the Silver. It comes back. There was already one, and the marsh does not keep duplicates.', "Back again. One pebble here, and it's yours; take the hint."), outcome: 'snark' } })),
   throwPebble('gold.throw-pebble', 'swamp.gold', MIME_MARSH, () => ({ id: 'gold.pebble-named', then: { text: 'You throw the pebble into the Gold. It lands, gets a business name, and is now Pebble (Active). You leave it; it has a career.', remove: ['pebble'], set: { 'pebble.golded': true }, outcome: 'snark' } })),
   { id: 'bronze.smell', room: 'swamp.bronze', test: SMELL, text: (s) => again(s, 'You sniff. Raw data. It smells like a CSV that has been in a hot car.', 'Same hot car. Same CSV.') },
-  { id: 'silver.smell', room: 'swamp.silver', test: SMELL, text: (s) => again(s, 'You sniff. Cleaner. Judgmental, like a code review.', 'Judgmental, and it has read your Column3.') },
-  { id: 'gold.smell', room: 'swamp.gold', test: SMELL, text: (s) => again(s, "You sniff. It smells like a well-named measure. You didn't know they had a smell. They do; it's expensive.", "Expensive. Somebody's paying for the naming.") },
+  { id: 'silver.smell', room: 'swamp.silver', test: SMELL, text: (s) => again(s, 'You sniff. Cleaner. Judgmental, like a code review.', 'Still judgmental. It has notes.') },
+  { id: 'gold.smell', room: 'swamp.gold', test: SMELL, text: (s) => again(s, "You sniff. It smells like a well-named measure. You didn't know they had a smell.", "They do. It's expensive.") },
   { id: 'bronze.swim', room: 'swamp.bronze', test: SWIM, text: (s) => again(s, "You wade into the Bronze. Everything you're wearing is a string now, including the license.", 'Strings, again. Wetter ones.') },
   { id: 'silver.swim', room: 'swamp.silver', test: SWIM, text: (s) => again(s, "You wade into the Silver. You come out deduplicated. There was only ever one of you, but now it's enforced.", 'One of you. The marsh checked twice.') },
   { id: 'gold.swim', room: 'swamp.gold', test: SWIM, text: (s) => again(s, 'You wade into the Gold. You come out with a business name and a data type. Neither is flattering.', "Typed, unflattering. The name is Peasant (Active); the type is your problem.") },

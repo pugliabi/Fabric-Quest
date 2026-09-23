@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newGame, step } from '../src/engine/step';
 import { WORLD } from '../src/world';
-import { MALAPROPS } from '../src/world/voice';
 import { CLEAR_TEXT, FEEDBACK_TEXT } from '../src/world/copilot';
 import type { GameState } from '../src/engine/types';
 
@@ -16,17 +15,17 @@ describe('Copilot sweep', () => {
     expect(one('copilot.pane', 'thanks')).toBe("Copilot: You're welcome! I've logged your gratitude as feedback. It will be reviewed.");
     expect(one('copilot.pane', 'who are you')).toBe("Copilot: I'm Copilot! I can help with data, questions, and, if you ask nicely, a sourdough starter.");
     expect(one('copilot.pane', 'are you an ai')).toBe("Copilot: I'm a large language model, but I'm also here for you. Mostly the first thing.");
-    expect(one('copilot.pane', 'write a measure')).toBe(`Copilot: Here's a measure! It returns BLANK(). You have been ${MALAPROPS.daxxed} by a sparkle.`);
+    expect(one('copilot.pane', 'write a measure')).toBe("Copilot: Here's a measure! It returns BLANK().");
     expect(one('copilot.pane', 'talk to prompt box')).toBe('You talk to the prompt box. It listens beautifully. It is the best listener in the realm and it has never once heard you.');
     expect(one('copilot.pane', 'look')).toMatch(/A paperclip's silhouette in the corner of the sparkle\. It looks like it's writing a measure\./);
-    expect(one('copilot.pane', 'look at sparkle')).toMatch(new RegExp(`It has ${MALAPROPS.capacitude} to spare and nothing to spend it on\\.$`));
+    expect(one('copilot.pane', 'look at sparkle')).toMatch(/It does not promise to answer the thing you asked\. Above it, your last answer is empty\. It is waiting for you\.$/);
     expect(one('copilot.pane', 'click the sparkle')).toBe('You click the sparkle. It sparkles harder. That is the entire feature, and it shipped on time.');
   });
   it('the gallery', () => {
     expect(one('copilot.gallery', 'push the model')).toBe('You push the biggest model. It does not move. It has the most rows; it has the most everything except a badge.');
     expect(one('copilot.gallery', 'use plinth')).toBe('You lean on a plinth. The model on it recalculates a measure out of nerves.');
-    expect(one('copilot.gallery', 'use badge')).toBe(`You polish the badge. The certified model feels ${MALAPROPS.refreshered}. It was already certified; now it is shiny.`);
-    expect(one('copilot.gallery', 'look at final2')).toMatch(/Last refreshed through a personal-mode gateway on a laptop that is closed\.$/);
+    expect(one('copilot.gallery', 'use badge')).toBe('You polish the badge. It was already certified; now it is shiny.');
+    expect(one('copilot.gallery', 'look at final2')).toMatch(/Copilot likes it because it has the most rows\.$/);
   });
   it('the gallery: second and third looks at each plinth, then the third again', () => {
     for (const [noun, second, third] of [

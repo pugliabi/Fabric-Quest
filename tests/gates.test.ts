@@ -17,14 +17,14 @@ const first = (r: ReturnType<typeof step>): string => r.output.find((l) => l !==
 describe('every gate object answers the obvious verbs with the puzzle (spec1 §3.2)', () => {
   const cases: [string, string[], RegExp, Partial<GameState>][] = [
     ['fortress.bridge', ['drawbridge', 'gate', 'splash screen'], /The bridge answers to the guard\. The guard answers to SKUs\. Say one to him\./, {}],
-    ['fortress.throne', ['throne', 'window', 'duke'], /The Duke throws people from that window for one sin\. Say it\./, {}],
+    ['fortress.throne', ['throne', 'window', 'duke'], /The Duke throws people from that window for one sin\. Say it, or hand him a table he can despise\./, {}],
     ['fortress.yard', ['card', 'big refresh'], /The Card wants staring at\. The refresh is stuck on the pie\. Thirty-one slices; make it a bar chart\./, {}],
     ['monastery.gate', ['gate', 'door', 'bell'], /Shut\. The session is starting\. Open the gate, or wait for it; either one gets you in\./, {}],
-    ['monastery.gate', ['session', 'progress bar'], /It's starting\. Open the gate, or wait\. That's the puzzle\. Really\./, {}],
+    ['monastery.gate', ['session', 'progress bar'], /^Open the gate, or wait; the session is starting\. That's the puzzle\. Really\./, {}],
     ['monastery.spark', ['notebook', 'cell', 'session'], /The cell wants Spark, not pandas\. The Library, west of the cloister, keeps a scroll about it\./, {}],
     ['monastery.library', ['scroll', 'librarian', 'case'], /Library card only\. Any license will do\. Well\. Any license she accepts\./, {}],
     ['lake.dock', ['boat', 'ferryman', 'lamp'], /The Ferryman's OFFLINE\. Credentials expired\. The Mill has the ones that haven't\./, {}],
-    ['peaks.pass', ['sign', 'delay', 'pass'], /Interactive operations may be delayed\. Boots help\. The Studio's Big Refresh drops a pair\./, {}],
+    ['peaks.pass', ['sign', 'delay', 'pass'], /Boots beat the delay\. The Studio's Big Refresh drops a pair\./, {}],
     ['peaks.ledge', ['door', 'sigils'], /Three sigils\. Look like an Engineer, smell like a Warehouse, hold the Key\. It counts them for you: 0 of 3\./, {}],
     ['peaks.shrine', ['dragon', 'throttlor'], /He asked you a question\. Answer it\. `say <answer>`\./, {}],
   ];
@@ -77,7 +77,7 @@ describe('every gate object answers the obvious verbs with the puzzle (spec1 §3
     expect(r.state.flags['shrine.open']).toBe(true);
   });
   it('n at the Gate names the guard', () => {
-    expect(one('fortress.bridge', 'n').output[0]).toBe('The drawbridge is up. It is updating (1 of 3). The moat below is deep and full of GROUP BY. The guard is right there. He wants a SKU.');
+    expect(one('fortress.bridge', 'n').output[0]).toBe('The drawbridge is up, and the guard wants a SKU. The moat below is deep and full of GROUP BY.');
   });
   it('the Studio keeps its refresh errors for use refresh', () => {
     expect(one('fortress.yard', 'use refresh').output[0]).toMatch(/^Refresh (failed|succeeded)/);
@@ -97,7 +97,7 @@ describe('the displaced open/use lines live on in the third-try rotation (add-mo
   it.each([
     ['fortress.bridge', 'open drawbridge', 'desktop', {}, /STATE\. YOUR\. SKU\./],
     ['fortress.bridge', 'use splash screen', 'desktop', {}, /This is the update\./],
-    ['fortress.throne', 'open window', 'duke', {}, /The moat winks up at you/],
+    ['fortress.throne', 'open window', 'duke', {}, /the moat winks up at you/],
     ['fortress.throne', 'use throne', 'duke', {}, /autocompletes your hand to SUMX\(/],
     ['monastery.spark', 'use notebook', 'notebook', {}, /Run All/],
     ['monastery.library', 'open case', 'library', {}, /LIBRARY CARD REQUIRED/],
@@ -123,7 +123,7 @@ describe('fix round 1: the pools are verb- and noun-aware', () => {
   it('kick duke never says you opened the window; a command no pool line fits repeats the shape and the hint', () => {
     for (const l of tries('fortress.throne', 'kick duke', 6)) expect(l).not.toMatch(/You open the window|You lean out|You measure the window|reach for the throne/);
     const outs = tries('fortress.throne', 'kick duke', 4);
-    expect(outs[2]).toBe('The Duke throws people from that window for one sin. Say it. Two words. They go in a table.');
+    expect(outs[2]).toBe('The Duke throws people from that window for one sin. Say it, or hand him a table he can despise. Two words. They go in a table.');
     expect(outs[3]).toBe(outs[2]);
     for (const l of tries('lake.dock', 'kick ferryman', 6)) expect(l).not.toMatch(/untie the boat|tap the lamp/);
     for (const l of tries('lake.dock', 'use lamp', 6)) expect(l).not.toMatch(/push the Ferryman|untie the boat/);
@@ -274,7 +274,7 @@ describe('the audit: NPC-gated milestones answer the obvious verbs too', () => {
   });
   it('the monk and Brother Pandas answer with their rooms\' puzzles', () => {
     for (const v of VERBS) {
-      if (!roomVerb('monastery.gate', v)) expect(one('monastery.gate', `${v} monk`).output[0], v).toMatch(/It's starting\. Open the gate, or wait\./);
+      if (!roomVerb('monastery.gate', v)) expect(one('monastery.gate', `${v} monk`).output[0], v).toMatch(/^Open the gate, or wait; the session is starting\./);
       expect(one('monastery.spark', `${v} pandas`).output[0], v).toMatch(/The cell wants Spark, not pandas/);
     }
   });

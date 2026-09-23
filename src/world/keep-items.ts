@@ -46,7 +46,7 @@ export const KEEP_ITEMS: Item[] = [
   {
     id: 'battlements', name: 'battlements', aliases: ['battlements', 'walls', 'wall', 'ramparts', 'parapet', 'crenellations'],
     takeable: false,
-    blurb: 'Battlements, crenellated like a column chart with the missing months left out. It is always December on them, and now it is always December on you.',
+    blurb: 'Battlements, crenellated like a column chart with the missing months left out. It is always December on them.',
     untakeableText: 'You cannot take the battlements. They are the only thing holding the guard up.',
     describe: (s) => looks(s, 'Battlements, crenellated like a column chart with the missing months left out. The guard leans on the tallest bar. It is December. It is always December.',
       'December, again. The guard leans on it like it owes him a SKU.'),
@@ -84,7 +84,7 @@ export const KEEP_ITEMS: Item[] = [
     takeable: false,
     blurb: 'Portraits of SOURCE and NAVIGATION, and a blank frame labelled CUSTOM1. The hall behind you is erroring.',
     untakeableText: 'The portraits are the query. Take one down and the whole hall errors.',
-    describe: (s) => looks(s, "Portraits of the founding steps. SOURCE, stern, in a server-room collar. NAVIGATION, pointing at a table just out of frame. And a blank frame labelled CUSTOM1. In the corner of the Source portrait, a paperclip with eyes. 'It looks like you're writing a measure.'",
+    describe: (s) => looks(s, "Portraits of the founding steps. SOURCE, in a server-room collar; NAVIGATION, pointing at a table out of frame; a blank frame labelled CUSTOM1. In the corner of SOURCE, a paperclip with eyes. 'It looks like you're writing a measure.'",
       "You look again. The paperclip has moved to the Navigation portrait. 'It looks like you're lost.'",
       'The paperclip is in the CUSTOM1 frame now. Nobody knows what it does there either.'),
   },
@@ -117,8 +117,8 @@ export const KEEP_ITEMS: Item[] = [
   {
     id: 'policy', name: 'incremental refresh policy', aliases: ['policy', 'incremental refresh', 'refresh policy', 'incremental', 'incremental refresh policy'],
     takeable: true,
-    blurb: 'An incremental refresh policy. Laminated. Someone laminated a policy, and that someone was you.',
-    again: 'You already have the policy. It was on a lectern; now it is in your pocket. Sir Cardinality watched you take it and said nothing, one to many.',
+    blurb: 'An incremental refresh policy, laminated. Somebody in 2019 really believed in it.',
+    again: 'You already have the policy. Sir Cardinality watched you take it and said nothing, pointedly.',
     describe: "An incremental refresh policy on a laminated card: 'Refresh rows from the last 10 days. Archive the rest.' Small steps. Bursting steps, one might say.",
   },
   {
@@ -146,7 +146,7 @@ export const KEEP_ITEMS: Item[] = [
   {
     id: 'date-table', name: 'date table', aliases: ['date table', 'calendar', 'dates', 'date', 'calendar table', 'the date table'],
     takeable: true,
-    blurb: 'A date table, 1900 to 2099, unmarked. Time intelligence is sulking, and it is sulking at you. The Duke will want a word.',
+    blurb: 'A date table, 1900 to 2099, unmarked. The Duke will want a word.',
     again: "You have the date table. It's the only table in the realm that knows what day it is.",
     describe: (s) => (s.flags['model.date']
       ? 'The date table, marked as a date table. Time intelligence is working. It is quietly smug about it.'
@@ -206,8 +206,8 @@ export const KEEP_ITEMS: Item[] = [
     takeable: false,
     blurb: 'The Big Refresh, a progress bar at 97% since 2019. DO NOT TOUCH — JEFF, and you did considerably more than touch it.', untakeableText: 'It is 97% of the way through 2019. Leave it.',
     describe: (s) => (s.flags['refresh.done']
-      ? 'The Big Refresh: complete. It took ten days at a time and finished in a minute. Nobody learns from this.'
-      : 'A progress bar, 97%, since 2019. It is refreshing everything, every time, all at once. It needs smaller steps. A sticky note on it reads DO NOT TOUCH — JEFF.'),
+      ? 'The Big Refresh: complete. With the pie gone, it finished in a minute. Nobody learns from this.'
+      : 'A progress bar, 97%, since 2019. It is stuck on one visual, and the visual is round. A sticky note on it reads DO NOT TOUCH — JEFF.'),
   },
   {
     id: 'pie', name: 'pie chart', aliases: ['pie', 'pie chart', 'chart', 'slices', 'other', 'bar chart'], // not 'visual': it would swallow 'card visual'
@@ -216,7 +216,7 @@ export const KEEP_ITEMS: Item[] = [
     untakeableText: 'The pie is 31 slices. You cannot take it in one trip, and nobody wants a slice.',
     describe: (s) => (s.flags['refresh.done']
       ? 'A clustered bar chart. It used to be a pie. Nobody misses it except Jeff.'
-      : looks(s, "A pie with 31 slices. Twelve of them are 'Other'. You could fix it: use it, and it could be a bar chart. You could also leave it and let it be someone else's problem in Q3.",
+      : looks(s, "A pie with 31 slices. Twelve of them are 'Other'. You could fix it and make it a bar chart. You could also leave it and let it be someone else's problem in Q3.",
         "You count the slices again. Thirty-two. The new one is labelled 'You', and it is filed under 'Other'.")),
   },
   {
@@ -238,7 +238,7 @@ export const KEEP_ITEMS: Item[] = [
   {
     id: 'canvas', name: 'canvas', aliases: ['canvas', 'report', 'page', 'report page', 'wall'],
     takeable: false,
-    blurb: 'A report canvas, 1280 by 720, with a lot of breathing room. It does not fit, and neither did the design review.',
+    blurb: 'A report canvas, 1280 by 720, mostly breathing room. It does not fit in your pocket, and you are trying anyway.',
     untakeableText: 'The canvas is 1280 by 720. You are not.',
     describe: 'A report canvas the size of a wall. The pie, the Card, the slicers, and a lot of white space someone called "breathing room" in a design review.',
   },

@@ -9,20 +9,20 @@ describe('lake + swamp sweep', () => {
   it('shore, dock, island, house', () => {
     const r = step({ ...newGame(WORLD, 3), room: 'lake.shore', inventory: ['license', 'pebble'] }, 'throw pebble', WORLD);
     expect(r.output[0]).toMatch(/^Skip\. Skip\. Sink\./); expect(r.state.inventory).not.toContain('pebble');
-    expect(one('lake.dock', 'ask ferryman about the lake')).toBe("He mouths: 'ONE.' Then, more slowly: 'LAKE.' He holds up one finger. Then, after thought, no more fingers.");
+    expect(one('lake.dock', 'ask ferryman about the lake')).toBe("He mouths: 'ONE.' Then, slower: 'LAKE.' He holds up one finger, to be clear about the number.");
     expect(one('lake.dock', 'sit in boat')).toBe('You sit in the boat. It does not move. Neither does the Ferryman. You are all OFFLINE together, which is almost company.');
     expect(one('lake.dock', 'look at timetable')).toMatch(/Every departure this year has been crossed out and replaced with OFFLINE\.$/);
-    expect(one('lake.island', 'use plinth')).toBe("You put your hand in the STANDARD hollow. It fits. Everyone fits. That is what shared means. The PERSONAL hollow has no capacity for that.");
-    expect(one('lake.house', 'open mailbox')).toBe('One new CSV. It has been in there since bronze. You leave it; the mailbox is also a Lakehouse, legally.');
-    expect(one('lake.house', 'use chair')).toMatch(/It is the Windows XP hill with a deck chair on it\.$/);
+    expect(one('lake.island', 'use plinth')).toBe("You put your hand in the STANDARD hollow. Everyone fits; that is what shared means. The PERSONAL hollow has no capacity for that.");
+    expect(one('lake.house', 'open mailbox')).toBe('One new CSV. You leave it; the mailbox is also a Lakehouse, legally.');
+    expect(one('lake.house', 'use chair')).toBe('You sit on the deck. The view is the Windows XP hill, with a lake. The lake refreshes. You are billed.');
   });
   it('bronze, silver, gold', () => {
     expect(one('swamp.bronze', 'name the columns')).toBe('You name Column1. It becomes Column1 (2). The marsh applauds, unstructured.');
-    expect(one('swamp.bronze', 'look')).toMatch(/Your first semantic model was one table\. It still is\. It is somewhere under here\./);
-    expect(one('swamp.silver', 'use log')).toMatch(/^You open a transaction log\. It knows exactly what happened\. It knows what you did on turn \d+, too, and filed it next to your Hotmail password\.$/);
-    expect(one('swamp.silver', 'drink water')).toMatch(new RegExp(`You feel ${MALAPROPS.refreshered}\\.$`));
+    expect(one('swamp.bronze', 'look')).toMatch(/A CSV floats by with 'Column1, Column2, Column3' on its face\. The shore is north;/);
+    expect(one('swamp.silver', 'use log')).toBe('You open a transaction log. It knows exactly what happened. It also knows your Hotmail password.');
+    expect(one('swamp.silver', 'drink water')).toBe('You drink Silver water. It has been deduplicated. You feel slightly less redundant.');
     expect(one('swamp.gold', 'read signpost')).toBe("SHORTCUT, it says, pointing everywhere at once. Below: 'no data was moved.' Below that, smaller: 'no data was moved.'");
-    expect(one('swamp.gold', 'look')).toMatch(new RegExp(`Nothing here has been ${MALAPROPS.daxxed} yet\\. Give it time\\.`));
+    expect(one('swamp.gold', 'look')).toMatch(/Everything here has a business name and a data type\. It is beautiful\. A signpost/);
   });
 });
 
@@ -129,7 +129,7 @@ describe('lake + swamp sweep: every gag has a second line, and the same verb rea
     for (const cmd of ['ask ferryman about the lake', 'sit in boat', 'row boat', 'say online', 'look at lamp', 'use timetable']) {
       expect(step(at('lake.dock'), cmd, WORLD).output[0], cmd).not.toBe(step(at('lake.dock', ONLINE), cmd, WORLD).output[0]);
     }
-    expect(step(at('lake.dock', ONLINE), 'ask ferryman about the lake', WORLD).output[0]).toBe('"One," he says. "Lake." Out loud, now that he can. He holds up the finger anyway; he has grown fond of the finger.');
+    expect(step(at('lake.dock', ONLINE), 'ask ferryman about the lake', WORLD).output[0]).toBe('"One lake," he says, out loud, now that he can. He holds up the finger anyway; he has grown fond of it.');
   });
   it("the Ferryman's second known-topic line, offline and online; unknown topics keep the brush-off, which is now his own", () => {
     expect(run(at('lake.dock'), ['ask ferryman about credentials', 'ask ferryman about credentials']).firsts[1]).toBe('He mouths it again, slower, in case the mouthing was the problem. It was not the problem.');
@@ -202,16 +202,11 @@ describe('lake + swamp sweep: the deferred minor and the constants', () => {
     expect(line).not.toMatch(/a man who/);
     expect(typeof WHERE['lake.island']).toBe('function');
   });
-  it('the plain words twice or more, the allusions, no brand', () => {
-    const lines = [
-      step(at('lake.island', ONLINE), 'use plinth', WORLD).output[0]!,
-      step(at('swamp.silver'), 'drink water', WORLD).output[0]!,
-      step(at('swamp.gold'), 'look', WORLD).output[0]!,
-      step(at('swamp.bronze'), 'say dax', WORLD).output[0]!,
-      run(at('swamp.gold'), ['say dax', 'say dax']).firsts[1]!,
-    ].join('\n');
-    expect(lines.match(new RegExp(MALAPROPS.daxxed, 'g'))!.length).toBeGreaterThanOrEqual(3);
-    expect(lines).toMatch(MALAPROPS.capacitude); expect(lines).toMatch(MALAPROPS.refreshered);
+  // Editorial pass: the plain words stay where they are the joke (the plinth's capacity, the Gold measure about to be
+  // filtered); the lines that only carried them for the checklist lost them.
+  it('the plain words where they are the joke, the allusions, no brand', () => {
+    expect(step(at('lake.island', ONLINE), 'use plinth', WORLD).output[0]!).toMatch(MALAPROPS.capacitude);
+    expect(run(at('swamp.gold'), ['say dax', 'say dax']).firsts[1]!).toMatch(MALAPROPS.daxxed);
     expect(step(at('lake.house'), 'use chair', WORLD).output[0]).toMatch(/the Windows XP hill/);
     expect(run(at('lake.house'), ['look at mailbox', 'look at mailbox']).firsts[1]).toMatch(/a Hotmail inbox/);
     expect(step(at('lake.dock'), 'look at timetable', WORLD).output[0]).not.toMatch(/™|Sponsored/);
@@ -227,7 +222,7 @@ describe('lake + swamp sweep: the polish round (review lines 1-9, M1, M2, M4)', 
   });
   it('the flat rock sinks, so it leaves your pockets; after that it is mourned, and a rock in hand beats the pebble\'s fate', () => {
     const { s, firsts } = run(at('lake.shore', { inventory: ['license', 'flat-rock'] }), ['throw stone', 'throw rock']);
-    expect(firsts[0]).toBe('You throw the flat rock. It is from the Peaks, and skips are billed per second. Zero skips. It sinks, and you are billed anyway.');
+    expect(firsts[0]).toBe('You throw the flat rock. Zero skips. It sinks, billed per second.');
     expect(s.inventory).not.toContain('flat-rock');
     expect(step(s, 'inventory', WORLD).output.join(' ')).not.toMatch(/flat rock/);
     expect(firsts[1]).toBe('Your flat rock is on the bottom of the OneLake, still being billed.');

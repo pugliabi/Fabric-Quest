@@ -48,7 +48,7 @@ const MOAT_TABLE_TEXT = (s: GameState): string => (s.flags['model.date']
 /** Trial 2 (+25, `trial.moat`): the id, key and points are unchanged from the SQL days, so the ledger still sums to 200. */
 export const MOAT_THEN: RuleThen = { text: MOAT_TEXT, set: { 'trial.moat': true }, points: 25, pointsKey: 'fortress.moat', moveTo: 'fortress.bridge', sfx: 'death' };
 const MOAT_TABLE_THEN: RuleThen = { ...MOAT_THEN, text: MOAT_TABLE_TEXT, remove: ['date-table'], set: { 'trial.moat': true, 'model.date': true } };
-const MOAT_AGAIN: RuleThen = { text: "'Another?' The Duke does not rise this time. 'Once was instructive. Twice is a habit.' He points at the window. You take the stairs.", outcome: 'snark' };
+const MOAT_AGAIN: RuleThen = { text: "'Another?' The Duke just points at the window. You take the stairs.", outcome: 'snark' };
 
 /**
  * A WRONG answer is a `say` about DAX or the model that is not the sin and not correct DAX (WRONG_RE: it names a DAX or
@@ -63,7 +63,7 @@ export const WRONG_RE = new RegExp(`^(?!calculate\\b)(?!.*(var .*return|sumx.|ca
 /** Model View: ten calculated columns (spec1 §5.4). Nine warnings, each its own line, counted out loud; the tenth opens in Word. */
 const COLUMNS = [
   'A circular dependency was detected. You did not touch anything. You breathed near it.',
-  'Sure, add a calculated column. Add nine. Your model is a Word document now, and I say that with love.',
+  'Two. Sure, add a calculated column. Add nine.',
   'Three. The model is warm now. Not fast. Warm.',
   'Four. Sir Cardinality has stopped making eye contact.',
   'Five. Somewhere a measure that would have done this in one line weeps.',
@@ -132,7 +132,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       plainer: (s) => (!s.flags['bridge.down'] ? "He wants a SKU. There's a free one. It rhymes with denial." : ''),
     },
     rules: [
-      { id: 'fortress.guard-moat', when: { verb: 'talk', noun: GUARD, noun2: ['moat', 'the moat', 'warehouse', 'water'] }, then: { text: "'The moat?' The guard looks down. 'That's the Warehouse. We built the Keep on it. Don't tell the Duke I said Warehouse.' He tells the Duke himself, later, in the log.", outcome: 'success' } },
+      { id: 'fortress.guard-moat', when: { verb: 'talk', noun: GUARD, noun2: ['moat', 'the moat', 'warehouse', 'water'] }, then: { text: "'The moat?' The guard looks down. 'That's the Warehouse. We built the Keep on it. Don't tell the Duke I said Warehouse.'", outcome: 'success' } },
       {
         id: 'fortress.sku',
         when: { verb: 'say', noun: ['trial', 'trial capacity', 'f trial', 'fabric trial', 'free trial', 'ftrial', 'trial sku'], flags: [{ flag: 'bridge.down', not: true }] },
@@ -172,7 +172,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.north-closed',
         when: { verb: 'go', dir: 'n', flags: [{ flag: 'bridge.down', not: true }] },
-        then: { text: 'The drawbridge is up. It is updating (1 of 3). The moat below is deep and full of GROUP BY. The guard is right there. He wants a SKU.', outcome: 'fail' },
+        then: { text: 'The drawbridge is up, and the guard wants a SKU. The moat below is deep and full of GROUP BY.', outcome: 'fail' },
       },
       // Bridge up, every obvious verb on the drawbridge / gate / splash screen / guard is the Desktop Gate (gates.ts);
       // the old open-bridge line rotates in its pool. Down, it is just down.
@@ -248,9 +248,9 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       const k = pqStep(s);
       // One vocabulary (applied-steps.ts STEP_STATE): open = applied, waiting = next, yellow = the rest.
       const doors = pqDone(s) ? 'All seven are open. The hall is a query again.'
-        : k === 0 ? 'The first is waiting. The rest are yellow — you go through them in order, or the hall errors.'
+        : k === 0 ? 'The first is waiting. The rest are yellow — you apply them in order, or the hall errors.'
         : k === 6 ? 'Six are open; the last is waiting. Nothing is yellow, and the hall does not know what to do with itself.'
-        : `The first ${k === 1 ? 'is' : `${COUNT[k]} are`} open; the next is waiting. The rest are yellow — you go through them in order, or the hall errors.`;
+        : `The first ${k === 1 ? 'is' : `${COUNT[k]} are`} open; the next is waiting. The rest are yellow — you apply them in order, or the hall errors.`;
       return `Power Query Hall. Seven doorways in a row, each an Applied Step: Source, Navigation, Promoted Headers, Changed Type, Filtered Rows, Removed Other Columns, Renamed Columns. ${doors} Portraits line the walls. The Duke's chamber is north; the Report Studio, east; the Model View, west; the gate, south.`;
     },
     exits: { s: 'fortress.bridge', n: 'fortress.throne', e: 'fortress.yard', w: 'fortress.model' },
@@ -281,7 +281,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       // `remove other columns` / `remove columns` are step 6 of the query now (applied-steps.ts), not a line of their own;
       // a bare `use columns` is a poke at the steps (the item already answers to 'columns').
       ...poke('steps', ['steps', 'applied steps', 'step', 'columns', 'column', 'other columns'], [
-        'You click a step. The preview jumps back in time. Every step after it greys out, waiting. That is the whole hall.',
+        'You click a step. The preview jumps back in time. Every step after it greys out, waiting.',
         'You drag a step up the list. Everything below it errors. You drag it back.',
         'You rename a step to something meaningful. The hall is shocked. Nobody has done that before.',
       ], [
@@ -409,7 +409,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.date-table',
         when: { verb: 'use', noun: ['date table', 'as date table', 'calendar', 'date', 'dates', 'calendar table'] },
-        then: { text: `You mark the date table as a date table. Time intelligence, which had been sulking, starts working. No points. It should have been done already. Time intelligence feels ${MALAPROPS.refreshered}.`, set: { 'model.date': true } },
+        then: { text: 'You mark the date table as a date table. Time intelligence, which had been sulking, starts working. No points. It should have been done already.', set: { 'model.date': true } },
       },
       // Talking to Sir Cardinality reaches the builtin: his three pieces of advice are talk 1, 2 and 3 there (npcs.ts).
       {
@@ -486,20 +486,20 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       { id: 'fortress.moat-table', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, has: ['date-table'], flags: [{ flag: 'trial.moat', not: true }] }, then: MOAT_TABLE_THEN },
       { id: 'fortress.moat-table-use', when: { verb: 'use', noun: DATE_TABLE, noun2: DUKE, has: ['date-table'], flags: [{ flag: 'trial.moat', not: true }] }, then: MOAT_TABLE_THEN },
       { id: 'fortress.moat-table-again', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, has: ['date-table'], flags: [{ flag: 'trial.moat' }] }, then: { text: "'Another table?' The Duke does not look up. 'I have a window for that, and you have used it.'", outcome: 'snark' } },
-      { id: 'fortress.give-table-none', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat', not: true }] }, then: { text: "You have no table. The Model View, west of the hall, has one. It is unmarked. He will love that.", outcome: 'fail' } },
-      { id: 'fortress.give-table-after', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat' }] }, then: { text: "He has it. It's on his desk, marked, out of spite. You smell like the moat and he has a date table; everyone got something.", outcome: 'snark' } },
-      { id: 'fortress.duke-sql', when: { verb: 'talk', noun: DUKE, noun2: ['sql', 't sql', 'tsql', 'the moat', 'moat', 'warehouse'] }, then: { text: "'SQL,' says the Duke, and then, to himself, 'EVALUATE.' Then, quieter, 'SELECT.' He has caught himself. He will not forgive himself.", outcome: 'success' } },
+      { id: 'fortress.give-table-none', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat', not: true }] }, then: { text: 'You have no table. The Model View, west of the hall, has an unmarked one; he will love that.', outcome: 'fail' } },
+      { id: 'fortress.give-table-after', when: { verb: 'give', noun: DATE_TABLE, noun2: DUKE, flags: [{ flag: 'trial.moat' }] }, then: { text: "He has it. It's on his desk, marked, out of spite.", outcome: 'snark' } },
+      { id: 'fortress.duke-sql', when: { verb: 'talk', noun: DUKE, noun2: ['sql', 't sql', 'tsql', 'the moat', 'moat', 'warehouse'] }, then: { text: "'SQL,' says the Duke, and then, to himself, 'EVALUATE.' Then, quieter, 'SELECT.' He will not forgive himself.", outcome: 'success' } },
       // R-7: `say dax` is a wrong answer with a line of its own.
-      { id: 'fortress.say-dax-word', when: { verb: 'say', noun: ['dax'] }, then: { text: `You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed}; it feels like a filter you cannot see.`, outcome: 'snark' } },
+      { id: 'fortress.say-dax-word', when: { verb: 'say', noun: ['dax'] }, then: { text: `You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed} out.`, outcome: 'snark' } },
       {
         id: 'fortress.select-star',
         when: { verb: 'say', noun: ['select *', 'select star', 'select * from', 'select *;', 'select * from table', 'select all', 'select * from everything'] },
-        then: { text: "The Duke blinks. 'SELECT? This is a semantic model. We EVALUATE here.' He does not throw you. He corrects you, which is worse.", outcome: 'snark' },
+        then: { text: "'SELECT? We EVALUATE here.' The Duke does not throw you; he corrects you, which is worse.", outcome: 'snark' },
       },
       { id: 'fortress.dax-evaluate', when: { verb: 'say', noun: ['evaluate', 'evaluate table', 'evaluate sales'] }, then: { text: "'Correct,' says the Duke, disappointed. 'And useless.'", outcome: 'snark' } },
       { id: 'fortress.dax-implicit', when: { verb: 'say', noun: ['implicit measure', 'implicit measures', 'implicit'] }, then: { text: "The Duke shudders. 'Implicit.' But he has heard worse today.", outcome: 'snark' } },
       // 'bi directional': the parser strips the hyphen before the noun is matched.
-      { id: 'fortress.dax-bidirectional', when: { verb: 'say', noun: ['bidirectional', 'bi-directional', 'bi directional', 'both directions', 'bidirectional filtering', 'cross filter both'] }, then: { text: "'Both directions,' says the Duke, 'is how ambiguity gets a seat at the table.' He does not throw you. He wants you to hear that again on the way out.", outcome: 'snark' } },
+      { id: 'fortress.dax-bidirectional', when: { verb: 'say', noun: ['bidirectional', 'bi-directional', 'bi directional', 'both directions', 'bidirectional filtering', 'cross filter both'] }, then: { text: "'Both directions,' says the Duke, 'is how ambiguity gets a seat at the table.'", outcome: 'snark' } },
       { id: 'fortress.dax-userelationship', when: { verb: 'say', noun: ['userelationship', 'use relationship'] }, then: { text: "'USERELATIONSHIP,' says the Duke. 'The inactive one. You are the inactive one.'", outcome: 'snark' } },
       {
         id: 'fortress.select1',
@@ -519,7 +519,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.dax-calculate',
         when: { verb: 'say', noun: ['calculate'] },
-        then: { text: "'CALCULATE,' says the Duke. 'The one true function.' He nods; the guards relax. 'With no filter, though. A context transition, and nothing else. You may sit.' You may not sit.", outcome: 'snark' },
+        then: { text: "'CALCULATE,' says the Duke, 'with no filter. A context transition, and nothing else. You may sit.' You may not sit.", outcome: 'snark' },
       },
       {
         id: 'fortress.dax-sumx',
@@ -612,7 +612,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.give-policy-duke',
         when: { verb: 'give', noun: POLICY, noun2: DUKE, has: ['policy'] },
-        then: { text: "'Ten days at a time? I compute everything, every time, always.' He does not want it. Keep it for the Studio.", outcome: 'fail' },
+        then: { text: "'Ten days at a time? I compute everything, every time, always.' He does not want it.", outcome: 'fail' },
       },
       ...poke('throne', ['throne of calculates'], [], [
         'The Duke is on it. He would like you to try.',
@@ -678,8 +678,8 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         then: { text: "You look at the Card. It shows (Blank). It looks back. Neither of you blinks. Your eyes water; the Card's don't, it has none. Then it blinks. A number appears: 4.2M. It is wrong, but it is a number. You win.", set: { 'stare.done': true, 'stare.count': 3 }, points: 10, sfx: 'success' },
       },
       // Before the stare's talk rule too: a question about Jeff is not a staring contest.
-      // A derailment (bickering): the Card and the pie, one value each, forever.
-      { id: 'fortress.card-pie', when: { verb: 'talk', noun: CARD, noun2: ['pie', 'pie chart', 'slices'] }, then: { text: 'The Card shows (Pie). The pie shows 3.2%. The Card shows (Blank). The pie shows 3.2%. (You see where this is going.)', outcome: 'success' } },
+      // The Card and the pie, one value each: one exchange (editorial pass: no loop).
+      { id: 'fortress.card-pie', when: { verb: 'talk', noun: CARD, noun2: ['pie', 'pie chart', 'slices'] }, then: { text: "The Card shows (Pie). The pie shows 3.2%. That's the whole meeting.", outcome: 'success' } },
       { id: 'fortress.card-jeff', when: { verb: 'talk', noun: CARD, noun2: ['jeff', 'finance', 'jeff from finance'] }, then: { text: 'The Card shows (Jeff). Then (Blank). It has no relationship to Jeff; nobody does.', outcome: 'success' } },
       {
         id: 'fortress.look-card-again',
@@ -745,12 +745,12 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.policy-nudge',
         when: { verb: 'use', noun: POLICY, noun2: REFRESH, has: ['policy'], flags: [{ flag: 'refresh.done', not: true }] },
-        then: { text: "The Big Refresh doesn't want a policy. It wants the pie gone. Thirty-one slices is what it has been chewing on since 2019.", outcome: 'fail' },
+        then: { text: "The Big Refresh doesn't want a policy. It wants the pie gone.", outcome: 'fail' },
       },
       {
         id: 'fortress.policy-nudge-give',
         when: { verb: 'give', noun: POLICY, noun2: REFRESH, has: ['policy'], flags: [{ flag: 'refresh.done', not: true }] },
-        then: { text: 'The Big Refresh reads the policy twice and hands it back. 97%. It is not a policy problem. It is a pie problem.', outcome: 'fail' },
+        then: { text: 'The Big Refresh reads the policy twice and hands it back. It is not a policy problem; it is a pie problem.', outcome: 'fail' },
       },
       {
         id: 'fortress.copy-nopolicy',
@@ -765,12 +765,12 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.use-refresh',
         when: { verb: 'use', noun: REFRESH, flags: [{ flag: 'refresh.done', not: true }] },
-        then: { text: 'You click Refresh. It was already refreshing. It is now refreshing harder. (The policy in your pocket is not helping from there.)', outcome: 'fail' },
+        then: { text: 'You click Refresh. It was already refreshing. It is now refreshing harder.', outcome: 'fail' },
       },
       {
         id: 'fortress.refresh-done',
         when: { verb: 'use', noun: REFRESH },
-        then: { text: 'It refreshes. Ten days, one minute. It is almost boring. You miss the drama.', outcome: 'fail' },
+        then: { text: 'It refreshes in a minute. It is almost boring. You miss the drama.', outcome: 'fail' },
       },
       {
         id: 'fortress.get-refresh',
@@ -803,7 +803,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fortress.use-policy-studio',
         when: { verb: 'use', noun: POLICY, has: ['policy'] },
-        then: { text: 'On what? The Big Refresh is right there, at 97%. Use the policy on the refresh.', outcome: 'fail' },
+        then: { text: 'On what? The Big Refresh is right there, at 97%.', outcome: 'fail' },
       },
       ...poke('pie', ['pie', 'pie chart', 'chart', 'slices', 'other'], [
         "You click a slice. It is 'Other'. Inside 'Other' is more 'Other'.",
@@ -871,13 +871,13 @@ const STUDIO = 'fortress.yard';
 export const KEEP_PHRASES: PhraseRule[] = [
   // Gate
   { id: 'fortress.fish-moat', room: 'fortress.bridge', test: /^(fish|go fishing|cast)( a line)?( (in|into|from))?( the)? ?(moat|moat of t sql|water)?$/, text: (s) => (s.flags['trial.moat']
-    ? 'You fish in the moat you were thrown into. You catch a semicolon. It is yours. You left it there on the way down.'
+    ? 'You fish in the moat you were thrown into. You catch a semicolon. You left it there on the way down.'
     : "You fish in the Moat of T-SQL. You catch a stored procedure. It has 400 lines and a comment that says 'temporary'. You release it.") },
   { id: 'fortress.update-words', room: 'fortress.bridge', test: /^(update|install)\b/, text: 'The update installs. Then another. The drawbridge does not move. This is the update.' },
   // Power Query Hall
   { id: 'fortress.fold', room: 'fortress.hall', test: /^(fold|query folding)\b/, text: 'You attempt to fold. The step before you is `Changed Type`. Folding stops here, as it always has.' },
   // Bare `changed type` is step 4's command (applied-steps.ts, registered ahead of this); `say changed type` stays the echo.
-  { id: 'fortress.changed-type', room: 'fortress.hall', test: /^(say )?changed type\b/, text: 'Changed Type. Changed Type. Changed Type. The hall echoes it back. It has seven words now, and that one is still its favourite.' },
+  { id: 'fortress.changed-type', room: 'fortress.hall', test: /^(say )?changed type\b/, text: "Changed Type. Changed Type. Changed Type. The hall echoes it back. It is still the hall's favourite step." },
   { id: 'fortress.delete-custom1', room: 'fortress.hall', test: /^(delete|remove) (step )?custom ?1\b/, text: 'You hover over the X next to Custom1. The hall goes quiet. Every step after it turns yellow in advance. You do not delete Custom1. Nobody deletes Custom1.' },
   // `remove (other) columns` is step 6 of the query (applied-steps.ts), so it is no longer a line of its own here.
   { id: 'fortress.buffer', room: 'fortress.hall', test: /^(buffer|table\.?buffer)\b/, text: 'Table.Buffer. The hall holds its breath. Nothing is faster. Everything is in memory.' },
@@ -899,13 +899,17 @@ export const KEEP_PHRASES: PhraseRule[] = [
   // Report Studio
   {
     id: 'fortress.refresh-words', room: STUDIO, test: /^refresh\b/,
-    text: (s) => (s.flags['refresh.done'] ? 'It refreshes. Ten days, one minute. It is almost boring. You miss the drama.'
-      : s.inventory.includes('policy') ? 'You click Refresh. It was already refreshing. It is now refreshing harder. (The policy in your pocket is not helping from there.)'
+    text: (s) => (s.flags['refresh.done'] ? 'It refreshes in a minute. It is almost boring. You miss the drama.'
+      : s.inventory.includes('policy') ? 'You click Refresh. It was already refreshing. It is now refreshing harder.'
       : vary(s, REFRESH_ERRORS)),
   },
   { id: 'fortress.eat-pie', room: STUDIO, test: /^(eat|taste|bite)( a slice of| the| a)? pie( chart)?$/, text: "You eat a slice. It is 'Other'. It tastes like the other eleven 'Other's." },
   { id: 'fortress.add-slicer', room: STUDIO, test: /^add (a |another )?slicers?\b/, text: 'You add a slicer. There are now nine slicers. The page loads in the time it takes to regret this.' },
-  { id: 'fortress.fix-pie', room: STUDIO, test: /^fix (the )?pie\b/, text: "A pie with 31 slices. Twelve of them are 'Other'. You could fix it. You could also leave it and let it be someone else's problem in Q3." },
+  // Text only (editorial pass): the phrase still does not score, so it says the command that does, and knows when it's done.
+  // `fix pie` is the pie's own solve (the item says "you could fix it"): the same bar chart, the same 15, once.
+  { id: 'fortress.fix-pie', room: STUDIO, test: /^fix (the )?pie( chart)?\b/, text: '', then: (s) => (s.flags['refresh.done']
+    ? { then: { text: "It's a bar chart. It's been a bar chart for a minute. Leave it.", outcome: 'fail' } }
+    : { id: 'fortress.copy', then: { text: 'You fix the pie. Visualizations pane: clustered bar. Thirty-one slices unroll into bars, longest first, and for the first time you can read December. Three stakeholders weep. The fourth sends a thumbs-up. In the corner, the Big Refresh, stuck on that pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots.', set: { 'refresh.done': true }, give: ['boots'], points: 15, pointsKey: 'fortress.copy', sfx: 'item' } }) },
   { id: 'fortress.align', room: STUDIO, test: /^(align|distribute)\b/, text: 'You align the visuals. Eleven pixels. Then ten. Then eleven again. It is never done.' },
   { id: 'fortress.bookmark', room: STUDIO, test: /^((create|add) (a )?)?bookmark$/, text: 'You create a bookmark. It captures the current state, including the part that is broken.' },
   { id: 'fortress.conditional', room: STUDIO, test: /^(conditional formatting|conditionally format|(add|apply) conditional formatting)\b/, text: 'You conditionally format the card. It is red. It was always going to be red.' },
@@ -914,7 +918,7 @@ export const KEEP_PHRASES: PhraseRule[] = [
   // Anywhere in the Keep (spec §17)
   // The sin anywhere but the chamber (C1's deferred minor): right idea, wrong room. The chamber declines it to the moat rules.
   { id: 'fortress.sin-elsewhere', region: KEEP_REGION, test: /^(say )?(a )?calculated columns?$/, text: '', then: (s) => (s.room === 'fortress.throne' ? null : { then: { outcome: 'snark', text: s.flags['trial.moat']
-    ? 'You said it once where it counted, and you still smell like it. Out here it is just two words and a draught.'
+    ? 'You said it once where it counted. Out here it is just two words and a draught.'
     : 'Right sin, wrong room. Nobody here owns a window worth throwing you out of. The Duke does, north of the hall.' } }) },
   { id: 'fortress.directquery', region: KEEP_REGION, test: /^(say |use |switch to )?direct ?query\b/, text: 'Every click, a query. Every query, a wait. You feel the Keep slow down as you say it.' },
   { id: 'fortress.directlake', region: KEEP_REGION, test: /^(say |use |switch to )?direct ?lake\b/, text: 'Direct Lake. The Keep brightens. Then falls back to DirectQuery for reasons that will be explained in a blog post.' },

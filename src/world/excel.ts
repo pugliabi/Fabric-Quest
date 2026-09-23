@@ -2,7 +2,6 @@ import type { GameState } from '../engine/types';
 import type { FlagValue, PhraseRule, Room, Rule, RuleThen } from './types';
 import { talkTo, unknownTopicPattern } from '../engine/builtins';
 import { NPCS } from './npcs';
-import { MALAPROPS } from './voice';
 
 /** A second try in a row gets its own line, read off `recent` (the voice sweeps, Task F4 on): no flag moves. */
 const again = (s: GameState, first: string, second: string): string => ((s.recent?.n ?? 1) >= 2 ? second : first);
@@ -69,7 +68,7 @@ export function stageLine(s: GameState): string {
     case 2: return toPivot ? `Go ${toPivot} to the PivotTable and \`create pivot table\`.` : "You're on the PivotTable. `create pivot table`.";
     case 3: return `${toPivot ? `Go ${toPivot} to the PivotTable. ` : ''}Add what's missing: ${missingCmds(s)}.`;
     case 4: return toJeff ? `Back to Sheet1 (${toJeff}) and \`show jeff\`.` : 'Show Jeff. `show jeff`.';
-    default: return 'You fixed Jeff\'s export. That was the whole quest. `exit`.';
+    default: return '`exit` when you like. You fixed Jeff\'s export; that was the whole quest.';
   }
 }
 
@@ -101,22 +100,22 @@ const variantAt = (n: number, count: number): number => (n === 0 || count < 2 ? 
  */
 const JEFF_LINES: Record<Exclude<ExcelStage, 3>, [first: string, ...variants: string[]]> = {
   0: [
-    "\"It's 4.7. The report says 4.2. I exported the visual, I summed it, it's 4.7. Look, I trust my export. IT said something about 'Analyze in Excel' — that it connects to the actual model. It's on the Data tab. North. I never go north.\"",
+    "\"The report says 4.2; my export says 4.7, and I trust my export. IT says 'Analyze in Excel', on the Data tab, connects to the real model. It's north. I never go north.\"",
   ],
   1: [
     '"The Data tab. North. It\'s a ribbon, not a country."',
     '"North. Up. The tab with the buttons on it. I don\'t click them; that\'s what you\'re for."',
-    '"You have walked past the Data tab twice now. It is the one that says Data."',
-    '"Analyze in Excel. Data tab. North. I said north. I meant it in the geographic sense."',
+    '"The Data tab is north. It is the one that says Data."',
+    '"Analyze in Excel, on the Data tab, north. I meant it in the geographic sense."',
     '"Still 4.7. Still north. You keep asking like the answer is going to be south."',
   ],
   2: [
-    '"Connected? Then make the pivot. The PivotTable sheet\'s east. Put the fields in. I\'d do it but I have a call."',
-    '"East. The pivot. I named it PivotTable1 so you\'d find it. I\'m on a call. It\'s the same call."',
+    '"Connected? Make the pivot, east, and put the fields in. I\'d do it, but I have a call."',
+    '"The pivot\'s east; I named it PivotTable1 so you\'d find it. I\'m on the same call."',
     '"Pivot. East. I have been on this call since Q2."',
   ],
   4: [
-    '"Is it done? Show me. `show jeff`. I can\'t look. I\'m looking."',
+    '"Show me: `show jeff`. I can\'t look. I\'m looking."',
     '"Show me. I won\'t look. I\'m looking. `show jeff`."',
     '"Just show me the pivot. I have my eyes closed. They\'re open. Show me."',
   ],
@@ -182,7 +181,7 @@ const PLACE: Record<Piece, RuleThen> = {
 };
 /** A field that is already in (Task F9): answered by the repeat, so nothing is re-set and Jeff's stage-4 call is not re-sent. */
 const PLACED_AGAIN: Record<Piece, RuleThen> = {
-  'excel.dim': { text: 'Sales Region is already in Rows. Northeast is in there exactly once. Twice is how Jeff got Region A.', outcome: 'fail' },
+  'excel.dim': { text: 'Sales Region is already in Rows, with Northeast in there exactly once. Twice is how Jeff got Region A.', outcome: 'fail' },
   'excel.measure': { text: 'Net Sales is already in Values. Two of it would put Returns right back in, by another name.', outcome: 'fail' },
   'excel.filter': { text: "The year filter is already on. Filtering it twice doesn't make it any more this year.", outcome: 'fail' },
 };
@@ -254,7 +253,7 @@ function compareText(s: GameState): string {
 
 const CONNECT_TEXT = 'You sign in with your Pro license. The connection thinks about it, then: Connected — Sales (Certified). A field list unfolds in the pivot like a map.';
 /** After the Monastery the card is the Librarian's collateral; Analyze in Excel only checks that it is still signed in. */
-const CONNECT_LENT_TEXT = 'You pat your pockets. The card is at the Library, being collateral. Doesn\'t matter. Your Pro license is a library card here — and the card is still signed in. Connected — Sales (Certified). A field list unfolds in the pivot like a map.';
+const CONNECT_LENT_TEXT = 'Your license is at the Library, being collateral, but it never signed out. Connected — Sales (Certified). A field list unfolds in the pivot like a map.';
 const ALREADY_CONNECTED = (s: GameState): string => `Already connected. Sales (Certified). The pivot is ${way(s, 'pivot') ?? 'right here'}.`;
 const SIGN_IN_REQUIRED = 'Analyze in Excel: Sign-in required. A tiny dialog. A tinier Sign in link.';
 const LICENSE_NOUNS = ['license', 'card', 'pro license', 'license card', 'pro'];
@@ -326,7 +325,7 @@ export const EXCEL_ROOMS: Record<string, Room> = Object.fromEntries([
       // The voice sweep (Task F9): the report and the export are topics Jeff has opinions on, after the win rules.
       { id: 'excel.jeff-report', when: { verb: 'talk', nounMatches: TALK_JEFF, noun2: ['report', 'the report', 'badge'], flags: [NOT_DONE] }, then: { text: (s) => again(s, "'The report,' says Jeff. 'It has a badge. I have a spreadsheet. A spreadsheet is a badge you make yourself.'", "'Badges,' says Jeff. 'Anyone can get a badge. I made this total with my own two hands and one F2.'"), outcome: 'success' } },
       // His derailment: once he has told you about the export, asking about it starts a fight he has with it, not you.
-      { id: 'excel.jeff-export', when: { verb: 'talk', nounMatches: TALK_JEFF, noun2: ['export', 'the export', 'csv', 'his export', 'sales export'], flags: [{ flag: 'excel.jeff.asked' }] }, then: { text: (s) => again(s, "'My export,' says Jeff, and turns to it. 'You said 4.7.' It says 4.7. 'Then say it to the report.' It doesn't. He turns back to you, betrayed by a CSV.", "Jeff and the export aren't speaking. The export has 1,048,576 rows on its side, so it thinks it's winning."), outcome: 'snark' } },
+      { id: 'excel.jeff-export', when: { verb: 'talk', nounMatches: TALK_JEFF, noun2: ['export', 'the export', 'csv', 'his export', 'sales export'], flags: [{ flag: 'excel.jeff.asked' }] }, then: { text: (s) => again(s, "'My export says 4.7,' says Jeff. 'It has never once lied to me.' It has never once been asked.", "Jeff and the export aren't speaking. The export has 1,048,576 rows on its side, so it thinks it's winning."), outcome: 'snark' } },
       { id: 'excel.use-tissues', when: { verb: 'use', noun: ['tissue box', 'tissues', 'tissue', 'kleenex'] }, then: { text: (s) => (s.flags['sq.excel.done'] ? "You offer Jeff a tissue. He doesn't need one now. He takes one anyway, for the export." : 'You hand Jeff a tissue. He blows his nose into a printout of the total instead. It rounds up.'), outcome: 'snark' } },
       // Talking to Jeff at any stage (done included): the stage line in character, a variant on repeats.
       { id: 'excel.ask-jeff', when: { verb: 'talk', nounMatches: TALK_JEFF }, then: { text: jeffSays, set: JEFF_TALK_SET, outcome: 'success' } },
@@ -393,7 +392,7 @@ export const EXCEL_ROOMS: Record<string, Room> = Object.fromEntries([
       { id: 'excel.measure-wrong', when: { verb: 'use', noun: MEASURE_WRONG_NOUNS, flags: [{ flag: 'excel.pivot' }] }, then: MEASURE_WRONG },
       { id: 'excel.filter', when: { verb: 'use', verbWord: BUILD, noun: FILTER_NOUNS, flags: [{ flag: 'excel.pivot' }] }, then: PLACE['excel.filter'] },
       { id: 'excel.other-field', when: { verb: 'use', noun: OTHER_FIELD_NOUNS, flags: [{ flag: 'excel.pivot' }] }, then: OTHER_FIELD },
-      { id: 'excel.add-measure', when: { verb: 'use', noun: ['measure', 'a measure', 'new measure', 'dax measure'] }, then: { text: `You add a measure to a pivot. You have ${MALAPROPS.daxxed} a spreadsheet. Jeff will never forgive you, and he will never notice.`, outcome: 'snark' } },
+      { id: 'excel.add-measure', when: { verb: 'use', noun: ['measure', 'a measure', 'new measure', 'dax measure'] }, then: { text: 'You add a measure to a pivot. Jeff will never forgive you, and he will never notice.', outcome: 'snark' } },
       // Any other use-verb on a right field ("fix filter", "label filter"): answered, not placed. After the build rules.
       { id: 'excel.field-nonbuild', when: { verb: 'use', noun: RIGHT_FIELDS, flags: [{ flag: 'excel.pivot' }] }, then: { text: 'That is not how a field gets into a pivot. Add it.', outcome: 'fail' } },
       { id: 'excel.not-yet-pivot', when: { verb: 'use', noun: [...RIGHT_FIELDS, ...WRONG_FIELDS], flags: [{ flag: 'excel.pivot', not: true }] }, then: NOT_YET_PIVOT },
@@ -473,7 +472,7 @@ export const EXCEL_PHRASES: PhraseRule[] = [
   // The voice sweep (Task F9).
   { id: 'excel.save', region: 'excel', test: /^save( the)? (workbook|sheet|file|export|spreadsheet)$/, text: 'Saved as Sales_export (4).csv. The (3) was the good one. It always is.' },
   { id: 'excel.cell-a1', room: 'excel.sheet1', test: /^(look at|examine|x|click|select)( cell)? a1$/, text: 'Cell A1. Blinking. Somewhere in it, Clippy is composing a suggestion.' },
-  { id: 'excel.refresh-pivot', room: 'excel.pivot', test: /^refresh( the| all| pivot| data)?( pivot)?$/, text: `You refresh the pivot. It says the same number, but bolder. It feels ${MALAPROPS.refreshered}.` },
+  { id: 'excel.refresh-pivot', room: 'excel.pivot', test: /^refresh( the| all| pivot| data)?( pivot)?$/, text: 'You refresh the pivot. It says the same number, but bolder.' },
   { id: 'excel.format-pivot', room: 'excel.pivot', test: /^(format|style|band)( the)? (pivot|pivot table|pivottable|rows)$/, text: 'You format the pivot. Banded rows. Jeff likes banded rows. The number is still wrong, now in stripes.' },
   { id: 'excel.fields', region: 'excel', test: /^(fields|field list|field pane|pivottable fields|list fields|show fields)$/, text: (s) => (s.room === 'excel.pivot' ? fieldListText(s) : WRONG_SHEET_LOOK(s)) },
 ];

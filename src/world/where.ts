@@ -16,7 +16,7 @@ export const WHERE: Record<string, WhereLine> = {
   'village.hall': "The Town Hall. The queue has one person in it and it's you and you're not moving.",
   'lake.shore': "The OneLake Shore. One lake. You've counted twice. Still one.",
   'lake.dock': (s) => (s.flags['ferry.online']
-    ? "The Ferryman's Dock. ONLINE. The guy who set up the gateway would be proud, from his new company, if anyone had told him."
+    ? "The Ferryman's Dock. ONLINE. Nobody who set up the gateway stayed long enough to see it."
     : "The Ferryman's Dock. OFFLINE, like the guy who set up the gateway and left for a company that appreciates him."),
   'lake.island': (s) => {
     const left = 2 - Number(!!s.flags['taken.standard key']) - Number(!!s.flags['taken.personal key']);
@@ -41,9 +41,9 @@ export const WHERE: Record<string, WhereLine> = {
     ? `The Report Studio. ${s.flags['refresh.done'] ? 'A bar chart that used to be a pie' : 'A pie with 31 slices'} and a Card that says 4.2M now, which is wrong, but at least it's a number.`
     : 'The Report Studio. A pie with 31 slices and a Card that says (Blank), which is also your plan.'),
   'peaks.foothills': "The Foothills. The air's thin and so is the excuse you'll give Finance.",
-  'peaks.pass': 'Throttling Pass. Every step costs more than the last one, like a consultant, or you, eventually.',
+  'peaks.pass': 'Throttling Pass. Every step costs more than the last one, like a consultant.',
   'peaks.ledge': "The Bursting Ledge. A door that checks three things about you. It's found more than three.",
-  'peaks.shrine': 'The Shrine. A dragon, a model, and a peasant who read the walkthrough. Two of you are impressive.',
+  'peaks.shrine': 'The Shrine. A dragon, a model, and you. Two of you are impressive.',
   'excel.sheet1': "Sheet1. Jeff's desk. Grid paper to the horizon and a SUM that's wrong to four decimal places.",
   'excel.data': "The Data tab. Where the good buttons are, away from Jeff. He's watching you use them.",
   'excel.pivot': 'PivotTable1. Jeff named it. Jeff names everything 1, including, briefly, his son.',

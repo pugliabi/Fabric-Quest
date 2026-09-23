@@ -1,6 +1,5 @@
 import type { GameState, HeardLine } from '../engine/types';
 import type { PhraseRule, Room, Rule, RuleThen } from './types';
-import { MALAPROPS } from './voice';
 import { setting } from '../engine/governance';
 import { MEASURE_CODE, MODEL_CODE, SHAPE_INDEX, STAGE_HINTS, WIN_FIGURE, mergeSlots, parseSlots, replyFor, stageOf, type Measure, type Model, type Slots, type Stage } from './copilot-ladder';
 
@@ -34,7 +33,7 @@ export const COPILOT_CALL = /^(say\s+|((ask|tell|hey|open|talk to)\s+)?copilot\b
 /** The question in a line, minus however Copilot was addressed. */
 export const promptOf = (line: string): string => line.trim().replace(COPILOT_CALL, '').trim();
 export const FEEDBACK_TEXT = ' I sense frustration. I have logged it as feedback.';
-export const SAME_AGAIN_TEXT = ' I gave the same answer because it is the same question. I am consistent. That is my best feature.';
+export const SAME_AGAIN_TEXT = ' I gave the same answer because it is the same question. I am consistent.';
 export const ALREADY_TEXT = 'Already answered. It remembers.';
 
 /**
@@ -100,15 +99,12 @@ export const lastAnswer = (s: GameState): string => {
   return answered && typeof shape === 'number' ? SHAPE_LINES[shape] ?? '' : ' is empty. It is waiting for you';
 };
 
-/** The prompt box's last word (items.ts): idle compute, in the house malaprop. */
-export const PROMPT_SPARE = ` It has ${MALAPROPS.capacitude} to spare and nothing to spend it on.`;
-
 /** Before the first prompt (and after `start over`): how to begin, without restating the goal card that `goal` puts in front of it. */
 export const FIRST_HINT = 'Say SALES and answer its questions one at a time. The Model Gallery, east, has the names. Copilot does not; it has confidence.';
 
 /** The flask / `goal` next step: how to start before the first prompt, then whatever the last stage is missing. */
 function paneHint(s: GameState): string {
-  if (s.flags['sq.copilot.done']) return 'You got the number. That was the whole quest. exit.';
+  if (s.flags['sq.copilot.done']) return 'EXIT when you like. You got the number; that was the whole quest.';
   const stage = Number(s.flags['copilot.stage'] ?? -1);
   if (stage < 0) return FIRST_HINT;
   return `${STAGE_HINTS[stage as Stage] || 'Ask again.'} (The Model Gallery, east, has names worth knowing.)`;
@@ -129,7 +125,7 @@ export const RESTART_TEXT = 'Restart the whole quest, or the chat? Say NEW CHAT 
  * Order within the list: `copilot.here`, `copilot.gallery-copilot`, `copilot.clear`, `copilot.restart`.
  */
 export const COPILOT_PHRASES: PhraseRule[] = [
-  { id: 'copilot.here', room: 'copilot.pane', test: /^(ask |open |talk to |hey )?copilot$/, text: 'Copilot is right here. It has been right here since the sparkle. Type a question; it has 1,204 answers ready, and one of them is yours.' },
+  { id: 'copilot.here', room: 'copilot.pane', test: /^(ask |open |talk to |hey )?copilot$/, text: 'Copilot is right here. Type a question; it has 1,204 answers ready, and one of them is yours.' },
   { id: 'copilot.gallery-copilot', room: 'copilot.gallery', test: /^(ask |open |talk to )?copilot\b/, text: 'Copilot is west, in the pane. It can see these models. It will not look at them unless you name one.' },
   // `start over` / `clear` / `new chat` / `reset` (and their longer forms), anywhere in the realm: the slots go, the pane
   // reads as empty, and the next prompt starts a fresh chat.
@@ -143,7 +139,7 @@ export const COPILOT_PHRASES: PhraseRule[] = [
   { id: 'copilot.thanks', room: 'copilot.pane', test: /^(thanks|thank you|ty)( copilot)?[!.]?$/, text: "Copilot: You're welcome! I've logged your gratitude as feedback. It will be reviewed." },
   { id: 'copilot.who', room: 'copilot.pane', test: /^(who|what) are you\??$/, text: "Copilot: I'm Copilot! I can help with data, questions, and, if you ask nicely, a sourdough starter." },
   { id: 'copilot.are-you-ai', room: 'copilot.pane', test: /^are you (an? )?(ai|human|real|a robot|alive)\??$/, text: "Copilot: I'm a large language model, but I'm also here for you. Mostly the first thing." },
-  { id: 'copilot.measure', room: 'copilot.pane', test: /^(write|add|create|make) (me )?(a |new )?(dax )?measure$/, text: `Copilot: Here's a measure! It returns BLANK(). You have been ${MALAPROPS.daxxed} by a sparkle.` },
+  { id: 'copilot.measure', room: 'copilot.pane', test: /^(write|add|create|make) (me )?(a |new )?(dax )?measure$/, text: "Copilot: Here's a measure! It returns BLANK()." },
   { id: 'copilot.sparkle', room: 'copilot.pane', test: /^(click|press|tap|touch|poke|pet|use)( on)?( the)? sparkle$/, text: 'You click the sparkle. It sparkles harder. That is the entire feature, and it shipped on time.' },
   { id: 'copilot.push-model', room: 'copilot.gallery', test: /^(push|kick|move|shove|tip)( the| a)? (model|models|plinth|biggest model|final2|big one)$/, text: 'You push the biggest model. It does not move. It has the most rows; it has the most everything except a badge.' },
 ];
@@ -174,7 +170,7 @@ const plinthLook = (key: string, item: string, noun: string[], again: [string, s
 });
 const PLINTH_LOOKS: Rule[] = [
   plinthLook('certified', 'model-certified', ['certified', 'certified model', 'sales certified', 'badge', 'gold badge'], [
-    'The gold badge, again. Net Sales still has the checkmark. The badge took a steering committee and three meetings; you are giving it one squint.',
+    'Net Sales still has the checkmark. The badge took a steering committee; you are giving it one squint.',
     "You stare at the badge a third time. It does not get MORE certified. That's not how endorsement works.",
   ]),
   plinthLook('final2', 'model-final2', ['final2', 'final', 'sales_v3_final_final2', 'v3', 'sales v3', 'biggest', 'biggest model', 'big one'], [
@@ -210,10 +206,10 @@ export const COPILOT_ROOMS: Record<string, Room> = Object.fromEntries([
       { id: 'copilot.look-model', when: { verb: 'look', noun: ['model', 'semantic model'] }, then: { text: modelsText, outcome: 'success' } },
       ...PLINTH_LOOKS,
       { id: 'copilot.lean-plinth', when: { verb: 'use', noun: ['plinth', 'plinths', 'models'] }, then: { text: 'You lean on a plinth. The model on it recalculates a measure out of nerves.', outcome: 'fail' } },
-      { id: 'copilot.polish-badge', when: { verb: 'use', noun: ['badge', 'gold badge', 'certified', 'certified model'] }, then: { text: `You polish the badge. The certified model feels ${MALAPROPS.refreshered}. It was already certified; now it is shiny.`, outcome: 'snark' } },
+      { id: 'copilot.polish-badge', when: { verb: 'use', noun: ['badge', 'gold badge', 'certified', 'certified model'] }, then: { text: 'You polish the badge. It was already certified; now it is shiny.', outcome: 'snark' } },
     ],
     scene: () => 'copilot.gallery',
     enterQuip: () => 'Three models on plinths. One has a badge. The badge is not decorative.',
-    flaskHint: () => 'The one with the badge. Its name is the word Copilot is waiting for. Look at its measures, too.',
+    flaskHint: () => 'Give Copilot the name of the model with the badge; it is the word it is waiting for. Look at its measures, too.',
   }),
 ]);

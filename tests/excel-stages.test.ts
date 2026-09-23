@@ -38,7 +38,7 @@ describe('excelStage 0→5', () => {
   });
   it('Jeff at stage 0 sets excel.jeff.asked and points north; a second ask at the same stage is a variant', () => {
     const a = play([...IN, 'talk to jeff']);
-    expect(a.last[0]).toBe("\"It's 4.7. The report says 4.2. I exported the visual, I summed it, it's 4.7. Look, I trust my export. IT said something about 'Analyze in Excel' — that it connects to the actual model. It's on the Data tab. North. I never go north.\"");
+    expect(a.last[0]).toBe("\"The report says 4.2; my export says 4.7, and I trust my export. IT says 'Analyze in Excel', on the Data tab, connects to the real model. It's north. I never go north.\"");
     expect(a.s.flags['excel.jeff.asked']).toBe(true);
     const b = play([...IN, 'talk to jeff', 'talk to jeff']);
     expect(b.last[0]).not.toBe(a.last[0]);
@@ -205,7 +205,7 @@ describe('fix round 1: every one of Jeff\'s lines is reachable', () => {
     const { outs } = play([...IN, 'talk to jeff', 'talk to jeff', 'talk to jeff', 'talk to jeff', 'talk to jeff', 'talk to jeff']);
     const lines = outs.slice(1).map((o) => o[0]!);
     expect(new Set(lines).size).toBe(6);
-    expect(lines).toContain('"Analyze in Excel. Data tab. North. I said north. I meant it in the geographic sense."');
+    expect(lines).toContain('"Analyze in Excel, on the Data tab, north. I meant it in the geographic sense."');
     expect(lines).toContain('"Still 4.7. Still north. You keep asking like the answer is going to be south."');
   });
   it('stage 3: the third and later talks rotate, never the same line twice running', () => {
@@ -220,7 +220,7 @@ describe('fix round 1: every one of Jeff\'s lines is reachable', () => {
     let s = { ...newGame(WORLD, 8), room: 'village.square' };
     for (const c of base) s = step(s, c, WORLD).state;
     const third = step(s, 'filter by year', WORLD);
-    expect(third.box).toBe('Jeff, from Sheet1, not looking: "Is it done? Show me. `show jeff`. I can\'t look. I\'m looking."');
+    expect(third.box).toBe('Jeff, from Sheet1, not looking: "Show me: `show jeff`. I can\'t look. I\'m looking."');
     expect(step(s, 'add net sales', WORLD).box).toBeFalsy();
     expect(step(third.state, 'look', WORLD).output[0]).toMatch(/Sheet1 is west\. From Sheet1, Jeff: "Just show me the pivot\. I have my eyes closed\. They're open\. Show me\."/);
     expect(step(third.state, 'w', WORLD).output[0]).toMatch(/Jeff, not looking: "Show me\. I won't look\. I'm looking\. `show jeff`\."/);

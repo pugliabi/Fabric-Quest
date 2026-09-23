@@ -119,7 +119,7 @@ describe('something to do, give or use in every room', () => {
     ['lake.dock', ['timetable'], {}, ['give timetable to ferryman'], /timetable|schedule/i],
     ['lake.island', ['personal key'], {}, ['use personal key on plinth'], /yours alone/],
     ['swamp.bronze', ['stress ball'], {}, ['use stress ball'], /oddly calming. It is also oddly deprecated/],
-    ['swamp.bronze', ['stress ball'], {}, ['squeeze ball', 'squeeze ball', 'squeeze ball'], /most you have processed/],
+    ['swamp.bronze', ['stress ball'], {}, ['squeeze ball', 'squeeze ball', 'squeeze ball'], /forearm is now a star schema/],
     ['swamp.bronze', ['name tag'], {}, ['use name tag on csv'], /Column3/],
     ['swamp.silver', [], {}, ['read column names'], /Column3 is still Column3/],
     ['swamp.gold', ['shortcut'], {}, ['use shortcut on marsh'], /contains the marsh/],

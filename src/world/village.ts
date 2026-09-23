@@ -25,9 +25,9 @@ const again = (s: GameState, first: string, second: string): string => ((s.recen
 
 /** The scarecrow, triggered: the rule (`use manual`) and the Fields phrase (`refresh manual`, which the global egg.refresh would otherwise take). */
 const TRIGGER_MANUAL = 'You trigger Manual by hand. He refreshes. It takes eleven minutes. Nothing was waiting on it.';
-const triggerManual = (s: GameState): string => again(s, TRIGGER_MANUAL, `You trigger him again. Eleven more minutes. He is thoroughly ${MALAPROPS.refreshered} now, and nothing was waiting on that either.`);
+const triggerManual = (s: GameState): string => again(s, TRIGGER_MANUAL, `Eleven more minutes. He is thoroughly ${MALAPROPS.refreshered}. Still nothing waiting.`);
 /** A refresh, picked (the rule `get refresh` and the Fields phrase `pick a refresh`, since `pick` alone is not a parser verb). */
-const GET_REFRESH = `You pick a refresh. It fails in your hand. Error: the gateway is offline. Somewhere, a ferryman weeps. Not enough ${MALAPROPS.capacitude}.`;
+const GET_REFRESH = 'You pick a refresh. It fails in your hand. Error: the gateway is offline. Somewhere, a ferryman weeps.';
 const getRefresh = (s: GameState): string => again(s, GET_REFRESH, 'You pick another. Same error, other hand.');
 /**
  * The mug, drunk from, on the other three screens (the skill's environment variants: one object, a different joke on
@@ -38,9 +38,9 @@ const useMugNear = (s: GameState, cmd: { noun2?: string } | undefined, first: st
     ? 'Right idea, wrong verb. Jeff wants it GIVEN. He has been holding his hands out since spring.'
     : again(s, first, second));
 /** The chest, sat on: the rule (`use chest`) and the Mill phrase (`sit on chest`, which the global egg.sit would otherwise take). */
-const sitChest = (s: GameState): string => again(s, 'You sit on the chest. The Miller sits on the other end. Neither of you says anything for a scheduled interval.', 'You sit again. The Miller sits again. This is a standup now, and it is the good kind.');
+const sitChest = (s: GameState): string => again(s, 'You sit on the chest. The Miller sits on the other end. Neither of you says anything for a scheduled interval.', "You sit again. So does the Miller. It's a standup now, the good kind.");
 /** The desk, sat at: the rule (`use desk`) and the cottage phrase (`sit at desk`, ahead of egg.sit). */
-const sitDesk = (s: GameState): string => again(s, 'You sit at the desk and open the report. Page 12 is still a pie chart with 31 slices. You close the report. Somewhere, a dragon throttles.', "You sit at the desk again. It's where the report happened to you.");
+const sitDesk = (s: GameState): string => again(s, 'You sit at the desk. Page 12 is still a pie chart with 31 slices. Somewhere, a dragon throttles.', "You sit at the desk again. It's where the report happened to you.");
 
 /** The mug, in the Square or the Fields (he stands in both until the mug): Jeff is pacified and leaves the Fields for the well. */
 const giveMug = (prefix: string): Rule => ({
@@ -71,7 +71,7 @@ const jeffGifts = (prefix: string, flags: Cond[] = []): Rule[] => [
     then: {
       text: (s) => again(s,
         "Jeff puts on the lanyard. 'FabCon,' he says, reverently. 'They had Excel there.' He hands it back, changed.",
-        "He puts it on again. 'FabCon,' he says, less reverently. 'There was a queue for the Excel.' He hands it back."),
+        "'FabCon,' he says again, less reverently. He hands it back."),
       outcome: 'snark',
     },
   },
@@ -149,7 +149,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       'Go out. The quest is not in this cottage. It never was.',
     // The helper (Task B4): the desk has two things on it, and the one Jeff wants is not the report.
     nudge: {
-      plainer: (s) => (!s.flags['taken.mug'] ? "Jeff wants the thing you drink coffee out of. It says Okayest on it. He'd agree." : ''),
+      plainer: (s) => (!s.flags['taken.mug'] ? "Jeff wants the mug on your desk. It says Okayest on it. He'd agree." : ''),
     },
     rules: [
       // The voice sweep (Task F4): every gag here has a second line when it is typed again in a row (`again`).
@@ -189,12 +189,12 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'cottage.window',
         when: { verb: 'use', noun: ['window', 'glass', 'shutters'] },
-        then: { text: (s) => again(s, 'You open the window. Jeff from Finance, in the square, looks up hopefully. You close the window.', "You open it again. Jeff looks up again. This is a relationship now, and it's bidirectional."), outcome: 'fail' },
+        then: { text: (s) => again(s, 'You open the window. Jeff from Finance, in the square, looks up hopefully. You close the window.', "Jeff looks up again. It's bidirectional now."), outcome: 'fail' },
       },
       {
         id: 'cottage.open-window',
         when: { verb: 'open', noun: ['window', 'glass', 'shutters'] },
-        then: { text: (s) => again(s, 'You open the window. Jeff from Finance, in the square, looks up hopefully. You close the window.', "You open it again. Jeff looks up again. This is a relationship now, and it's bidirectional."), outcome: 'fail' },
+        then: { text: (s) => again(s, 'You open the window. Jeff from Finance, in the square, looks up hopefully. You close the window.', "Jeff looks up again. It's bidirectional now."), outcome: 'fail' },
       },
       // Right idea, wrong place: Jeff is in the square, and he hears the one word through any wall.
       {
@@ -222,7 +222,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'cottage.use-eventhouse',
         when: { verb: 'use', noun: ['eventhouse', 'event house', 'kql', 'logs'] },
-        then: { text: (s) => again(s, "You query the Eventhouse. It returns every command you've typed, with timestamps. You close it before turn 12.", 'You query it again. The newest row is you, querying it. The row before that is also you.'), outcome: 'snark' },
+        then: { text: (s) => again(s, "You query the Eventhouse. It returns every command you've typed, with timestamps. You close it before turn 12.", 'The newest row is you, querying it. So is the one before.'), outcome: 'snark' },
       },
     ],
   }),
@@ -248,8 +248,8 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       onward(s),
     nudge: {
       plainer: (s) =>
-        !s.flags['prophecy.read'] ? "It's a notice board. Notices are for reading. The prophecy is on it, and so is a feature request." :
-        !s.flags['jeff.pacified'] ? (s.inventory.includes('mug') ? 'Jeff. Mug. He has wanted it since spring and he is not going to ask nicely, because he cannot.' : "Jeff wants a mug. Yours is on your desk, west, where you left it and every other good idea.") :
+        !s.flags['prophecy.read'] ? 'The notice board is for reading. The prophecy is on it, and so is a feature request.' :
+        !s.flags['jeff.pacified'] ? (s.inventory.includes('mug') ? 'Jeff. Mug. He has wanted it since spring.' : "Jeff wants a mug. Yours is on your desk, west, where you left it and every other good idea.") :
         '',
     },
     rules: [
@@ -283,7 +283,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
         then: {
           text: (s) => (isFlood(s)
             ? "You say 'DAX' in the square. Every Jeff flinches at once. It sounds like a spreadsheet closing."
-            : again(s, `You say 'DAX' in the square. Jeff flinches like a man who has been ${MALAPROPS.daxxed} before.`, `You say it again. Jeff flinches again. ${MALAPROPS.daxxed} twice in one afternoon, once by you.`)),
+            : again(s, `You say 'DAX' in the square. Jeff flinches like a man who has been ${MALAPROPS.daxxed} before.`, `Jeff flinches again. He's been ${MALAPROPS.daxxed} twice today.`)),
           outcome: 'snark',
         },
       },
@@ -293,7 +293,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'say', noun: ['excel', 'export', 'spreadsheet'] },
         then: {
           text: (s) => (isFlood(s) ? 'Every Jeff turns at once. They all have Excel open. It was a mistake.'
-            : s.flags['jeff.pacified'] ? "Jeff, content, does not turn. He nods at his mug. He heard the word. He has chosen the mug."
+            : s.flags['jeff.pacified'] ? 'Jeff, content, does not turn. He heard the word. He has chosen the mug.'
             : "Jeff's head turns like a Card finding a measure. 'Yes?' he says. 'YES?' You have made a mistake."),
           outcome: 'snark',
         },
@@ -311,7 +311,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'village.well-ask',
         when: { verb: 'use', noun: ['well', 'q&a well', 'qa well'] },
-        then: { text: (s) => again(s, "You ask the well a question. It answers: '$4,213,908.' You did not ask about money.", "You ask again. '$4,213,908.' Same number. It's not a well, it's a measure."), outcome: 'snark' },
+        then: { text: (s) => again(s, "You ask the well a question. It answers: '$4,213,908.' You did not ask about money.", "'$4,213,908.' Same number. It's not a well, it's a measure."), outcome: 'snark' },
       },
       ...jeffGifts('square'),
       {
@@ -376,7 +376,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       ? 'Go south. When you reach the OneLake dock, give those credentials to the Ferryman. He has been waiting since 2021.'
       : 'Talk to the Miller. Or just open the chest. He will not stop you. He stopped stopping people in 2019.'),
     nudge: {
-      plainer: (s) => (s.flags['has.credentials'] ? '' : 'The chest says CREDENTIALS. The Miller says nothing. Neither of them is locked.'),
+      plainer: (s) => (s.flags['has.credentials'] ? '' : "The chest marked CREDENTIALS isn't locked. Neither is the Miller."),
     },
     rules: [
       // The voice sweep (Task F4): the Miller's derailments go first, so an `about` beats the credentials hand-over
@@ -386,8 +386,8 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'talk', noun: MILLER, noun2: ['gen2', 'gen 2', 'dataflow gen2', 'gen1', 'gen 1'] },
         then: {
           text: (s) => again(s,
-            "'Gen2? Gen2 is Gen1 with a haircut,' says the Miller. 'No. Wait. It's the other way. Gen1's the one with the haircut.' (You see where this is going.)",
-            "'The haircut one,' says the Miller. 'Gen1. No. Look, ONE of them has the haircut.'"),
+            "'Gen2? Gen2 is Gen1 with a haircut,' says the Miller. 'No, wait. The other way.'",
+            "'Look,' says the Miller. 'ONE of them has the haircut.'"),
           outcome: 'success',
         },
       },
@@ -480,7 +480,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'mill.use-creds',
         when: { verb: 'use', noun: ['credentials', 'creds', 'gen1 credentials', 'password', 'parchment'], has: ['credentials'] },
-        then: { text: (s) => again(s, 'Good idea. Wrong screen. The man who weeps for these is at the dock, and he has been practicing his face.', 'Still the wrong screen. The dock is south, then south, then east, and it knows you are coming.'), outcome: 'fail' },
+        then: { text: (s) => again(s, 'Good idea. Wrong screen. The man who weeps for these is at the dock.', 'Still the wrong screen. The dock is south, south, then east.'), outcome: 'fail' },
       },
       // Object consumed: he will not take the creds back, and he reads your license like a photograph.
       {
@@ -525,7 +525,7 @@ export const VILLAGE_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'fields.manual-monday',
         when: { verb: 'talk', noun: MANUAL, noun2: ['monday', 'the sign', 'sign', 'his sign', 'full refresh', 'the full refresh'] },
-        then: { text: (s) => again(s, 'Manual says nothing about Monday. The sign says it for him. It has said it every day since, which is the trouble with signs.', "He still won't say it. The sign still will."), outcome: 'success' },
+        then: { text: (s) => again(s, 'Manual says nothing about Monday. The sign around his neck says it for him.', "He still won't say it. The sign still will."), outcome: 'success' },
       },
       ...jeffAsks('fields', [{ flag: 'jeff.pacified', not: true }]),
       // The one word, out here: Jeff turns, and so does something that was not built to. Once he has the mug, nothing does.
@@ -630,7 +630,7 @@ const ANSWER = '(say |publish( (the |my |this )?(report|pbix|file|it))? to )?';
 const MINE = new RegExp(`^${ANSWER}my workspace$`);
 const WEB = new RegExp(`^${ANSWER}(the )?(entire internet|internet|web)$`);
 // The kill, the card line, then the blame (spec1 §5.4); the engine appends the sign-off.
-const WEB_DEATH = 'You publish to web. The embed code is beautiful. The dragon has your report. So does everyone.\nYou published to web. The prophecy said nothing about this, because the prophecy is also on the web now. The dialog listed two options and you picked the one with the word ENTIRE in it.';
+const WEB_DEATH = 'You publish to web. The embed code is beautiful. The dragon has your report. So does everyone.\nYou published to web. The dialog listed two options and you picked the one with the word ENTIRE in it.';
 
 /** Cottage-scoped (and one Fields line); registered right after TOWNHALL_PHRASES (world/index.ts), ahead of the global egg.publish. */
 export const WORKSPACE_PHRASES: PhraseRule[] = [
@@ -675,10 +675,10 @@ export const VILLAGE_PHRASES: PhraseRule[] = [
       : s.room === COTTAGE && !s.flags['taken.mug'] ? { then: { text: "It's on the desk, where it has been fermenting since spring. You'd have to touch it.", outcome: 'snark' } }
       : null),
   },
-  { id: 'mill.turn-wheel', room: 'village.mill', test: /^(turn|spin|crank|rotate)( the)?( mill| water)? wheel$/, text: (s) => again(s, 'You turn the wheel by hand. One refresh. It succeeds, which nobody has seen since 2019, and nobody saw now.', "You turn it again. The Miller looks up. 'That's a schedule now.'") },
+  { id: 'mill.turn-wheel', room: 'village.mill', test: /^(turn|spin|crank|rotate)( the)?( mill| water)? wheel$/, text: (s) => again(s, 'You turn the wheel by hand. One refresh. It succeeds. Nobody has seen that since 2019.', "You turn it again. The Miller looks up. 'That's a schedule now.'") },
   { id: 'mill.stop-wheel', room: 'village.mill', test: /^(stop|halt|block|hold)( the)?( mill| water)? wheel$/, text: (s) => again(s, 'You lean on the wheel. It stops. Then it starts again; the schedule is stronger than you.', 'It stops. It starts. You are not on the schedule.') },
   { id: 'mill.upgrade', room: 'village.mill', test: /^(upgrade|migrate|convert|modernize|modernise)( (the |this )?(mill|dataflow|it|gen ?1|wheel))?( to gen ?2)?$/, text: (s) => again(s, "You click Upgrade. A dialog: 'This will create a Gen2 copy. The Gen1 will remain.' Everything in this realm remains.", 'You upgraded already. There are two mills now. Nobody has told the Miller.') },
-  { id: 'fields.scare-crows', room: 'village.fields', test: /^(scare|shoo|chase)( the| away the)? (crows|birds|crow)( away)?$/, text: (s) => again(s, 'You flap your arms at the crows. They were not here for the refreshes. They were here for you. They leave, disappointed.', 'You flap again. Nothing leaves. The crows are gone and the refreshes were never scared of you.') },
+  { id: 'fields.scare-crows', room: 'village.fields', test: /^(scare|shoo|chase)( the| away the)? (crows|birds|crow)( away)?$/, text: (s) => again(s, 'You flap your arms at the crows. They were not here for the refreshes. They were here for you. They leave, disappointed.', 'You flap again. The crows are gone. The refreshes were never scared.') },
   { id: 'fields.water-crops', room: 'village.fields', test: /^(water|tend|weed|feed)( the)? (crops|refreshes|refresh|rows|fields?)$/, text: (s) => again(s, 'You water the refreshes. They fail, but wetter.', 'Wetter still. Same fail.') },
   { id: 'fields.pick-refresh', room: 'village.fields', test: /^(pick|harvest|pluck|gather)( a| the| some)? (refresh|refreshes|crops|rows)$/, text: getRefresh },
 ];

@@ -21,20 +21,20 @@ const OPEN = { flags: { 'trial.hoodie': true, 'trial.moat': true, 'trial.key': t
 describe('Peaks sweep: the plan lines', () => {
   it('foothills, pass, ledge', () => {
     expect(one('peaks.foothills', 'climb the mountain')).toBe('You climb. The mountain bills you per vertical second. You stop at the first ledge to check the invoice.');
-    expect(one('peaks.foothills', 'look at sign')).toMatch(new RegExp(`BRING ${MALAPROPS.capacitude.toUpperCase()}\\.$`));
+    expect(one('peaks.foothills', 'look at sign')).toMatch(/PLEASE DO NOT FEED THE DRAGON\.$/);
     expect(one('peaks.pass', 'pay')).toBe('You try to pay the receipt. The Pass accepts Capacity Units only. You have a Pro license and, at this altitude, opinions.');
-    expect(one('peaks.pass', 'look')).toMatch(/The wind sounds like an MSN Messenger nudge\./);
+    expect(one('peaks.pass', 'look')).toMatch(/billed per second\./);
     expect(one('peaks.ledge', 'use carabiner', ['license', 'carabiner'])).toBe('You clip the carabiner to yourself. Rated F64. You are, at best, F2.');
-    expect(one('peaks.ledge', 'look at door')).toMatch(new RegExp(`The door ${MALAPROPS.refreshered} its sigils while you were not looking\\.$`));
+    expect(one('peaks.ledge', 'look at door')).toMatch(/^A great door carved with three sigils: a HOODIE, three wavy STINK LINES, and a KEY\. The hoodie sigil is dark\./);
   });
   it('shrine', () => {
     // Deviation: the first ask about the model keeps the two-word hint (tests/npc-talk.test.ts pins it); the second, in a row, says too much.
     const [first, second] = run(at('peaks.shrine'), ['ask throttlor about the model', 'ask throttlor about the model']);
     expect(first).toMatch(/Two words, peasant\. One fact table/);
-    expect(second).toBe("'The model,' says Throttlor, 'is one table.' He pauses. 'I mean. It's golden. It's ONE golden table.' He looks at the pedestal. 'Don't look inside.'");
+    expect(second).toBe("'The model,' says Throttlor, 'is one golden table.' He glances at the pedestal. 'Don't look inside.'");
     expect(one('peaks.shrine', 'use model')).toBe('You reach past a dragon for the Model. He clears his throat, in smoke.');
     expect(one('peaks.shrine', 'look at pedestal')).toBe('A pedestal, plinth-grade. It has held the Model since the last capacity outage; before that, it held a different Model, also golden, also one table.');
-    expect(one('peaks.shrine', 'say calculate')).toMatch(new RegExp(`You have been ${MALAPROPS.daxxed} by a dragon\\. Add it to the bill\\.$`));
+    expect(one('peaks.shrine', 'say calculate')).toBe('Throttlor yawns. Context transition means nothing to a dragon.');
   });
 });
 
@@ -42,7 +42,7 @@ describe('Peaks sweep: beyond the plan', () => {
   it('the Shrine door is a progress gate: n of 3, adjusted for what is done, a new nickname each look', () => {
     const zero = run(at('peaks.ledge'), ['look at door', 'look at door', 'look at door']);
     expect(zero[1]).toMatch(/^Zero of 3, [^.]+\. You don't LOOK like an Engineer, you don't SMELL like a Warehouse and you're not HOLDING the Key\. The door has had better peasants\.$/);
-    expect(zero[2]).toMatch(/^Zero of 3, .*screensaver of pipes; staring does not make them move\.$/);
+    expect(zero[2]).toMatch(/^Zero of 3, [^.]+\. You don't LOOK like an Engineer, you don't SMELL like a Warehouse and you're not HOLDING the Key\. The door has had better peasants\.$/);
     expect(zero[2]!.split('.')[0]).not.toBe(zero[1]!.split('.')[0]); // a new nickname
     const one3 = run(at('peaks.ledge', { flags: { 'trial.moat': true } }), ['look at sigils', 'look at sigils'])[1]!;
     expect(one3).toMatch(/^One of 3, [^.]+\. Frankly, you smell like a Warehouse\. But you don't LOOK like an Engineer and you're not HOLDING the Key\.$/);
@@ -78,7 +78,7 @@ describe('Peaks sweep: beyond the plan', () => {
     expect(one('peaks.shrine', 'ask throttlor about the warehouse')).toMatch(/You ARE the Warehouse\..*a view nobody documented\.'$/);
     const looks = run(at('peaks.shrine'), ['look at throttlor', 'look at throttlor']);
     expect(looks[1]).toMatch(/^Still THROTTLOR\./);
-    expect(run(at('peaks.shrine'), ['look at model', 'look at model'])[1]).toMatch(/Ask the Duke about his moat\.$/);
+    expect(run(at('peaks.shrine'), ['look at model', 'look at model'])[1]).toBe('Still perfect, from here. Everything is, from far enough away.');
     expect(step(at('peaks.shrine', { inventory: ['license', 'capacityade'] }), 'give capacityade to throttlor', WORLD).output.find((l) => l !== DELAY)).toMatch(/I don't drink my own product/);
   });
   it('the Pass: the interactive delay without boots, in boots, and with Autoscale', () => {
@@ -94,7 +94,7 @@ describe('Peaks sweep: beyond the plan', () => {
     const ade = run(at('peaks.pass', { inventory: ['license', 'capacityade'] }), ['look at capacityade', 'look at capacityade', 'look at capacityade']);
     expect(ade[1]).toMatch(/always standing on one\.$/); expect(ade[2]).toMatch(/started on the death text\.$/);
     expect(run(at('peaks.pass'), ['look at receipt', 'look at receipt'])[1]).toMatch(/1 look at a receipt, 400 CU-seconds\.$/);
-    expect(run(at('peaks.pass'), ['look at rocks', 'look at rocks'])[1]).toMatch(/That is the whole Pass, in rocks\.$/);
+    expect(run(at('peaks.pass'), ['look at rocks', 'look at rocks'])[1]).toMatch(/That look took longer than the first one\.$/);
     expect(run(at('peaks.ledge', { inventory: ['license', 'carabiner'] }), ['look at carabiner', 'look at carabiner'])[1]).toBe('Still F64. You checked twice. You are still not F64.');
     expect(run(at('peaks.shrine'), ['look at pedestal', 'look at pedestal'])[1]).toMatch(/outlast your interest\.$/);
     expect(run(at('peaks.foothills'), ['climb mountain', 'climb mountain'])[1]).toMatch(/late fee\./);

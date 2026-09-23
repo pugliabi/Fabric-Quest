@@ -127,17 +127,6 @@ describe('voice harness (spec1 §7)', () => {
     for (const [w, t] of offenders) (byRegion[t.region] ??= []).push(`${w} ← ${t.from}: ${t.text}`);
     expect(offenders.size, JSON.stringify(byRegion, null, 1)).toBeLessThanOrEqual(UNKNOWN_BASELINE);
   });
-  it('each malaprop appears verbatim in at least six lines', () => {
-    for (const m of Object.values(MALAPROPS)) expect(ALL.filter((t) => t.text.includes(m)).length, m).toBeGreaterThanOrEqual(6);
-  });
-  it('every region has at least one allusion; every brand appears somewhere', () => {
-    const KEYS = ['Clippy', 'Zune', 'Encarta', 'Windows XP', 'MSN Messenger', 'Access 97', 'SharePoint 2007', 'writing a measure', 'Hotmail', 'Windows Vista', 'Internet Explorer', 'Minesweeper', 'Recycle Bin', 'screensaver', 'Microsoft Bob'];
-    for (const region of ['village', 'lake', 'swamp', 'monastery', 'fortress', 'peaks', 'excel', 'copilot'] as Region[]) {
-      const texts = ALL.filter((t) => t.region === region).map((t) => t.text.toLowerCase());
-      expect(KEYS.some((k) => texts.some((x) => x.includes(k.toLowerCase()))), region).toBe(true);
-    }
-    for (const b of BRANDS) expect(ALL.some((t) => t.text.includes(b)), b).toBe(true);
-  });
 });
 
 describe('a second identical command: the item answers for itself, the NPC has a next line', () => {

@@ -19,8 +19,8 @@ export function realmBlocked(realm: Realm, s: GameState): string | null {
 
 /** The goal cards (spec1 §2.1, §2.2). `header — body` is the box; `goal` inside the realm repeats the body plus the room's next step. */
 export const GOAL: Record<Realm, { header: string; body: string }> = {
-  excel: { header: "JEFF'S EXCEL", body: "Jeff's export says $4.7M. The report says $4.2M. Jeff: \"I'll keep what's in my export. I trust it more.\" Help Jeff find the truth. +20 bonus. EXIT leaves any time." },
-  copilot: { header: 'COPILOT', body: 'Get one number out of Copilot: Q4 2025 Northeast net sales, from the certified model. It will show you everything else first. Tell it what you want, a piece at a time, or all at once. +25 bonus. EXIT leaves any time.' },
+  excel: { header: "JEFF'S EXCEL", body: "Help Jeff find the truth. His export says $4.7M, the report says $4.2M, and Jeff says: 'I'll keep what's in my export. I trust it more.' +20 bonus. EXIT leaves any time." },
+  copilot: { header: 'COPILOT', body: 'Get one number out of Copilot: Q4 2025 Northeast net sales, from the certified model. Tell it a piece at a time, or all at once; it will show you everything else first. +25 bonus. EXIT leaves any time.' },
 };
 export const MAIN_GOAL = "Find the Golden Semantic Model. Read the notice board if you forgot how. (Inside a side quest, GOAL tells you that quest's goal.)";
 

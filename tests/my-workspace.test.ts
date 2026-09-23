@@ -38,7 +38,7 @@ describe('My Workspace (spec2 §7)', () => {
     const on = one(c);
     expect(on.state.dead).toBe(true); expect(on.deathCause).toBe('death.publish-web');
     expect(on.output.join(' ')).toContain('You publish to web. The embed code is beautiful. The dragon has your report. So does everyone.');
-    expect(on.output.join(' ')).toContain('You published to web. The prophecy said nothing about this, because the prophecy is also on the web now.');
+    expect(on.output.join(' ')).toContain('You published to web. The dialog listed two options and you picked the one with the word ENTIRE in it.');
     const off = one(c, { 'ts.publishToWeb': false });
     expect(off.state.dead).toBe(false);
     expect(off.output[0]).toBe('Publish to web is disabled by your administrator. For once, thank them.');
@@ -46,7 +46,7 @@ describe('My Workspace (spec2 §7)', () => {
   it('the death ends on the sign-off, once', () => {
     const on = one('publish to web');
     // F2: the blame beat sits between the card line and the sign-off.
-    expect(on.output[on.output.length - 1]).toMatch(/on the web now\. The dialog listed two options and you picked the one with the word ENTIRE in it\. You dead\. Refresh failed\.$/);
+    expect(on.output[on.output.length - 1]).toMatch(/You published to web\. The dialog listed two options and you picked the one with the word ENTIRE in it\. You dead\. Refresh failed\.$/);
     expect(on.output.join(' ').match(/You dead\. Refresh failed\./g)).toHaveLength(1);
   });
   it('publish elsewhere', () => {

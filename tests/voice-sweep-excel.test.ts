@@ -4,7 +4,6 @@ import { describe, expect, it } from 'vitest';
 import { newGame, step } from '../src/engine/step';
 import type { GameState } from '../src/engine/types';
 import { WORLD } from '../src/world';
-import { MALAPROPS } from '../src/world/voice';
 
 const one = (room: string, cmd: string, flags: Record<string, boolean | number> = { 'sq.return': 1 }) => step({ ...newGame(WORLD, 3), room, flags }, cmd, WORLD).output[0]!;
 /** The same command typed n times in a row: each turn's first line. */
@@ -22,15 +21,15 @@ describe('Excel sweep', () => {
     expect(one('excel.sheet1', 'use tissues')).toBe('You hand Jeff a tissue. He blows his nose into a printout of the total instead. It rounds up.');
     expect(one('excel.sheet1', 'save workbook')).toBe('Saved as Sales_export (4).csv. The (3) was the good one. It always is.');
     expect(one('excel.sheet1', 'look at cell a1')).toBe('Cell A1. Blinking. Somewhere in it, Clippy is composing a suggestion.');
-    expect(one('excel.sheet1', 'look at export')).toMatch(new RegExp(`It has no more ${MALAPROPS.capacitude}\\.$`));
+    expect(one('excel.sheet1', 'look at export')).toMatch(/Jeff trusts it\.$/);
   });
   it('Data tab and pivot', () => {
     expect(one('excel.data', 'use ribbon')).toBe('You click the Home tab. Then Insert. Then Data. The ribbon has seen people wander before.');
     expect(one('excel.data', 'look at connection')).toBe('Analyze in Excel (.odc). Sign-in required.');
     const built = { 'sq.return': 1, 'excel.connected': true, 'excel.pivot': true };
-    expect(one('excel.pivot', 'refresh', built)).toBe(`You refresh the pivot. It says the same number, but bolder. It feels ${MALAPROPS.refreshered}.`);
+    expect(one('excel.pivot', 'refresh', built)).toBe('You refresh the pivot. It says the same number, but bolder.');
     expect(one('excel.pivot', 'format pivot', built)).toBe('You format the pivot. Banded rows. Jeff likes banded rows. The number is still wrong, now in stripes.');
-    expect(one('excel.pivot', 'add measure', built)).toBe(`You add a measure to a pivot. You have ${MALAPROPS.daxxed} a spreadsheet. Jeff will never forgive you, and he will never notice.`);
+    expect(one('excel.pivot', 'add measure', built)).toBe('You add a measure to a pivot. Jeff will never forgive you, and he will never notice.');
   });
 });
 
@@ -85,7 +84,7 @@ describe('Excel voice adds', () => {
   });
   it('Jeff argues with his own export, once he has told you about it', () => {
     const [a, b] = times('excel.sheet1', 'ask jeff about the export', 2, { 'sq.return': 1, 'excel.jeff.asked': true });
-    expect(a).toMatch(/^'My export,' says Jeff/);
+    expect(a).toMatch(/^'My export says 4\.7,' says Jeff/);
     expect(b).not.toBe(a);
     // Stage 0: the exposition still comes first.
     expect(one('excel.sheet1', 'ask jeff about the export')).toMatch(/I trust my export/);

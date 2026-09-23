@@ -125,7 +125,7 @@ export function replyFor(slots: Slots, stage: Stage, opts: { tables: boolean; po
       if (slots.model === 'test') return done('From sales_test_DO_NOT_USE: $12. The sign said not to. I did anyway.', 'table');
       return done(opts.tables ? FOURTEEN : 'I found 3 semantic models with sales: Sales (Certified), Sales_v3_FINAL_final2, sales_test_DO_NOT_USE. Which one?', 'list');
     case 2:
-      if (slots.measure === 'amount') return done("Sales Amount, Sales (Certified): $4,285,337. That includes Returns. Returns are $83,960. Just so you know. I didn't subtract them. You didn't ask.", 'card');
+      if (slots.measure === 'amount') return done("Sales Amount, Sales (Certified): $4,285,337. That includes Returns, $83,960; I didn't subtract them, and you didn't ask.", 'card');
       if (slots.measure === 'gross') return done('Gross Sales, Sales (Certified): $4,285,337. Gross is Sales Amount with a nicer name. Returns are still in there.', 'card');
       if (slots.measure === 'returns') return done('Returns, Sales (Certified): $83,960. That is the opposite of what you sell. I can subtract it from something if you name the something.', 'card');
       return done(opts.tables ? 'From Sales (Certified): 14 tables. The Sales table has 400 rows. Here they are.' : 'Sales in Sales (Certified): I found 6 measures: Sales Amount, Net Sales, Gross Sales, Returns, Sales YTD, Measure 2 (copy). Which?', opts.tables ? 'raw' : 'list');

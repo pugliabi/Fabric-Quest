@@ -57,7 +57,7 @@ export function unwrap(raw: string): Unwrapped {
 const SHOUT_OK = [
   'Ye did it, and ye did it LOUDLY.',
   'Whoa. Okay. It worked. No need to punch the keyboard.',
-  "The realm heard that in the back row. Result: the same. Everyone's awake now, though.",
+  "The realm heard that in the back row. Everyone's awake now.",
   'Enthusiasm accepted. Points unchanged. Volume logged.',
   'Great job. Somebody get this peasant a cold one.',
 ];
@@ -94,7 +94,7 @@ const SHOUT_MANY = [
   'Three exclamation marks. The realm has opened a ticket.',
   'That many exclamation marks is a P1. Response time: four business days.',
   'The punctuation budget for this quest is exhausted. Refills at the Mill.',
-  '!!! is not in the sudoers file either.',
+  '!!! is not in the sudoers file.',
   'Okay. OKAY. We heard you. So did the dragon.',
 ];
 

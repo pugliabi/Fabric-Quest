@@ -6,7 +6,7 @@ import { isFlood, setting } from '../engine/governance';
 import { doorChecklist, sigilStatus } from './items';
 import { xmlaRouteFrom } from './sacristy';
 import { ADE, ADE_DEATH } from './deaths';
-import { MALAPROPS, nick, rotate } from './voice';
+import { nick, rotate } from './voice';
 
 const room = (r: Room): [string, Room] => [r.id, r];
 /** The same command again, in a row (read off `recent`, no flag moves): the second line is the repeat joke. */
@@ -92,12 +92,12 @@ export const PEAKS_PHRASES: PhraseRule[] = [
   {
     id: 'peaks.climb', room: 'peaks.foothills', test: /^(climb|scale|ascend)( the| up the)? (mountain|peaks?|capacity peaks)$/,
     text: (s) => again(s, 'You climb. The mountain bills you per vertical second. You stop at the first ledge to check the invoice.',
-      'You climb again. Same first ledge, same invoice, now with a late fee. East is the Pass, which is the part of the mountain with a path.'),
+      'Same ledge, same invoice, now with a late fee. The path is east.'),
   },
   {
     id: 'peaks.pay', room: 'peaks.pass', test: /^(pay|pay (the )?(receipt|bill)|settle up)$/,
     text: (s) => again(s, 'You try to pay the receipt. The Pass accepts Capacity Units only. You have a Pro license and, at this altitude, opinions.',
-      'You try again. Declined again. The Pass has no card reader, just a dragon, further up.'),
+      'Declined again. The Pass has no card reader, just a dragon.'),
   },
   {
     // The interactive delay, three ways: in your shoes, in the boots, and with Autoscale on in the Sacristy.
@@ -125,7 +125,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
       s.inventory.includes('boots') ? 'Wear the boots. Then go east. You have been carrying them like a souvenir.' :
       "Go north to the Keep's Report Studio and get boots. East is slow going without them. Or go east anyway, slowly, like a refresh.",
     nudge: {
-      plainer: (s) => (worthy(s) && s.inventory.includes('boots') && !s.worn.includes('boots') ? "Bursting Boots. It's on the label, and the label is on your feet or it's nothing." : ''),
+      plainer: (s) => (worthy(s) && s.inventory.includes('boots') && !s.worn.includes('boots') ? 'The Bursting Boots only work on your feet.' : ''),
     },
     rules: [
       {
@@ -144,7 +144,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
     id: 'peaks.pass', name: 'Throttling Pass', region: 'peaks',
     enterQuip: () => 'Throttling Pass. Every step costs more than the last one. Like a consultant.',
     describe: () =>
-      'The Throttling Pass. Every step takes longer than the last. The air is thin and billed per second. The Bursting Ledge is north; the foothills, west. The wind sounds like an MSN Messenger nudge.',
+      'The Throttling Pass. Every step takes longer than the last. The air is thin and billed per second. The Bursting Ledge is north; the foothills, west.',
     exits: { w: 'peaks.foothills', n: 'peaks.ledge' },
     items: ['rocks', 'receipt', 'capacityade'],
     npcs: [],
@@ -221,7 +221,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'peaks.use-carabiner',
         when: { verb: 'use', noun: ['carabiner', 'clip', 'karabiner'], has: ['carabiner'] },
-        then: { text: (s) => again(s, 'You clip the carabiner to yourself. Rated F64. You are, at best, F2.', 'You clip it to yourself again. Still F2. The carabiner has started to look away.'), outcome: 'fail' },
+        then: { text: (s) => again(s, 'You clip the carabiner to yourself. Rated F64. You are, at best, F2.', 'Still F2. The carabiner has started to look away.'), outcome: 'fail' },
       },
       {
         id: 'peaks.attack-door',
@@ -250,7 +250,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
     nudge: {
       plainer: (s) => (s.flags['dragon.gone']
         ? "It's the Golden Semantic Model and it's yours. Pick it up. Do not open it."
-        : "It's a shape. One fat table in the middle, skinny ones around it, and the name is something you'd wish on."),
+        : "The answer is a shape: one fat table in the middle, skinny ones around it. Its name is something you'd wish on."),
     },
     rules: [
       // Asked about the model twice in a row, he stops hinting and says too much (Task F8); the first ask keeps the two-word hint.
@@ -259,7 +259,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'talk', noun: DRAGON, noun2: ['model', 'the model', 'golden semantic model', 'semantic model', 'the golden semantic model', 'one true model', 'the one true model'], flags: DRAGON_THERE },
         then: {
           text: (s, world, cmd) => again(s, talkTo(s, world, world.npcs['throttlor']!, cmd?.noun2),
-            "'The model,' says Throttlor, 'is one table.' He pauses. 'I mean. It's golden. It's ONE golden table.' He looks at the pedestal. 'Don't look inside.'"),
+            "'The model,' says Throttlor, 'is one golden table.' He glances at the pedestal. 'Don't look inside.'"),
           outcome: 'success',
         },
       },
@@ -267,7 +267,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
         // The derailment: ask about the Warehouse and he can only talk about how you smell.
         id: 'peaks.dragon-warehouse',
         when: { verb: 'talk', noun: DRAGON, noun2: ['warehouse', 'the warehouse', 'fabric warehouse', 'moat', 'the moat', 'smell'], flags: DRAGON_THERE },
-        then: { text: "'Don't bring up the Warehouse,' says Throttlor. 'You ARE the Warehouse. I can taste it from here. It tastes like a view nobody documented.'", outcome: 'success' },
+        then: { text: "'Don't bring up the Warehouse,' says Throttlor. 'You ARE the Warehouse. You taste like a view nobody documented.'", outcome: 'success' },
       },
       {
         // The brush-off, varied (Task F8): the first unknown topic gets his voice.ts line (through talkTo, below); once you have
@@ -289,7 +289,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'death.dragon',
         when: { verb: 'attack', noun: DRAGON, flags: [{ flag: 'dragon.gone', not: true }] },
-        then: { text: 'You charge Throttlor. He breathes a single, precise jet of flame. Your refresh has been throttled. Permanently. You knew you were supposed to TALK to him, right? You read the ledger.', death: 'death.dragon' },
+        then: { text: 'You charge Throttlor. He breathes a single, precise jet of flame. Your refresh has been throttled. Permanently. You knew you were supposed to TALK to him, right?', death: 'death.dragon' },
       },
       {
         id: 'peaks.rock-dragon',
@@ -317,7 +317,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'peaks.dragon-calculate',
         when: { verb: 'say', noun: ['calculate', 'dax', 'measure', 'a measure'], flags: [{ flag: 'dragon.gone', not: true }] },
-        then: { text: `Throttlor yawns. Context transition means nothing to a dragon. You have been ${MALAPROPS.daxxed} by a dragon. Add it to the bill.`, outcome: 'snark' },
+        then: { text: 'Throttlor yawns. Context transition means nothing to a dragon.', outcome: 'snark' },
       },
       {
         id: 'peaks.dragon-flat',
@@ -361,7 +361,7 @@ export const PEAKS_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'peaks.look-model-guarded',
         when: { verb: 'look', noun: MODEL, flags: [{ flag: 'dragon.gone', not: true }] },
-        then: { text: (s) => again(s, 'The Golden Semantic Model glows behind the dragon. From here it looks perfect. From here.', 'Still perfect, from here. Everything is perfect from far enough away. Ask the Duke about his moat.'), outcome: 'success' },
+        then: { text: (s) => again(s, 'The Golden Semantic Model glows behind the dragon. From here it looks perfect. From here.', 'Still perfect, from here. Everything is, from far enough away.'), outcome: 'success' },
       },
       {
         id: 'peaks.model',

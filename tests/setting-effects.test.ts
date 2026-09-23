@@ -43,7 +43,7 @@ describe('fabricItems / workloads off', () => {
   const chamber = { inventory: ['license', 'scroll'] };
   it('the scroll cannot fix the notebook; on again, it can', () => {
     const off = one('monastery.spark', 'use scroll on notebook', { 'ts.fabricItems': false }, chamber);
-    expect(off.output[0]).toBe('Notebook creation is disabled for your tenant. Brother Pandas creates a Power BI report instead. It has one card. It says 1.');
+    expect(off.output[0]).toBe('Notebook creation is disabled for your tenant. Brother Pandas makes a Power BI report instead: one card, and it says 1.');
     expect(off.state.flags['notebook.fixed']).toBeUndefined(); expect(off.state.score).toBe(0);
     const delegated = one('monastery.spark', 'give scroll to pandas', { 'ts.workloads': false }, chamber);
     expect(delegated.output[0]).toMatch(/\(Delegated\. Also off\.\)$/);
@@ -77,8 +77,8 @@ describe('feedback, usage, monitoring, discover, surge', () => {
   });
   it('monitoring: an Eventhouse in My Workspace', () => {
     expect(one('village.cottage', 'look', { 'ts.monitoring': true }).output[0]).toContain('A read-only Eventhouse hums in the corner. It is logging this sentence.');
-    expect(one('village.cottage', 'look at eventhouse', { 'ts.monitoring': true }).output[0]).toBe('It has already logged that you looked.');
-    expect(one('village.cottage', 'look at eventhouse').output[0]).not.toBe('It has already logged that you looked.');
+    expect(one('village.cottage', 'look at eventhouse', { 'ts.monitoring': true }).output[0]).toBe('An Eventhouse. It has already logged that you looked.');
+    expect(one('village.cottage', 'look at eventhouse').output[0]).not.toBe('An Eventhouse. It has already logged that you looked.');
   });
   it('discover off: the badge has no name, and Copilot still wins', () => {
     const g = at('copilot.gallery', { 'ts.discover': false, 'sq.return': 1 });
@@ -118,7 +118,7 @@ describe('Brother Pandas, escalated, with no Notebook', () => {
     const lines: string[] = [];
     for (let i = 0; i < 5; i++) { const r = step(s, 'talk to pandas', WORLD); lines.push(r.output[0]!); s = r.state; }
     expect(lines[0]).toBe('"I can make a report. I can make a dashboard. I cannot make a Notebook. Who did this."');
-    expect(lines[1]).toMatch(/^"Who did this," Brother Pandas says again\./);
+    expect(lines[1]).toMatch(/^"Who did this," Brother Pandas says again, looking at you\./);
     expect(lines[2]).toMatch(/Sacristy/);
     expect(new Set(lines).size).toBe(5);
     expect(s.flags['talk.pandas']).toBe(5);
@@ -272,7 +272,7 @@ describe('fix rounds 2–3: no hint, NPC line or gate line names a command the s
   // What each non-default setting refuses, as a hint might name it. Every pattern here is proven live at default below;
   // the Excel triggers (`show me a table`, `open excel`, …), `give scroll to` and every Copilot trigger are absent because
   // no main-realm hint ever names them, so they could not be asserted against.
-  const NOTEBOOK = [/use (the )?scroll on/i, /use it on (the )?notebook/i, /notebook\. use it\./i, /use the scroll on it/i, /goes on the notebook/i];
+  const NOTEBOOK = [/use (the )?scroll on/i, /use it on (the )?notebook/i, /goes on the notebook/i];
   const REFUSED: Partial<Record<SettingKey, RegExp[]>> = {
     fabricItems: NOTEBOOK, workloads: NOTEBOOK,
     // `n` from the Model View and `s` from the Monastery Gate, and every route that runs through them.
@@ -359,7 +359,7 @@ describe('fix rounds 2–3: no hint, NPC line or gate line names a command the s
   it('N1/N2 in particular: the Abbot, Sir Cardinality, the Librarian and the Model View after the hoodie', () => {
     const abbot = WORLD.npcs['abbot']!, knight = WORLD.npcs['cardinality']!, librarian = WORLD.npcs['librarian']!;
     expect(abbot.talkMore!(at('monastery.cloister', { 'ts.xmla': false, 'has.hoodie': true }), 3)).toMatch(/XMLA endpoint: Read Write.*Capacity Ledger.*Gold Marsh/);
-    expect(abbot.talkMore!(at('monastery.cloister', { 'ts.fabricItems': false }, { inventory: ['scroll'] }), 3)).toMatch(/^"No Notebook until Users can create Fabric items, on the shelf, is back on\./);
+    expect(abbot.talkMore!(at('monastery.cloister', { 'ts.fabricItems': false }, { inventory: ['scroll'] }), 3)).toMatch(/^"No Notebook until Users can create Fabric items, on the shelf, is back on; the Sacristy/);
     expect(abbot.talkMore!(at('monastery.cloister', { 'ts.workloads': false }), 3)).toMatch(/Delegated tenant settings, in the Capacity Ledger/);
     expect(abbot.talkMore!(at('monastery.cloister', { 'ts.fabricItems': false }, { inventory: ['scroll'] }), 4)).not.toMatch(/Use it/);
     expect(knight.talkMore!(at('fortress.model', { 'ts.xmla': false }), 3)).toMatch(/which is bricks.*XMLA endpoint: Read Write.*Capacity Ledger/);

@@ -19,7 +19,7 @@ describe('the narrator helps (spec1 §3.3)', () => {
     const { s, outs } = run([...DEAD, ...DEAD, ...DEAD]);
     expect(s.stuck).toBe(12);
     // The cottage, mug still on the desk: the plain line says what Jeff wants; the flask hint names the command.
-    expect(outs[3]![outs[3]!.length - 1]).toBe(helped("Jeff wants the thing you drink coffee out of. It says Okayest on it. He'd agree."));
+    expect(outs[3]![outs[3]!.length - 1]).toBe(helped("Jeff wants the mug on your desk. It says Okayest on it. He'd agree."));
     expect(outs[7]![outs[7]!.length - 1]).toBe(helped(WORLD.rooms['village.cottage']!.flaskHint(s)));
     expect(outs[11]![outs[11]!.length - 1]).toBe(helped(WORLD.rooms['village.cottage']!.flaskHint(s)));
     expect(outs[2]!.join(' ')).not.toMatch(HELPER);
@@ -47,7 +47,7 @@ describe('the helper, at the edges', () => {
     const more = run([...DEAD.slice(0, 3), 'out', ...DEAD]);
     expect(more.s.stuck).toBe(4);
     // The square, prophecy unread: the helper at 4 is the room's plain line, not the flask hint.
-    expect(more.outs[7]![more.outs[7]!.length - 1]).toBe(helped("It's a notice board. Notices are for reading. The prophecy is on it, and so is a feature request."));
+    expect(more.outs[7]![more.outs[7]!.length - 1]).toBe(helped('The notice board is for reading. The prophecy is on it, and so is a feature request.'));
     expect(more.outs[7]![more.outs[7]!.length - 1]).not.toContain(WORLD.rooms['village.square']!.flaskHint(more.s));
   });
   it('the helper is the last line even when Jeff interjects', () => {

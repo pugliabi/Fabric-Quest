@@ -8,16 +8,16 @@ const one = (room: string, cmd: string, flags: Record<string, boolean | number> 
 
 describe('Keep sweep', () => {
   it('gate and hall', () => {
-    expect(one('fortress.bridge', 'ask guard about the moat')).toBe("'The moat?' The guard looks down. 'That's the Warehouse. We built the Keep on it. Don't tell the Duke I said Warehouse.' He tells the Duke himself, later, in the log.");
+    expect(one('fortress.bridge', 'ask guard about the moat')).toBe("'The moat?' The guard looks down. 'That's the Warehouse. We built the Keep on it. Don't tell the Duke I said Warehouse.'");
     expect(one('fortress.bridge', 'fish in the moat')).toBe("You fish in the Moat of T-SQL. You catch a stored procedure. It has 400 lines and a comment that says 'temporary'. You release it.");
     expect(one('fortress.bridge', 'say f2')).toMatch(/Not enough capacity\.$/);
     expect(one('fortress.hall', 'look at portraits')).toMatch(/a paperclip with eyes\. 'It looks like you're writing a measure\.'$/);
   });
   it('model view, chamber, studio', () => {
     expect(one('fortress.model', 'ask cardinality about many to many')).toBe("'Many to many,' says Sir Cardinality. 'Is a relationship. Like yours with the truth.'");
-    expect(one('fortress.model', 'use date table')).toMatch(new RegExp(`Time intelligence feels ${MALAPROPS.refreshered}\\.$`));
-    expect(one('fortress.throne', 'ask duke about sql')).toBe("'SQL,' says the Duke, and then, to himself, 'EVALUATE.' Then, quieter, 'SELECT.' He has caught himself. He will not forgive himself.");
-    expect(one('fortress.throne', 'say dax')).toBe(`You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed}; it feels like a filter you cannot see.`);
+    expect(one('fortress.model', 'use date table')).toMatch(/starts working\. No points\. It should have been done already\.$/);
+    expect(one('fortress.throne', 'ask duke about sql')).toBe("'SQL,' says the Duke, and then, to himself, 'EVALUATE.' Then, quieter, 'SELECT.' He will not forgive himself.");
+    expect(one('fortress.throne', 'say dax')).toBe(`You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed} out.`);
     expect(one('fortress.yard', 'ask card about jeff')).toBe('The Card shows (Jeff). Then (Blank). It has no relationship to Jeff; nobody does.');
     expect(one('fortress.yard', 'eat the pie')).toBe("You eat a slice. It is 'Other'. It tastes like the other eleven 'Other's.");
     expect(one('fortress.yard', 'look at refresh')).toMatch(/A sticky note on it reads DO NOT TOUCH — JEFF\.$/);
@@ -40,7 +40,7 @@ describe('Keep sweep: the rulings', () => {
     for (let i = 0; i < 5; i++) {
       const r = step(s, 'say dax', WORLD);
       expect(r.stepId).toBe('fortress.say-dax-word');
-      expect(r.output[0]).toBe(`You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed}; it feels like a filter you cannot see.`);
+      expect(r.output[0]).toBe(`You say 'DAX' to the Duke of DAX. He says nothing. You have been ${MALAPROPS.daxxed} out.`);
       s = r.state;
     }
     expect(Object.keys(s.flags).filter((k) => /^(duke\.wrong|curse\.)/.test(k))).toEqual([]);
@@ -86,7 +86,7 @@ describe('Keep sweep: second and third looks', () => {
 describe('Keep sweep: derailments and the moat after the moat', () => {
   it('Sir Cardinality contradicts himself; the Card and the pie bicker', () => {
     expect(one('fortress.model', 'ask cardinality about date table')).toBe("'Mark it as a date table,' says Sir Cardinality. Then, quickly, 'I did not say that. A knight does not do your homework.' He has done your homework.");
-    expect(one('fortress.yard', 'ask card about pie')).toMatch(/\(You see where this is going\.\)$/);
+    expect(one('fortress.yard', 'ask card about pie')).toBe("The Card shows (Pie). The pie shows 3.2%. That's the whole meeting.");
   });
   it('the moat remembers you', () => {
     expect(one('fortress.bridge', 'look at moat', { 'trial.moat': true, 'bridge.down': true })).toMatch(/souvenir, and it is not giving it back\.$/);

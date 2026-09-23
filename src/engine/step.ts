@@ -243,7 +243,8 @@ export function step(prev: GameState, rawInput: string, world: World): StepResul
     // around both count; talking (the NPC's own ladder is the helper there), `hint`, the flask, meta commands and
     // dying don't. Progress resets it.
     const looked = (parsedEarly.verb === 'look' || parsedEarly.verb === 'read') && result.outcome === 'success';
-    const deadTurn = !progressed && !hinted && !r8.dead && (result.outcome === 'fail' || result.outcome === 'snark' || looked);
+    const talked = parsedEarly.verb === 'talk';
+    const deadTurn = !progressed && !hinted && !r8.dead && !talked && (result.outcome === 'fail' || result.outcome === 'snark' || looked);
     // Meta commands (inventory, score, save) leave the count alone; anything else that isn't a dead turn resets it.
     const stuck = deadTurn ? (base.stuck ?? 0) + 1 : result.outcome === 'meta' && !hinted ? (base.stuck ?? 0) : 0;
     const idle = progressed ? 0 : (base.idle ?? 0) + 1;

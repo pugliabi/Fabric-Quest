@@ -26,7 +26,7 @@ const PANDAS = ['pandas', 'brother pandas', 'brother', 'monk pandas'];
 const LIBRARIAN = ['librarian', 'the librarian', 'woman'];
 
 /** Users can create Fabric items is off (spec2 §3.3): the scroll is right, the tenant says no, and the golden path waits. */
-const NO_NOTEBOOK = 'Notebook creation is disabled for your tenant. Brother Pandas creates a Power BI report instead. It has one card. It says 1.';
+const NO_NOTEBOOK = 'Notebook creation is disabled for your tenant. Brother Pandas makes a Power BI report instead: one card, and it says 1.';
 const NOT_FIXED = { flag: 'notebook.fixed', not: true };
 
 /**
@@ -34,7 +34,7 @@ const NOT_FIXED = { flag: 'notebook.fixed', not: true };
  * hoodie beat, when it applies, wins first; the errand comes on the talk after). `gov.errand` marks it asked; the
  * Sacristy pays the +10 on the flip (sacristy.ts flip()), or he pays it himself when the book is already off.
  */
-const ERRAND = '"Also. Someone published the prophecy to web. The whole internet can read it. Go up to the Sacristy and turn it off. I would, but I am a monk, not an admin. Those are different vows."';
+const ERRAND = '"Also. Someone published the prophecy to web. The whole internet can read it. Go up to the Sacristy and turn it off. I would, but I am a monk, not an admin. Different vows."';
 
 /** The same line again, in a row (the voice sweep, Task F7; lake.ts has the same): read off `recent`, so no flag moves. */
 const again = (s: GameState, first: string, second: string): string => ((s.recent?.n ?? 1) >= 2 ? second : first);
@@ -80,7 +80,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
     },
     // The helper (Task B4): open the gate, or wait. No route is named, so XMLA off changes nothing here.
     nudge: {
-      plainer: (s) => (s.flags['gate.open'] ? '' : "It's a gate with a progress bar. Open the gate. Or wait; the bar moves when you stop typing at it."),
+      plainer: (s) => (s.flags['gate.open'] ? '' : 'Open the gate. Or wait; the bar moves when you stop typing at it.'),
     },
     catchAll: monasteryLine,
     rules: [
@@ -98,12 +98,12 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'monastery.open-gate',
         when: { verb: 'open', noun: ['gate', 'door', 'monastery gate', 'the gate'], flags: [{ flag: 'gate.open', not: true }] },
-        then: { text: "You push the gate. It's a Spark session; you can't push a session. But your hand on the gate is apparently what it was waiting for. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open.", set: { 'gate.open': true, 'gate.waiting': 3 }, points: 10, pointsKey: 'monastery.wait', sfx: 'door' },
+        then: { text: "You push the gate. You can't push a Spark session, but it was apparently waiting for a hand. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open.", set: { 'gate.open': true, 'gate.waiting': 3 }, points: 10, pointsKey: 'monastery.wait', sfx: 'door' },
       },
       {
         id: 'monastery.use-gate',
         when: { verb: 'use', noun: ['gate', 'door', 'monastery gate', 'the gate', 'progress bar', 'bar', 'session', 'spark session'], flags: [{ flag: 'gate.open', not: true }] },
-        then: { text: "You push the gate. It's a Spark session; you can't push a session. But your hand on the gate is apparently what it was waiting for. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open.", set: { 'gate.open': true, 'gate.waiting': 3 }, points: 10, pointsKey: 'monastery.wait', sfx: 'door' },
+        then: { text: "You push the gate. You can't push a Spark session, but it was apparently waiting for a hand. 33%. 67%. SESSION STARTED. Four minutes, as is tradition. The gate swings open.", set: { 'gate.open': true, 'gate.waiting': 3 }, points: 10, pointsKey: 'monastery.wait', sfx: 'door' },
       },
       // The harmless grind (Task F7): waiting on a session that already started. Once with delight, then the drama.
       {
@@ -141,7 +141,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
         // The other side of fortress.north-xmla: only on the explicit `false` flag, so at default `s` walks through.
         id: 'monastery.south-xmla',
         when: { verb: 'go', dir: 's', flags: [{ flag: 'ts.xmla', is: false }] },
-        then: { text: 'The back gate is an XMLA endpoint. Your capacity admin set it to Off. From this side it is a wall, and the monks are using it to lean on.', outcome: 'fail' },
+        then: { text: 'The back gate is an XMLA endpoint. Your capacity admin set it to Off. Your capacity admin is you.', outcome: 'fail' },
       },
       {
         id: 'monastery.knock',
@@ -169,7 +169,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
     id: 'monastery.cloister', name: 'Cloister', region: 'monastery',
     enterQuip: () => 'Monks pace in a circle chanting spark dot read. You have entered a loop.',
     describe: () =>
-      "The cloister. Monks pace in circles, each murmuring the same phrase: 'spark dot read, spark dot read.' The Abbot stands at the center. The Spark Session Chamber is east; the Library, west; the gate, south. A spiral stair climbs, up, to the Sacristy.",
+      "The cloister. Monks pace in circles, each murmuring the same phrase: 'spark dot read, spark dot read.' The Abbot stands at the center. The Spark Session Chamber is east; the Library, west; the gate, south. A spiral stair climbs up to the Sacristy.",
     exits: { s: 'monastery.gate', e: 'monastery.spark', w: 'monastery.library', u: 'monastery.sacristy' },
     items: ['floor', 'kpi', 'stair'],
     npcs: ['abbot'],
@@ -190,7 +190,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
       'Go west to the Library. Give the Librarian your license. It is, technically, a card.',
     nudge: {
       plainer: (s) =>
-        s.flags['has.hoodie'] && !s.flags['trial.hoodie'] ? "It's a hoodie. Hoodies go on. Then you look like an Engineer, which is the entire point of the garment." :
+        s.flags['has.hoodie'] && !s.flags['trial.hoodie'] ? 'Put the hoodie on. Then you look like an Engineer, which is the entire point of the garment.' :
         s.flags['notebook.fixed'] && !s.flags['has.hoodie'] ? "The Abbot has a hoodie with your name on it. He wants a word first. One word; he's a monk." :
         '',
     },
@@ -261,7 +261,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
     catchAll: monasteryLine,
     flaskHint: (s) =>
       s.flags['has.hoodie'] ? (setting(s, 'xmla') ? 'Go west, then south. Nothing left in here but a working notebook, which is unsettling.'
-        : 'Go west. The Cloister has a stair up to the Capacity Ledger, and a gate south that is a wall until XMLA endpoint: Read Write is back on. Nothing left in here but a working notebook, which is unsettling.') :
+        : "Go west. The Keep's back gate is a wall until XMLA endpoint: Read Write is back on; the Capacity Ledger is up the Cloister's stair. Nothing left in here but a working notebook, which is unsettling.") :
       s.flags['notebook.fixed'] ? 'Go west and talk to the Abbot. He has something for you, and it has a hood.' :
       // The book, not the command the chamber would refuse (review E2 M2).
       noNotebookYet(s) ? `${noNotebookClause(s)} ${s.inventory.includes('scroll') ? 'Keep the scroll; it is right, and the tenant is wrong.' : 'The scroll is west, then west again, in the Library; it keeps.'}` :
@@ -282,7 +282,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'talk', noun: PANDAS, noun2: ['spark', 'pyspark', 'the session', 'session', 'notebook'] },
         then: {
           text: (s, world, cmd) => (noNotebookYet(s) ? talkTo(s, world, world.npcs['pandas']!, cmd?.noun2)
-            : again(s, "'Spark,' says Brother Pandas. 'It's not broken, it's deprecated.' 'It's broken.' 'Deprecated.' 'Broken.' (You see where this is going.)",
+            : again(s, "'Spark,' says Brother Pandas. 'It's not broken, it's deprecated.' His own cell is still running.",
               "'Deprecated,' says Brother Pandas, before you finish asking. The notebook prints 'Broken.' It has picked a side.")),
           outcome: 'success',
         },
@@ -344,7 +344,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
     id: 'monastery.library', name: 'Library of Deprecated Notebooks', region: 'monastery',
     enterQuip: () => "Shelves of deprecated notebooks. One of them is yours. Don't look.",
     describe: (s) =>
-      "The Library of Deprecated Notebooks. Shelves of Runtime 1.1, Runtime 1.2, and a whole wing labeled 'Synapse'. A bookmark from Encarta holds someone's place in Runtime 1.1. The Librarian guards a single locked case." +
+      "The Library of Deprecated Notebooks. Shelves of Runtime 1.1, Runtime 1.2, and a whole wing labeled 'Synapse'. The Librarian guards a single locked case." +
       (s.flags['scroll.lent'] ? ' The case is open and empty.' : ' Inside the case: the Spark Scroll.') +
       ' The cloister is east.',
     exits: { e: 'monastery.cloister' },

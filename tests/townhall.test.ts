@@ -24,7 +24,7 @@ describe('the Town Hall (spec2 §6)', () => {
   it('the clerk rotates and, fourth time, points at the Sacristy', () => {
     const { outs } = run(['talk to clerk', 'talk to clerk', 'talk to clerk', 'talk to clerk', 'talk to clerk'], 'village.hall');
     expect(outs.slice(0, 3)).toEqual(["That's an admin setting.", 'That would be an admin setting.', 'Admin setting. Next.']);
-    expect(outs[3]).toBe('…the admins are at the Monastery. Up the stair from the Cloister. In the Sacristy. They do not come out, and they do not answer tickets.');
+    expect(outs[3]).toBe('…the admins are at the Monastery. In the Sacristy, up the stair from the Cloister. They do not answer tickets.');
     expect(outs[4]).toMatch(/admin setting/i);
   });
   it('ask about anything, give anything, say anything', () => {
@@ -38,7 +38,7 @@ describe('the Town Hall (spec2 §6)', () => {
     expect(outs[0]).toBe("SEV-3: 'report is wrong'. No further details.");
     expect(outs[2]).toBe('Your ticket has been escalated. Estimated response: three business dragons.');
     expect(s.inventory).not.toContain('ticket'); expect(s.flags['hall.ticket']).toBe(true); expect(s.score).toBe(0); expect(s.bonus).toBe(0);
-    expect(outs[3]).toContain('Your ticket is In Progress. It has been In Progress since you left.');
+    expect(outs[3]).toContain('Your ticket is still In Progress.');
   });
   it('the bell, the poster, the rope, the counter', () => {
     const { outs } = run(['ring bell', 'use bell', 'read poster', 'use rope', 'use counter'], 'village.hall');

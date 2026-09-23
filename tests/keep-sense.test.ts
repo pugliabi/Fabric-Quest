@@ -21,11 +21,11 @@ describe("the Duke's sin (spec1 §4.1)", () => {
   });
   it('a second sin is a habit, not a second bath', () => {
     const { s, last } = at(['say calculated column'], { 'trial.moat': true, 'pts.fortress.moat': true, 'seen.fortress.bridge': true });
-    expect(s.score).toBe(0); expect(last.output[0]).toMatch(/Once was instructive\. Twice is a habit\./);
+    expect(s.score).toBe(0); expect(last.output[0]).toBe("'Another?' The Duke just points at the window. You take the stairs.");
   });
   it('select * is corrected, not thrown', () => {
     const { s, last } = at(['say select *']);
-    expect(last.output[0]).toBe("The Duke blinks. 'SELECT? This is a semantic model. We EVALUATE here.' He does not throw you. He corrects you, which is worse.");
+    expect(last.output[0]).toBe("'SELECT? We EVALUATE here.' The Duke does not throw you; he corrects you, which is worse.");
     expect(s.score).toBe(0); expect(s.flags['trial.moat']).toBeUndefined(); expect(s.room).toBe('fortress.throne'); expect(last.outcome).toBe('snark');
   });
   it.each([
@@ -34,7 +34,7 @@ describe("the Duke's sin (spec1 §4.1)", () => {
     ['say bidirectional', /ambiguity/],
     ['say bi-directional', /ambiguity/],
     ['say userelationship', /USERELATIONSHIP/],
-    ['say calculate', /The one true function/],
+    ['say calculate', /A context transition, and nothing else/],
     ['say sumx', /iterates/],
   ])('%s gets flavor, no moat', (c, re) => {
     const { s, last } = at([c]);

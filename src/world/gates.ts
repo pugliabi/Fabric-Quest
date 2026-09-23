@@ -104,7 +104,7 @@ export const GATES: GateSpec[] = [
     shape: 'The bridge answers to the guard. The guard answers to SKUs. Say one to him.', more: "Trial's free.",
     flavor: [
       { on: /^(open|unlock|use|push|try)\b.*\b(splash|drawbridge|bridge|gate)\b/, line: "You click the splash screen. It is not a button. The guard shouts: 'STATE. YOUR. SKU.'" },
-      { on: /^(use|push|pull|try)\b.*\b(drawbridge|bridge|gate)\b/, line: 'You push the drawbridge. It is a splash screen. Splash screens are not pushed; they are waited out, or bribed with a SKU.' },
+      { on: /^(use|push|pull|try)\b.*\b(drawbridge|bridge|gate)\b/, line: 'You push the drawbridge. It is a splash screen; those are waited out, or bribed with a SKU.' },
       { on: /^(use|push|try|knock)\b.*\b(drawbridge|bridge|gate|splash)\b/, line: 'You tap the drawbridge twice. It shows a tooltip: "Updating". You knew that.' },
       { on: /^(use|lower|pull|try)\b.*\b(drawbridge|bridge|gate)\b/, line: 'You try to lower it by hand. It is heavier than the whole .pbix, and the .pbix is 2.3 GB.' },
       { on: /\b(splash|drawbridge|bridge|gate)\b/, line: 'The update installs. Then another. The drawbridge does not move. This is the update.' },
@@ -112,9 +112,9 @@ export const GATES: GateSpec[] = [
   },
   {
     id: 'duke', room: 'fortress.throne', nouns: '(throne|formula bar|window|casement|keep window|duke|duke of dax|duke of warehouse|guards)', when: (s) => !s.flags['trial.moat'],
-    shape: 'The Duke throws people from that window for one sin. Say it.', more: 'Two words. They go in a table.',
+    shape: 'The Duke throws people from that window for one sin. Say it, or hand him a table he can despise.', more: 'Two words. They go in a table.',
     flavor: [
-      { on: /^(open|unlock)\b.*\b(window|casement)\b/, line: 'You open the window. The moat winks up at you. It is the fastest exit in the Keep. You close it; you are not ready to smell like that.' },
+      { on: /^(open|unlock)\b.*\b(window|casement)\b/, line: 'You open the window, and the moat winks up at you. You close it; you are not ready to smell like that.' },
       { on: /^(use|push|pull|try|enter|climb)\b.*\b(throne|formula bar)\b/, line: 'You reach for the throne. It is a formula bar. It autocompletes your hand to SUMX( and you back away.' },
       { on: /^(use|climb|enter|go through|cross|open|try)\b.*\b(window|casement)\b/, line: 'You lean out. The moat winks at you. You lean back in.' },
       { on: /\b(window|casement)\b/, line: 'You measure the window with your eyes. You would fit. Everyone fits.' },
@@ -140,7 +140,7 @@ export const GATES: GateSpec[] = [
     shape: 'Shut. The session is starting. Open the gate, or wait for it; either one gets you in.',
     more: '`open gate`. Or `wait`. The bar moves for both, and for nothing else.',
     flavor: [
-      { on: /^knock\b/, line: 'You knock. The gate says: Session starting. Please wait. It has always said that. Knocking is not waiting, and it is not opening.' },
+      { on: /^knock\b/, line: 'You knock. The gate says: Session starting. Knocking is not waiting, and it is not opening.' },
       { on: /^ring\b/, line: 'You ring the bell. It rings at the speed of a Spark session, which is to say it will, later.' },
     ],
   },
@@ -148,7 +148,7 @@ export const GATES: GateSpec[] = [
     // `use bar` / `use session` score too (monastery.use-gate): the monk and the hands-only verbs are the gate's.
     id: 'session', room: 'monastery.gate', nouns: '(session|spark session|progress bar|bar|stone progress bar|monk|gatekeeper|gatekeeper monk)', when: (s) => !s.flags['gate.open'],
     verbs: GATE_VERBS_HANDS_ONLY,
-    shape: "It's starting. Open the gate, or wait. That's the puzzle. Really.",
+    shape: "Open the gate, or wait; the session is starting. That's the puzzle. Really.",
     more: '`open gate`, or `wait`. One of either.',
     flavor: [{ on: /^(push|pull|try|climb)\b.*\bbar\b/, line: 'You lean on the progress bar. It is stone. It moves at the speed of stone, which is also the speed of a Spark session.' }],
   },
@@ -209,7 +209,7 @@ export const GATES: GateSpec[] = [
   // ---- The Peaks ----
   {
     id: 'pass', room: 'peaks.pass', nouns: '(sign|delay|interactive delay|pass|throttling pass|air|throttle|throttling|rocks?)', when: (s) => !s.worn.includes('boots'),
-    shape: "Interactive operations may be delayed. Boots help. The Studio's Big Refresh drops a pair.",
+    shape: "Boots beat the delay. The Studio's Big Refresh drops a pair.",
     more: (s) => (s.inventory.includes('boots') ? 'They are in your pack. `wear boots`. You have been carrying the fix.'
       : "The pie chart in the Studio is what the Big Refresh is stuck on. Make it a bar chart and wear what falls out."),
     flavor: [{ on: /^(push|pull|try|knock|use)\b.*\bsign\b/, line: 'You push the sign. The push is queued. It arrives a moment later, smoothed.' }],

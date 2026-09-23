@@ -11,7 +11,7 @@ describe('goal card on entry (spec2 §2.1, spec1 §2.1–2.2)', () => {
   it('entering Excel sets box to the goal, every time', () => {
     const a = step(from('village.square'), 'show me a table', WORLD);
     expect(a.box).toBe(`${GOAL.excel.header} — ${GOAL.excel.body}`);
-    expect(a.box).toMatch(/^JEFF'S EXCEL — Jeff's export says \$4\.7M\./);
+    expect(a.box).toMatch(/^JEFF'S EXCEL — Help Jeff find the truth\. His export says \$4\.7M/);
     const out = step(a.state, 'exit', WORLD);
     const b = step(out.state, 'show me a table', WORLD);
     expect(b.box).toBe(a.box);

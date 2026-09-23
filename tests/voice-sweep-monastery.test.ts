@@ -30,15 +30,15 @@ describe('Monastery sweep', () => {
     expect(one('monastery.gate', 'count to three', ['license'], W)).toBe('One. Two. The session hears you counting and restarts.');
     expect(one('monastery.cloister', 'ask abbot about pandas')).toBe("'Brother Pandas,' says the Abbot, 'was a Data Scientist. Then he was a Data Engineer. Then he was a Pandas. It happens gradually and then all at once.'");
     expect(one('monastery.cloister', 'chant')).toBe("You chant 'spark dot read' with the monks. You get the rhythm wrong. Three monks fall out of the loop. The Abbot restarts them.");
-    expect(one('monastery.cloister', 'look at floor')).toMatch(new RegExp(`${MALAPROPS.refreshered} themselves into a circle\\.$`));
+    expect(one('monastery.cloister', 'look at floor')).toMatch(/a burn mark shaped like a cluster starting\.$/);
   });
   it('spark chamber and library', () => {
-    expect(one('monastery.spark', 'ask pandas about spark')).toBe("'Spark,' says Brother Pandas. 'It's not broken, it's deprecated.' 'It's broken.' 'Deprecated.' 'Broken.' (You see where this is going.)");
+    expect(one('monastery.spark', 'ask pandas about spark')).toBe("'Spark,' says Brother Pandas. 'It's not broken, it's deprecated.' His own cell is still running.");
     expect(one('monastery.spark', 'eat bamboo', ['license', 'bamboo'], W)).toBe("You eat Brother Pandas' lunch. It is a dependency. Something downstream fails.");
     expect(one('monastery.library', 'ask librarian about synapse')).toBe("'Synapse,' she says, and looks at the roped-off wing the way you look at a photo of a house you sold. 'Still supported.' She does not say by whom.");
     expect(one('monastery.library', 'shh')).toBe("'Shh,' she says back, faster. She has been waiting.");
     expect(one('monastery.library', 'say dax')).toBe(`'No DAX in the Library,' says the Librarian. 'Shh.' You have been ${MALAPROPS.daxxed} and shushed.`);
-    expect(one('monastery.library', 'look')).toMatch(/A bookmark from Encarta holds someone's place in Runtime 1\.1\./);
+    expect(one('monastery.library', 'look')).toMatch(/a whole wing labeled 'Synapse'\. The Librarian guards a single locked case\./);
     expect(one('monastery.gate', 'look at gate')).toMatch(new RegExp(`Not enough ${MALAPROPS.capacitude} to hurry it\\. Enough to open a gate, though\\.$`));
   });
 });
@@ -52,7 +52,7 @@ describe('Monastery sweep: second beats', () => {
   });
   it('Brother Pandas argues with the notebook the second time', () => {
     const [first, second] = twice(at('monastery.spark'), 'ask pandas about spark');
-    expect(first).toMatch(/\(You see where this is going\.\)$/);
+    expect(first).toMatch(/His own cell is still running\.$/);
     expect(second).toMatch(/^'Deprecated,' says Brother Pandas.*It has picked a side\.$/);
   });
   it("the Librarian's Shh. gets a second beat; a known topic, a second line", () => {

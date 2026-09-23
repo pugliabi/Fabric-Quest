@@ -19,21 +19,21 @@ describe('governance rooms sweep', () => {
     expect(one('monastery.sacristy', 'use shelf')).toBe("You run a finger along the spines. Every one is a switch. Every switch is someone's Tuesday.");
     expect(one('monastery.sacristy', 'use ledger')).toBe(`You open the Capacity Ledger to a random page. It says F2. Not enough ${MALAPROPS.capacitude}. It closes itself.`);
     expect(one('monastery.sacristy', 'sit')).toBe("You sit on the stair. An admin did this once, in 2019, meaning to go back up. She's a monk now.");
-    expect(one('monastery.sacristy', 'talk to export')).toBe('The book does not talk. It has a switch, not a mouth. You have that backwards.');
-    expect(one('monastery.sacristy', 'say dax')).toBe(`You say 'DAX' in the Admin Portal. Nothing here is ${MALAPROPS.daxxed}. Nothing here is even a measure. It is all switches.`);
+    expect(one('monastery.sacristy', 'talk to export')).toBe('The book does not talk. It has a switch, not a mouth.');
+    expect(one('monastery.sacristy', 'say dax')).toBe("You say 'DAX' in the Admin Portal. Nothing here is a measure. It is all switches.");
   });
   it('the Town Hall', () => {
-    expect(one('village.hall', 'ask clerk about the sacristy')).toBe("'The Sacristy,' says the Clerk. 'Up from the Cloister. I've never been. I put in a ticket to go. It's an admin setting.'");
+    expect(one('village.hall', 'ask clerk about the sacristy')).toBe("'The Sacristy,' says the Clerk. 'Up from the Cloister. I've never been. I put in a ticket to go.'");
     expect(one('village.hall', 'take a number')).toBe('You take a number. It is 1. The Clerk calls 1. It is an admin setting.');
     expect(one('village.hall', 'climb the counter')).toBe("You climb the counter. The Clerk does not look up. 'That's an admin setting.' It is.");
-    expect(one('village.hall', 'use counter')).toMatch(new RegExp(`The form has been ${MALAPROPS.refreshered} since you last looked; it is still blank\\.$`));
+    expect(one('village.hall', 'use counter')).toBe('The Clerk slides a form across the counter. It is blank. That is the form.');
   });
   it('My Workspace', () => {
     expect(one('village.cottage', 'use eventhouse', { 'ts.monitoring': true })).toBe("You query the Eventhouse. It returns every command you've typed, with timestamps. You close it before turn 12.");
     expect(one('village.cottage', 'rename workspace')).toBe('You rename My Workspace to My Workspace (2). It was always going to be that.');
     expect(one('village.cottage', 'share workspace')).toBe("You share My Workspace. There's nobody to share it with. The dialog suggests Jeff.");
-    expect(one('village.cottage', 'look at window')).toMatch(/Through the window, past the square, a hill\. Green\. Rolling\. Somebody set it as a wallpaper once\./);
-    expect(one('village.cottage', 'look at report')).toMatch(/Built with Dataflows Gen1 Classic\.$/);
+    expect(one('village.cottage', 'look at window')).toMatch(/a man holding an empty spreadsheet toward the sky as if it might fill on its own\.$/);
+    expect(one('village.cottage', 'look at report')).toMatch(/you don't talk about that one\.$/);
   });
 });
 
@@ -68,11 +68,11 @@ describe('governance rooms sweep: the second looks and the repeats', () => {
     expect(run('village.hall', ['look at poster', 'look at poster', 'look at poster']).outs[2]).toBe('Same poster. Framed posters do not get release notes.');
   });
   it('the Clerk derails on the ticket, and the ticket status is In Progress', () => {
-    expect(one('village.hall', 'ask clerk about ticket')).toMatch(/You haven't filed it\. 'That's an admin setting\.'$/);
-    expect(one('village.hall', 'ask clerk about ticket', { 'hall.ticket': true })).toMatch(/'Is it you\?' 'In Progress\.'$/);
+    expect(one('village.hall', 'ask clerk about ticket')).toMatch(/'It's In Progress\.' You haven't filed it\.$/);
+    expect(one('village.hall', 'ask clerk about ticket', { 'hall.ticket': true })).toBe("'Who's working my ticket?' you ask. 'In Progress,' says the Clerk.");
     expect(one('village.hall', 'check ticket')).toMatch(/In Progress anyway\. It came that way\.$/);
     const status = run('village.hall', ['check ticket', 'check ticket'], { 'hall.ticket': true }).outs;
-    expect(status[0]).toMatch(/newer timestamp/); expect(status[1]).toContain(MALAPROPS.refreshered);
+    expect(status[0]).toMatch(/newer timestamp/); expect(status[1]).toBe('Still In Progress. Only the timestamp moves.');
     expect(run('village.hall', ['take a number', 'take a number']).outs[1]).toMatch(/duplicate ticket\.$/);
   });
   it('My Workspace: the menu asked twice, the Eventhouse queried twice, looked at three times', () => {
