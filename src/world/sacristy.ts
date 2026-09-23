@@ -281,7 +281,9 @@ export function resetAll(s: GameState): { then: RuleThen; id: string } {
   // files-out line takes the place of the notices-nothing one (review E2 M3). A reset puts every book back, so it pays
   // the restore whenever anything was off its default (spec2 §5); a reset with nothing to reset touched nothing.
   const restored = restores(s, () => true);
-  const text = `You put every book back the way you found it. ${isFlood(s) ? 'The organization files out. Jeff from Ops takes a mug. Not yours.' : 'The organization notices nothing. That is the job.'}${restored ? ` ${RESTORED}` : ''}`;
+  const text = restored
+    ? `You put every book back the way you found it. ${isFlood(s) ? 'The organization files out. Jeff from Ops takes a mug. Not yours. ' : ''}Nobody will ever know. +5 for governance.`
+    : `You put every book back the way you found it. ${isFlood(s) ? 'The organization files out. Jeff from Ops takes a mug. Not yours.' : 'The organization notices nothing. That is the job.'}`;
   return { id: 'sacristy.reset', then: { text, set, sfx: restored ? 'bonus' : 'toggle', outcome: changedFromDefault(s).length ? 'success' : 'snark', ...(restored ? { bonus: 5, pointsKey: 'gov.restored' } : {}) } };
 }
 

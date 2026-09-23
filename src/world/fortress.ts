@@ -542,7 +542,7 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
         when: { verb: 'say', noun: ['select *', 'select star', 'select * from', 'select *;', 'select * from table', 'select all', 'select * from everything'] },
         then: wrong({ text: "The Duke blinks. 'SELECT? This is a semantic model. We EVALUATE here.' He does not throw you. He corrects you, which is worse.", outcome: 'snark' }),
       },
-      { id: 'fortress.dax-evaluate', when: { verb: 'say', noun: ['evaluate', 'evaluate table', 'evaluate sales'] }, then: wrong({ text: "'Correct,' says the Duke, disappointed. 'And useless.'", outcome: 'snark' }) },
+      { id: 'fortress.dax-evaluate', when: { verb: 'say', noun: ['evaluate', 'evaluate table', 'evaluate sales'] }, then: { text: "'Correct,' says the Duke, disappointed. 'And useless.'", outcome: 'snark' } },
       { id: 'fortress.dax-implicit', when: { verb: 'say', noun: ['implicit measure', 'implicit measures', 'implicit'] }, then: wrong({ text: "The Duke shudders. 'Implicit.' But he has heard worse today.", outcome: 'snark' }) },
       // 'bi directional': the parser strips the hyphen before the noun is matched.
       { id: 'fortress.dax-bidirectional', when: { verb: 'say', noun: ['bidirectional', 'bi-directional', 'bi directional', 'both directions', 'bidirectional filtering', 'cross filter both'] }, then: wrong({ text: "'Both directions,' says the Duke, 'is how ambiguity gets a seat at the table.' He does not throw you. He wants you to hear that again on the way out.", outcome: 'snark' }) },

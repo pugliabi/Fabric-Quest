@@ -134,7 +134,7 @@ describe('the flood (spec2 §3.5)', () => {
   });
   it('reset settings ends the flood too', () => {
     const r = one('monastery.sacristy', 'reset settings', { 'ts.guests': true, 'gov.touched': true });
-    expect(r.output[0]).toMatch(/The organization files out\. Jeff from Ops takes a mug\. Not yours\.( Every setting is back where you found it\. Nobody will ever know\. \+5 for governance\.)?$/); // E3: touched and all back, so the restore is paid too
+    expect(r.output[0]).toMatch(/The organization files out\. Jeff from Ops takes a mug\. Not yours\. Nobody will ever know\. \+5 for governance\.$/); // E3: touched and all back, so the restore is paid too
     expect(one('monastery.sacristy', 'reset settings', { 'ts.surge': true }).output[0]).not.toMatch(/files out/);
   });
   const FLOOD = { 'ts.guests': true };
@@ -230,7 +230,7 @@ describe('fix round 1: hints name the right book, never a refused command', () =
   it('M3: reset during the flood is one line, and the organization does notice', () => {
     const r = one('monastery.sacristy', 'reset settings', { 'ts.guests': true, 'gov.touched': true });
     // Still one line: the restore (E3, spec2 §5) is appended to it, since the books were touched and are all back.
-    expect(r.output[0]).toBe('You put every book back the way you found it. The organization files out. Jeff from Ops takes a mug. Not yours. Every setting is back where you found it. Nobody will ever know. +5 for governance.');
+    expect(r.output[0]).toBe('You put every book back the way you found it. The organization files out. Jeff from Ops takes a mug. Not yours. Nobody will ever know. +5 for governance.');
     expect(r.output).toHaveLength(1);
     expect(one('monastery.sacristy', 'reset settings', { 'ts.surge': true }).output[0]).toBe('You put every book back the way you found it. The organization notices nothing. That is the job.');
   });

@@ -118,7 +118,7 @@ describe('the Sacristy (spec2 §3)', () => {
     const r = one('reset settings', { 'ts.export': false, 'ts.xmla': false, 'ts.guests': true, 'gov.touched': true });
     // Guests were on, so this reset also ends the flood: the files-out line takes the notices-nothing line's place that turn (E2 fix round 1, M3).
     // Books were touched and are all back, so the reset also pays governance restored (E3, spec2 §5).
-    expect(r.output[0]).toBe('You put every book back the way you found it. The organization files out. Jeff from Ops takes a mug. Not yours. Every setting is back where you found it. Nobody will ever know. +5 for governance.');
+    expect(r.output[0]).toBe('You put every book back the way you found it. The organization files out. Jeff from Ops takes a mug. Not yours. Nobody will ever know. +5 for governance.');
     expect(r.state.bonus).toBe(5);
     expect(r.state.flags['ts.export']).toBe(true); expect(r.state.flags['ts.xmla']).toBe(true); expect(r.state.flags['ts.guests']).toBe(false);
     expect(r.parsed.verb).not.toBe('restore'); // "restore defaults" must not be the UI's restore
