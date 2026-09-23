@@ -25,7 +25,7 @@ describe('golden + governance', () => {
     expect(s.flags['bonus.gov.abbot'], log).toBe(true); expect(s.flags['bonus.gov.restored'], log).toBe(true);
   });
   it('the applied steps in the hall on the way to the Duke → 200 + 10', () => {
-    const at = GOLDEN_PATH.indexOf('say trial') + 2; // after 'say trial', 'n' (into the hall)
+    const at = GOLDEN_PATH.indexOf('use trial') + 2; // after 'use trial', 'n' (into the hall)
     const STEPS = ['source', 'navigate', 'promote headers', 'change type', 'filter rows', 'remove other columns', 'rename columns'];
     const { s, log } = play([...GOLDEN_PATH.slice(0, at), ...STEPS, ...GOLDEN_PATH.slice(at)]);
     expect(s.score, log).toBe(MAX_SCORE); expect(s.bonus, log).toBe(10); expect(s.won, log).toBe(true);

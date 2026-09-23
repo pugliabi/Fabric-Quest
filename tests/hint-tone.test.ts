@@ -67,7 +67,7 @@ describe('the tier ladder at the Desktop Gate (Task B4)', () => {
     expect(stuckFor(4, gate()).last).toBe("(Psst. The guard's been asked for one thing all day and it wasn't your name.)");
   });
   it('8: plainer, still never the command', () => {
-    expect(stuckFor(8, gate()).last).toBe("(Psst. He wants a SKU. There's a free one. It rhymes with denial.)");
+    expect(stuckFor(8, gate()).last).toBe("(Psst. He wants a SKU. There's a free one. It's a link, under the dialog, and it rhymes with denial.)");
   });
   it('12 and on: the flask hint verbatim', () => {
     const twelve = stuckFor(12, gate());
@@ -104,7 +104,7 @@ describe('tier 1 is oblique: no backtick, none of the flask hint\'s command word
 describe('tier 2 is the plainer line where there is one, the flask hint where there is not', () => {
   it('the Studio, policy in hand, names the thing and not the verb', () => {
     const { last } = stuckFor(8, at('fortress.yard', { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'stare.done': true }, { inventory: ['policy'] }));
-    expect(last).toBe('(Psst. That thing in your pocket is a refresh policy. The refresh is the thing in the corner. The rest is prepositions.)');
+    expect(last).toBe('(Psst. Change the pie to a bar chart. The refresh has been choking on it since 2019.)');
   });
   it('the Lake House has no plainer line: its flask hint whispers at 8', () => {
     const { s, last } = stuckFor(8, at('lake.house'));

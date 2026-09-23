@@ -64,7 +64,7 @@ The room description ends with `Exits: …`. Exits can appear and disappear as t
 | `get mug` / `take` / `grab` / `pick up` / `steal` | pick something up |
 | `drop mug` / `discard` | put it down (it stays in the room) |
 | `wear hoodie` / `put on` / `don` / `equip` | wear something wearable |
-| `use policy on refresh` / `apply` / `put` / `plug` / `insert` | use one thing on another |
+| `put measure on card` / `apply` / `put` / `plug` / `insert` | use one thing on another |
 | `give mug to jeff` / `offer` / `hand` / `show` | hand something to someone |
 | `open door` / `unlock`, `close door` / `shut` | doors and lids |
 | `drink water` / `sip` / `taste` | usually a bad idea |
@@ -80,7 +80,7 @@ The room description ends with `Exits: …`. Exits can appear and disappear as t
 | `talk to miller` / `speak to` / `ask` / `chat` | hear what someone has to say right now |
 | `say star schema` / `shout` / `answer` / `tell` / `whisper` | say specific words out loud — the guard, the Duke and the dragon all want to hear something particular |
 
-Some puzzles use `say` with more than two words (`say calculated column`, `say star schema`). The parser passes the
+Some puzzles use `say` with more than two words (`say star schema`, `say single direction`). The parser passes the
 whole phrase through.
 
 ### Meta commands

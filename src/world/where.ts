@@ -38,7 +38,7 @@ export const WHERE: Record<string, WhereLine> = {
   'fortress.model': 'The Model View. Tables on plinths, lines between them, and one bridge that wobbles like your DAX.',
   'fortress.throne': "The Duke's Chamber. Filter context only. Your outside voice doesn't work in here.",
   'fortress.yard': (s) => (s.flags['stare.done']
-    ? "The Report Studio. A pie with 31 slices and a Card that says 4.2M now, which is wrong, but at least it's a number."
+    ? (s.flags['refresh.done'] ? 'The Report Studio. A bar chart that used to be a pie and a Card that says 4.2M, which is more than you had.' : "The Report Studio. A pie with 31 slices and a Card that says 4.2M now, which is wrong, but at least it's a number.")
     : 'The Report Studio. A pie with 31 slices and a Card that says (Blank), which is also your plan.'),
   'peaks.foothills': "The Foothills. The air's thin and so is the excuse you'll give Finance.",
   'peaks.pass': 'Throttling Pass. Every step costs more than the last one, like a consultant, or you, eventually.',

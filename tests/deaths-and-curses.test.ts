@@ -139,9 +139,10 @@ describe('the curses (spec1 §5.4)', () => {
     expect(shrine.state.flags['dragon.gone']).toBeUndefined(); expect(shrine.output[0]).toMatch(/don't negotiate with columns/);
     const policy = step({ ...s, inventory: ['license', 'policy'] }, 'use policy on self', WORLD);
     expect(curseOf(policy.state)).toBeNull(); expect(policy.output[0]).toMatch(/a measure again/);
-    const moat = step(s, 'say calculated column', WORLD);
-    expect(curseOf(moat.state)).toBeNull(); expect(moat.state.score).toBe(25);
-    expect(curseOf(run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say calculated column']).s)).toBeNull();
+    const moat = step({ ...s, inventory: ['license', 'date-table'] }, 'give date table to duke', WORLD);
+    expect(curseOf(moat.state)).toBeNull(); expect(moat.state.score).toBe(20);
+    // The sin said at three strikes is the fourth wrong answer, like any other (actions-that-fit §1.3).
+    expect(curseOf(run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say calculated column']).s)).toBe('column');
   });
   it('column: the counter is capped, the curse fires once, and it never fires after the moat', () => {
     const { s } = run('fortress.throne', ['say sumx', 'say divide', 'say filter', 'say evaluate', 'say sumx', 'say sumx', 'say sumx', 'say sumx']);
@@ -198,7 +199,7 @@ describe('the curses (spec1 §5.4)', () => {
     expect(Object.keys(CUES)).toContain('curse');
     const rules = [...WORLD.globalRules, ...Object.values(WORLD.rooms).flatMap((r) => r.rules)];
     const cursing = rules.filter((r) => r.then.sfx === 'curse').map((r) => r.id);
-    expect(cursing.sort()).toEqual(['fields.curse-jeff', 'fortress.curse-blank', 'fortress.curse-column', 'village.curse-jeff']);
+    expect(cursing.sort()).toEqual(['fields.curse-jeff', 'fortress.curse-blank', 'fortress.curse-column', 'fortress.curse-column-sin', 'village.curse-jeff']);
     for (const r of rules) if (r.then.sfx) expect(Object.keys(CUES), r.id).toContain(r.then.sfx);
   });
   // ---- Fix round 1 ----
@@ -241,7 +242,7 @@ describe('the curses (spec1 §5.4)', () => {
     const undone = step({ ...cursed, inventory: ['license', 'policy'] }, 'use policy on self', WORLD).state;
     expect(undone.flags['duke.wrong']).toBe(0);
     expect(curseOf(step(undone, 'say sumx', WORLD).state)).toBeNull();
-    expect(step(cursed, 'say calculated column', WORLD).state.flags['duke.wrong']).toBe(0);
+    expect(step({ ...cursed, inventory: ['license', 'date-table'] }, 'give date table to duke', WORLD).state.flags['duke.wrong']).toBe(0);
   });
   it.each([
     'set all relationships to both', 'enable bidirectional', 'enable bidirectional filtering', 'make all relationships bidirectional',

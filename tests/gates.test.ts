@@ -13,11 +13,11 @@ const first = (r: ReturnType<typeof step>): string => r.output.find((l) => l !==
 
 describe('every gate object answers the obvious verbs with the puzzle (spec1 §3.2)', () => {
   const cases: [string, string[], RegExp, Partial<GameState>][] = [
-    ['fortress.bridge', ['drawbridge', 'gate', 'splash screen'], /The bridge answers to the guard\. The guard answers to SKUs\. Say one to him\./, {}],
-    ['fortress.throne', ['throne', 'window', 'duke'], /The Duke throws people from that window for one sin\. Say it\./, {}],
-    ['fortress.yard', ['card', 'big refresh'], /The Card wants staring at\. The refresh wants a policy\. The Model View, west of the hall, keeps one\./, {}],
-    ['monastery.gate', ['gate', 'door', 'bell'], /Locked\. The session is starting\. `wait`\./, {}],
-    ['monastery.gate', ['session', 'progress bar'], /It's starting\. `wait`\. That's the puzzle\. Really\./, {}],
+    ['fortress.bridge', ['drawbridge', 'gate', 'splash screen'], /The bridge answers to the guard\. The guard answers to SKUs\. The only one you can afford is a link under the update dialog\./, {}],
+    ['fortress.throne', ['throne', 'window', 'duke'], /The Duke throws people from that window for one thing, and lately he wants to see it, not hear it\. Bring him a table\./, {}],
+    ['fortress.yard', ['card', 'big refresh'], /The Card wants a measure\. The refresh wants the pie changed\. Wear what falls out\./, {}],
+    ['monastery.gate', ['gate', 'door', 'bell'], /Locked\. The session is stopped\. There is a Start button on the bar\./, {}],
+    ['monastery.gate', ['session', 'progress bar'], /It's stopped\. There's a Start button on it\. That's the puzzle\. Really\./, {}],
     ['monastery.spark', ['notebook', 'cell', 'session'], /The cell wants Spark, not pandas\. The Library, west of the cloister, keeps a scroll about it\./, {}],
     ['monastery.library', ['scroll', 'librarian', 'case'], /Library card only\. Any license will do\. Well\. Any license she accepts\./, {}],
     ['lake.dock', ['boat', 'ferryman', 'lamp'], /The Ferryman's OFFLINE\. Credentials expired\. The Mill has the ones that haven't\./, {}],
@@ -30,6 +30,7 @@ describe('every gate object answers the obvious verbs with the puzzle (spec1 §3
       it(`${room}: <verb> ${noun}`, () => {
         for (const v of VERBS) {
           if (room === 'fortress.yard' && v === 'use') continue; // the Studio's own use-lines already shape that puzzle
+          if (room === 'monastery.gate' && (v === 'use' || v === 'knock on')) continue; // use / knock presses Start: the solve
           expect(first(one(room, `${v} ${noun}`, extra)), `${v} ${noun}`).toMatch(shape);
         }
       });
@@ -39,9 +40,9 @@ describe('every gate object answers the obvious verbs with the puzzle (spec1 §3
     let s = at('fortress.bridge');
     const outs: string[] = [];
     for (let i = 0; i < 4; i++) { const r = step(s, 'open drawbridge', WORLD); s = r.state; outs.push(r.output[0]!); }
-    expect(outs[0]).not.toMatch(/Trial's free/);
-    expect(outs[1]).toMatch(/Say one to him\. Trial's free\.$/);
-    expect(outs[2]).toMatch(/Trial's free\.$/);
+    expect(outs[0]).not.toMatch(/Try free/);
+    expect(outs[1]).toMatch(/a link under the update dialog\. It says Try free\. Sixty days, then it's someone else's budget\.$/);
+    expect(outs[2]).toMatch(/someone else's budget\.$/);
     expect(outs[2]).not.toMatch(/answers to the guard/);
     expect(s.flags['gate.desktop']).toBe(4);
   });
@@ -97,7 +98,6 @@ describe('the displaced open/use lines live on in the third-try rotation (add-mo
     ['fortress.throne', 'open window', 'duke', {}, /The moat winks up at you/],
     ['fortress.throne', 'use throne', 'duke', {}, /autocompletes your hand to SUMX\(/],
     ['monastery.gate', 'open gate', 'monastery', {}, /Starter Pool/],
-    ['monastery.gate', 'knock on gate', 'monastery', {}, /Knocking does not count as waiting/],
     ['monastery.spark', 'use notebook', 'notebook', {}, /Run All/],
     ['monastery.library', 'open case', 'library', {}, /LIBRARY CARD REQUIRED/],
     ['lake.dock', 'use lamp', 'dock', {}, /blinks OFFLINE a little faster/],
@@ -122,7 +122,7 @@ describe('fix round 1: the pools are verb- and noun-aware', () => {
   it('kick duke never says you opened the window; a command no pool line fits repeats the shape and the hint', () => {
     for (const l of tries('fortress.throne', 'kick duke', 6)) expect(l).not.toMatch(/You open the window|You lean out|You measure the window|reach for the throne/);
     const outs = tries('fortress.throne', 'kick duke', 4);
-    expect(outs[2]).toBe('The Duke throws people from that window for one sin. Say it. Two words. They go in a table.');
+    expect(outs[2]).toBe("The Duke throws people from that window for one thing, and lately he wants to see it, not hear it. Bring him a table. The date table. The Model View has it, once it's related.");
     expect(outs[3]).toBe(outs[2]);
     for (const l of tries('lake.dock', 'kick ferryman', 6)) expect(l).not.toMatch(/untie the boat|tap the lamp/);
     for (const l of tries('lake.dock', 'use lamp', 6)) expect(l).not.toMatch(/push the Ferryman|untie the boat/);
@@ -154,21 +154,18 @@ describe('fix round 1: the pools are verb- and noun-aware', () => {
     expect(d!.output[1]).toMatch(/4/);
     expect(d!.state.flags['gate.dragon']).toBe(4);
   });
-  it("the Monastery Gate's second try names the real solve, with the bar's progress", () => {
+  it("the Monastery Gate's second try names the real solve: the Start button", () => {
     const outs = tries('monastery.gate', 'open gate', 3);
-    expect(outs[0]).toBe('Locked. The session is starting. `wait`. Three times; the bar counts them.');
-    expect(outs[1]).toBe('Locked. The session is starting. `wait`. Three times; the bar counts them. Type `wait`. The bar is at 0%; it counts waits, and only waits.');
-    for (const l of outs) expect(l).not.toMatch(/gold layer|back gate/);
-    expect(one('monastery.gate', 'push gate', { flags: { 'gate.monastery': 1, 'gate.waiting': 2 } }).output[0]).toMatch(/The bar is at 67%/);
+    expect(outs[0]).toBe('Locked. The session is stopped. There is a Start button on the bar.');
+    expect(outs[1]).toBe('Locked. The session is stopped. There is a Start button on the bar. Press Start. That is the whole puzzle. Really.');
+    for (const l of outs) expect(l).not.toMatch(/gold layer|back gate|`wait`/);
   });
-  it('ring bell', () => {
-    const outs = tries('monastery.gate', 'ring bell', 3);
-    expect(outs[0]).toMatch(/^Locked\. The session is starting\. `wait`\./);
-    expect(outs[2]).toMatch(/^You ring the bell\./);
-    expect(one('monastery.gate', 'ring the bell').output[0]).toMatch(/^Locked\./);
+  it('ring bell presses Start (knock and ring are use)', () => {
+    expect(one('monastery.gate', 'ring the bell').pointsAwarded).toBe(5);
+    expect(one('monastery.gate', 'knock on gate').state.flags['gate.open']).toBe(true);
   });
   it("the Studio's shape knows the stare is won after the Duke's spinner blanks the Card", () => {
-    expect(one('fortress.yard', 'push card', { flags: { 'stare.count': 3 } }).output[0]).toMatch(/^The Card is stared at\./);
+    expect(one('fortress.yard', 'push card', { flags: { 'card.measure': 2 } }).output[0]).toMatch(/^The Card has its measure\./);
     expect(one('fortress.yard', 'push card', { flags: { 'stare.count': 3, 'gate.studio': 1 } }).output[0]).not.toMatch(/Look at the Card/);
   });
   it("the Ledge's sigil line does not list the sigils twice, and the hint says where, not 'Missing:'", () => {
@@ -198,8 +195,8 @@ describe('fix round 1: a gate never shadows a scored rule', () => {
   });
   it('the golden path scores the ledger, line by line', () => {
     const LEDGER: [string, number][] = [
-      ['village.prophecy', 5], ['village.credentials', 10], ['fortress.sku', 10], ['fortress.moat', 25], ['fortress.stare', 10], ['fortress.copy', 15],
-      ['monastery.wait', 10], ['monastery.card', 10], ['monastery.read-scroll', 5], ['monastery.fix', 20], ['monastery.hoodie', 15],
+      ['village.prophecy', 5], ['village.credentials', 10], ['fortress.sku', 10], ['fortress.relate', 10], ['fortress.moat', 20], ['fortress.stare', 10], ['fortress.refresh-done', 15],
+      ['monastery.wait', 5], ['monastery.card', 10], ['monastery.read-scroll', 5], ['monastery.fix', 20], ['monastery.hoodie', 15],
       ['lake.ferry', 15], ['lake.key', 20], ['swamp.shortcut', 10], ['peaks.shrine-door-go', 5], ['peaks.dragon', 10], ['peaks.model', 5],
     ];
     let s = newGame(WORLD, 42);
@@ -237,7 +234,7 @@ describe('fix round 1: a gate never shadows a scored rule', () => {
     const noun2s = w.noun2 === undefined ? [] : Array.isArray(w.noun2) ? w.noun2 : [w.noun2];
     const prep = w.verb === 'give' ? 'to' : 'on';
     const out: string[] = [];
-    for (const v of SYN[w.verb] ?? [w.verb]) for (const n of nouns) {
+    for (const v of w.verbWord ?? SYN[w.verb] ?? [w.verb]) for (const n of nouns) {
       if (!noun2s.length) out.push(`${v} ${n}`.trim());
       else for (const n2 of noun2s) out.push(`${v} ${n} ${prep} ${n2}`);
     }
@@ -261,7 +258,7 @@ describe('the audit: NPC-gated milestones answer the obvious verbs too', () => {
   });
   it('the monk and Brother Pandas answer with their rooms\' puzzles', () => {
     for (const v of VERBS) {
-      expect(one('monastery.gate', `${v} monk`).output[0], v).toMatch(/It's starting\. `wait`/);
+      if (v !== 'use') expect(one('monastery.gate', `${v} monk`).output[0], v).toMatch(/It's stopped\. There's a Start button on it\./);
       expect(one('monastery.spark', `${v} pandas`).output[0], v).toMatch(/The cell wants Spark, not pandas/);
     }
   });
@@ -281,16 +278,36 @@ describe('the audit: NPC-gated milestones answer the obvious verbs too', () => {
     expect(one('village.mill', 'push chest', { flags: { 'has.credentials': true } }).output[0]).not.toMatch(/Nothing here is locked/);
   });
   it('use card in the Studio says what the Card wants', () => {
-    expect(one('fortress.yard', 'use card').output[0]).toMatch(/The Card takes no input\. It wants staring at: look at it, then wait, then wait again\./);
+    expect(one('fortress.yard', 'use card').output[0]).toMatch(/The Card takes no input from you\. It takes measures\./);
     expect(one('fortress.yard', 'use card', { flags: { 'stare.done': true, 'stare.count': 3 } }).output[0]).toMatch(/4\.2M/);
   });
   it('the scored paths through the gates are untouched', () => {
-    expect(one('fortress.bridge', 'say trial').pointsAwarded).toBe(10);
+    expect(one('fortress.bridge', 'use trial').pointsAwarded).toBe(10);
     expect(one('monastery.spark', 'use scroll on notebook', { inventory: ['scroll'] }).pointsAwarded).toBe(20);
     expect(one('monastery.library', 'give license to librarian', { inventory: ['license'] }).pointsAwarded).toBe(10);
     expect(one('lake.dock', 'give credentials to ferryman', { inventory: ['credentials'] }).pointsAwarded).toBe(15);
     expect(one('lake.dock', 'enter boat', { flags: { 'ferry.online': true } }).state.room).toBe('lake.island');
     expect(one('peaks.shrine', 'say star schema').pointsAwarded).toBe(10);
-    expect(one('monastery.gate', 'knock').output[0]).toMatch(/Session starting/i);
+    expect(one('monastery.gate', 'knock').output[0]).toMatch(/SESSION STARTED/);
+  });
+});
+
+describe('the Monastery Gate starts when somebody presses Start', () => {
+  const atGate = () => { let s = newGame(WORLD, 1); for (const c of GOLDEN_PATH.slice(0, GOLDEN_PATH.indexOf('start session'))) s = step(s, c, WORLD).state; return s; };
+  it('start session opens the gate for 5', () => {
+    const r = step(atGate(), 'start session', WORLD);
+    expect(r.pointsAwarded).toBe(5);
+    expect(r.state.flags['gate.open']).toBe(true);
+    expect(r.output.join(' ')).toMatch(/SESSION STARTED/);
+  });
+  it.each(['start spark session', 'use gate', 'use progress bar', 'press start', 'use start', 'ring bell', 'knock'])('%s starts it too', (cmd) => {
+    expect(step(atGate(), cmd, WORLD).pointsAwarded).toBe(5);
+  });
+  it('wait pays nothing and moves nothing', () => {
+    const r = step(atGate(), 'wait', WORLD);
+    expect(r.pointsAwarded).toBe(0);
+    expect(r.state.flags['gate.open']).toBeFalsy();
+    expect(r.output.join(' ')).toMatch(/pressed Start/);
+    expect(step(r.state, 'wait', WORLD).state.flags['gate.open']).toBeFalsy();
   });
 });

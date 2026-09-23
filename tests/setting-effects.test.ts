@@ -105,10 +105,10 @@ describe('the back gate is one gate (xmla off, both sides)', () => {
     expect(one('monastery.gate', 's', { 'gate.open': true }).state.room).toBe('fortress.model');
   });
   it("the Model View's hint never says north through a closed gate", () => {
-    const hint = WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', { 'ts.xmla': false, 'taken.policy': true, 'refresh.done': true }));
+    const hint = WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', { 'ts.xmla': false, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true }));
     expect(hint).toMatch(/^The back gate is closed \(XMLA endpoint: Off\)/);
     expect(hint).not.toMatch(/North, through the back gate/);
-    expect(WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', { 'taken.policy': true, 'refresh.done': true }))).toBe('North, through the back gate, the monks are waiting.');
+    expect(WORLD.rooms['fortress.model']!.flaskHint(at('fortress.model', { 'trial.moat': true, 'taken.policy': true, 'refresh.done': true }))).toBe('North, through the back gate, the monks are waiting.');
   });
 });
 
@@ -168,7 +168,7 @@ describe('defaults: none of it shows', () => {
     }
     const all = transcript.join('\n');
     for (const re of EFFECTS) expect(all).not.toMatch(re);
-    expect(s.score).toBe(MAX_SCORE); expect(s.turns).toBe(69); expect(s.won).toBe(true);
+    expect(s.score).toBe(MAX_SCORE); expect(s.turns).toBe(67); expect(s.won).toBe(true);
   });
   it('a bare number at default is not a survey answer, and the cottage has no Eventhouse', () => {
     expect(one('village.cottage', '7').stepId).not.toBe('survey.reply');

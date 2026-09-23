@@ -595,21 +595,24 @@ The Lake House. A house. On a lake. You keep saying it like it'll start meaning 
 
 The Monastery Gate. A session is starting. It was starting when you got here and it'll be starting at your funeral. Exits: west to the Gold Marsh; south to The Model View; north once the way opens.
 
-**Goal:** Wait out the Spark session (+10). You leave with: gate open.
+**Goal:** Press Start on the Spark session (+5). You leave with: gate open.
 
-**Hint:** The session is starting. Wait. Then wait again. Then once more — three waits opens the gate.
+**Hint:** There's a Start button on the progress bar. Nobody has pressed it since 2023.
 
 **The way to 200 here:**
 
-- `wait` — The bar creeps to 33%. The monk nods approvingly at your patience.
-- `wait` — The bar creeps to 67%. The monk hums.
-- `wait` — SESSION STARTED. It took four minutes, as is tradition. The gate swings open. **+10**
+- `start session` — You press Start. The stone bar jumps to 33%, hums at 67%, and stops at 99% for exactly as long as it takes you to doubt it. SESSION STARTED. Four minutes, as is tradition. The gate swings open. **+5**
+
+**Also scores:**
+
+- `use session` (before the gate opens) — You press Start. The stone bar jumps to 33%, hums at 67%, and stops at 99% for exactly as long as it takes you to doubt it. SESSION STARTED. Four minutes, as is tradition. The gate swings open. **+5**
+- `knock` (before the gate opens) — You press Start. The stone bar jumps to 33%, hums at 67%, and stops at 99% for exactly as long as it takes you to doubt it. SESSION STARTED. Four minutes, as is tradition. The gate swings open. **+5**
 
 **Rules — what this room answers to:**
 
 - `attack monk` — You shove the monk. He does not move. He has been standing here since Runtime 1.1.
+- `wait` (before the gate opens) — You wait. The bar doesn't. Sessions don't start because you're patient; they start because somebody pressed Start.
 - `north` (before the gate opens) — The gate is closed. SESSION STARTING…
-- `knock` (before the gate opens) — You knock. The gate says: Session starting. Please wait. It has always said that. Knocking does not count as waiting.
 
 *Only after a Sacristy setting is changed:*
 
@@ -619,7 +622,7 @@ The Monastery Gate. A session is starting. It was starting when you got here and
 
 - **gate** — A stone gate with a stone progress bar. SESSION STARTING… 0% Not enough capacitude to hurry it.
   - `look at back gate` — The Keep's back gate, south: the XMLA endpoint, Read Write. Through it, the Model View, Sir Cardinality, and one eyebrow, already raised.
-  - `ring gate` — Locked. The session is starting. `wait`. Three times; the bar counts them.
+  - `open gate` — Locked. The session is stopped. There is a Start button on the bar.
   - `open gate` (once the gate is open) — Yeah, totally! Except it's already open, you moron. Try: north.
 - **pamphlet** (you can take it) — SPARK: A BEGINNER'S GUIDE. Chapter 1: Waiting. Chapter 2: Waiting, Continued. Chapter 3 has not started yet.
   - `get pamphlet` — You take the pamphlet. Nobody stops you. Nobody was going to.
@@ -633,15 +636,15 @@ The Monastery Gate. A session is starting. It was starting when you got here and
 
 1. The monk points at the progress bar without a word. 'Session starting…'
 2. The monk points at the progress bar again, a little harder. It is still starting.
-3. "Wait," the monk says, quietly, so the session doesn't hear. "Three times. Type it. It counts your patience; nothing else counts."
-4. Still not waiting, Mister Star Schema. The bar noticed.
+3. 'Press Start,' says the monk. 'Nobody ever presses Start. They wait, and they bill.'
+4. Still not pressing Start, Mister Star Schema. The bar noticed.
 
 Ask about anything else: The monk points at the progress bar. It is his answer to everything, and it is always the same percent.
 
 **Phrases — other things you can say here:**
 
 - `count` — One. Two. The session hears you counting and restarts.
-- `open session` — It's starting. `wait`. That's the puzzle. Really.
+- `open session` — It's stopped. There's a Start button on it. That's the puzzle. Really.
 
 ## Cloister
 
@@ -654,7 +657,7 @@ The Cloister. Monks in a circle, chanting. You're in the loop now. There's no br
 **The way to 200 here:**
 
 - `talk to abbot` — 'Brother Pandas' notebook runs,' says the Abbot, 'and the Lakehouse is free of pandas. Kneel.' He drapes the Hoodie of Spark over your shoulders. It is warm, and slightly too big, as is tradition. **+15**
-- `wear hoodie` — You pull on the Hoodie of Spark. You look like a Data Engineer. You have never written a notebook in your life. Nobody can tell. Now you're lookin' like a serious Engineer, Many-to-Many Mandy.
+- `wear hoodie` — You pull on the Hoodie of Spark. You look like a Data Engineer. You have never written a notebook in your life. Nobody can tell. Now you're lookin' like a serious Engineer, Bidirectional Bob.
 
 **Rules — what this room answers to:**
 
@@ -825,7 +828,7 @@ These work in every room of the Keep.
 
 **Things to try:**
 
-- `calculated column` — Right sin, wrong room. Nobody here owns a window worth throwing you out of. The Duke does, north of the hall.
+- `calculated column` — Right sin, wrong room. Nobody here owns a window worth throwing you out of. The Duke does, north of the hall, and lately he wants to see it, not hear it: bring him the date table.
 - `direct query` — Every click, a query. Every query, a wait. You feel the Keep slow down as you say it.
 - `direct lake` — Direct Lake. The Keep brightens. Then falls back to DirectQuery for reasons that will be explained in a blog post.
 - `publish` — Publish to Power BI: which workspace? There is one. It is not the right one. You publish anyway. A red dot appears on something.
@@ -837,13 +840,13 @@ These work in every room of the Keep.
 
 The Power BI Desktop Gate. Still updating. 1 of 3. It's been 1 of 3 since Windows Vista. Exits: south to the Foothills; north once the way opens.
 
-**Goal:** Name a SKU the guard accepts (+10). You leave with: bridge down.
+**Goal:** Click the Try free link (+10): the guard wants a SKU and the trial is free. You leave with: bridge down.
 
-**Hint:** The guard wants a SKU. You cannot afford a real one. There is a free one, for sixty days. Say it.
+**Hint:** The guard wants a SKU. You cannot afford a real one. There is a free one, for sixty days, and a link under the dialog that starts it.
 
 **The way to 200 here:**
 
-- `say trial` — 'Trial capacity, eh,' says the guard. 'Sixty days. Come in. Quickly.' The splash screen finishes updating (3 of 3). The drawbridge crashes down. **+10**
+- `use trial` — You click Try free. 'Sixty days,' says the guard, reading over your shoulder. 'Come in. Quickly.' The splash screen finishes updating (3 of 3). The drawbridge crashes down. **+10**
 
 **Rules — what this room answers to:**
 
@@ -860,23 +863,26 @@ The Power BI Desktop Gate. Still updating. 1 of 3. It's been 1 of 3 since Window
 - **drawbridge** — The drawbridge is up. Painted across it, a splash screen: "Loading… Power BI Desktop is updating (1 of 3)". It does not look like it is lowering. It looks like it is updating.
   - `use drawbridge` — You push the drawbridge. It is a splash screen. Splash screens are not pushed; they are waited out, or bribed with a SKU.
   - `get drawbridge` — The drawbridge weighs more than your report, and your report weighs 2.3 GB.
-  - `open drawbridge` — The bridge answers to the guard. The guard answers to SKUs. Say one to him.
+  - `open drawbridge` — The bridge answers to the guard. The guard answers to SKUs. The only one you can afford is a link under the update dialog.
   - `open drawbridge` (once the bridge is down) — Yeah, totally! Except it's already down, you moron. Try: north.
 - **Moat of T-SQL** — The Moat of T-SQL: the Warehouse the whole Keep was built on. It glitters with semicolons. Deep in it, something SELECTs. Do not swim. The Duke's guests arrive by throw.
   - `drink moat` — You sip from the Moat of T-SQL. It tastes of NOLOCK. You stop.
   - `use moat` — You dip a toe in the Moat of T-SQL. It autocompletes to SELECT TOE.
   - `get moat` — You cannot get the moat. Historically, it is the moat that gets you.
-- **splash screen** — Loading… 1 of 3. It has been 1 of 3 since you arrived.
+- **splash screen** — Loading… 1 of 3. Under it, the update dialog, and under that a small blue link: Try free. It has been 1 of 3 since you arrived.
   - `use loading screen` — You click the splash screen. It is not a button. Nothing on a splash screen is a button.
   - `get loading screen` — It is a splash screen. It goes away when it wants to.
 - **battlements** — Battlements, crenellated like a column chart with the missing months left out. The guard leans on the tallest bar. It is December. It is always December.
   - `use battlements` — You knock on the battlements. The guard knocks back: "SKU?"
   - `get battlements` — You cannot take the battlements. They are the only thing holding the guard up.
-- **update dialog** — A small grey dialog nailed to the gatehouse: "A new version of Power BI Desktop is available." Buttons: Install now. Install now. Remind me in 1 day (greyed out).
+- **update dialog** — A small grey dialog nailed to the gatehouse: "A new version of Power BI Desktop is available." Under it, a small blue link: Try free. Buttons: Install now. Install now. Remind me in 1 day (greyed out).
   - `use update` — The update installs. Then another. The drawbridge does not move. This is the update.
   - `use dialog` — You click Remind me in 1 day. It is greyed out. It has always been greyed out.
   - `get dialog` — You drag the dialog off the screen. It comes back, centred.
+  - `try free` — You click Try free. 'Sixty days,' says the guard, reading over your shoulder. 'Come in. Quickly.' The splash screen finishes updating (3 of 3). The drawbridge crashes down. **+10**
   - `update` — The update installs. Then another. The drawbridge does not move. This is the update.
+  - `use trial` (before the bridge is down) — You click Try free. 'Sixty days,' says the guard, reading over your shoulder. 'Come in. Quickly.' The splash screen finishes updating (3 of 3). The drawbridge crashes down. **+10**
+  - `say trial` (before the bridge is down) — 'Trial,' the guard repeats. 'I've heard of it. Everyone's heard of it. Show me.' There's a link under the dialog.
 
 **People:**
 
@@ -884,7 +890,7 @@ The Power BI Desktop Gate. Still updating. 1 of 3. It's been 1 of 3 since Window
 
 1. "HALT! State your SKU!"
 2. "HALT," the guard says again, quieter, as if halting were something you could do more of. "Your SKU."
-3. "A SKU. S-K-U. Trial's free, peasant, if you can't afford one."
+3. "A SKU. S-K-U. Trial's free, peasant, if you can't afford one. Link's under the dialog."
 4. 'Still no SKU, Mister Star Schema.'
 
 Ask about anything else: "Is it a SKU? No? Then it's not my department, and my department is the whole gate."
@@ -903,7 +909,7 @@ Power Query Hall. Seven doors, one order, and you, trying them like a raccoon at
 
 **Goal:** Pass through. Optional: rebuild the query in order (+10 bonus).
 
-**Hint:** North. Insult the Duke properly and he will do the rest. He hates one shortcut above all others. (Optional, for the bonus: the query is broken at step 1: Source. `look at steps`.)
+**Hint:** West, in the Model View, one line is dashed and a date table is related to nothing. Double-click the line, take the table, show the Duke, north. (Optional, for the bonus: the query is broken at step 1: Source. `look at steps`.)
 
 **Items:**
 
@@ -950,17 +956,17 @@ Power Query Hall. Seven doors, one order, and you, trying them like a raccoon at
 
 The Model View. Tables on plinths, lines between them, and one bridge that wobbles like your DAX. Exits: east to the Power Query Hall; north to the Monastery Gate.
 
-**Goal:** Take the policy. North is the back gate to the Monastery. You leave with: policy.
+**Goal:** Activate the dashed Date-to-Sales line (+10), then take the date table. North is the back gate to the Monastery. You leave with: date table.
 
-**Hint:** Take the policy. Small steps beat big refreshes.
+**Hint:** One line in the diagram is dashed. Double-click it.
 
 **The way to 200 here:**
 
-- `get policy` — An incremental refresh policy: 'Refresh rows from the last 10 days.' Small steps. Bursting steps, one might say.
+- `use relationship` — You double-click the dashed line. Date[Date] to Sales[OrderDate]. Active: on. Cross-filter: single. Cardinality: one to many. Sir Cardinality nods once. It is the only time he will nod. The date table, which has been related to nothing since 2021, sits up. **+10**
+- `get date table` — You take the date table. Every day from 1900 to 2099, and now a line to Sales. Heavier than it looks; most of it is weekends.
 
 **Rules — what this room answers to:**
 
-- `say single direction` — Single direction, one to many. Sir Cardinality nods once. It is the only time he will nod.
 - `attack sir cardinality` — You swing at Sir Cardinality. He parries: one to many. You are the many.
 - `say both` (after the many-to-many mistake) — An ambiguous path between tables was detected. Sir Cardinality does not look up. He knew.
 - `give shortcut to sir cardinality` (once you have the shortcut) — He turns it over. 'A shortcut. To a table. In another house.' He hands it back and says a prayer.
@@ -990,15 +996,22 @@ The Model View. Tables on plinths, lines between them, and one bridge that wobbl
   - `get bridge` — You lift one end. The other end filters both ways. You put it down.
   - `enable bidirectional` — You set every relationship to Both. The model finds a path from Sales to Sales through Sales. So do you. Ambiguous path. Sir Cardinality told you three times, and you heard 'Both' and thought it sounded thorough. ☠
   - `look at bridge` (after you have looked at the bridge) — The wobble is a many-to-many. Your totals will be right, until someone filters by Territory.
-- **date table** — A date table. It has every day from 1900 to 2099. It has not been marked as a date table. Time intelligence is sulking.
+- **date table** (you can take it) — A date table. It has every day from 1900 to 2099. It has not been marked as a date table. Time intelligence is sulking.
+  - `get date table` — You lift the date table. It is related to nothing, and Sir Cardinality will not let a table leave the diagram unrelated. 'Nothing leaves this view without a relationship,' he says. 'Not even you.'
+  - `get date table` again — You have the date table. It's the only table in the realm that knows what day it is.
   - `use date table` — You mark the date table as a date table. Time intelligence, which had been sulking, starts working. No points. It should have been done already. Time intelligence feels refreshered.
-  - `get date table` — The date table is the most important table in the model. It is also the one nobody bothered to mark.
+  - `get date table` — You lift the date table. It is related to nothing, and Sir Cardinality will not let a table leave the diagram unrelated. 'Nothing leaves this view without a relationship,' he says. 'Not even you.'
+  - `get date table` — You take the date table. Every day from 1900 to 2099, and now a line to Sales. Heavier than it looks; most of it is weekends.
   - `use date table` (once the date table is marked) — It is already marked. You mark it again. Time intelligence sighs: "I heard you the first time."
 - **plinths** — Stone plinths, each with a table on top: Sales in the middle, big and square; Product, Customer and Date around it. Almost a star. One stray plinth holds a table called Sheet1.
+  - `use relationship on sheet1` — Between which tables? Sir Cardinality raises an eyebrow. Both eyebrows. He has many-to-many eyebrows.
   - `use plinths` — You push a plinth into a neater star. Somebody, somewhere, presses Auto-layout.
   - `get plinths` — Each plinth holds a table. Each table holds a grudge. They stay.
 - **relationship lines** — Relationship lines, one to many, each with a little arrow pointing the way the filter flows. All but one are solid. The dashed one is inactive and has been since a meeting in 2021.
-  - `use relationship` — Between which tables? Sir Cardinality raises an eyebrow. Both eyebrows. He has many-to-many eyebrows.
+  - `use new relationship` — Between which tables? Sir Cardinality raises an eyebrow. Both eyebrows. He has many-to-many eyebrows.
+  - `use relationship` — You double-click the dashed line. Date[Date] to Sales[OrderDate]. Active: on. Cross-filter: single. Cardinality: one to many. Sir Cardinality nods once. It is the only time he will nod. The date table, which has been related to nothing since 2021, sits up. **+10**
+  - `use relationship` — It's active. It's single. It's one to many. You can stop double-clicking it.
+  - `say single direction` — Single direction, one to many. Sir Cardinality nods once. It is the only time he will nod.
   - `use lines` — You double-click a relationship line. A dialog opens with two dropdowns and four ways to be wrong. You cancel.
   - `get lines` — You pick up a relationship. The model forgets which Product you meant. You put it back.
 - **lectern** — A lectern. On it, a laminated card: an incremental refresh policy. Someone left it here, meaning to apply it. That was in 2019.
@@ -1019,6 +1032,10 @@ The Model View. Tables on plinths, lines between them, and one bridge that wobbl
 
 Ask about anything else: "One to many," says Sir Cardinality, to a question that was not about that.
 
+**Also scores:**
+
+- `set single` — You double-click the dashed line. Date[Date] to Sales[OrderDate]. Active: on. Cross-filter: single. Cardinality: one to many. Sir Cardinality nods once. It is the only time he will nod. The date table, which has been related to nothing since 2021, sits up. **+10**
+
 **Phrases — other things you can say here:**
 
 - `hide` — You hide the key column. It is still there. It is always still there.
@@ -1028,16 +1045,17 @@ Ask about anything else: "One to many," says Sir Cardinality, to a question that
 
 The Duke's Chamber. Filter context only. Your outside voice doesn't work in here. Exits: south to the Power Query Hall.
 
-**Goal:** Say the sin every DAX lord despises (+25): you are thrown into the Moat of T-SQL and land at the Gate. You leave with: Trial 2: you smell like a Warehouse (`trial.moat`).
+**Goal:** Hand the Duke your date table (+20): unmarked or CALENDARAUTO, either way you are thrown into the Moat of T-SQL and land at the Gate. Bring: date table (Model View). You leave with: Trial 2: you smell like a Warehouse (`trial.moat`).
 
-**Hint:** Say the thing every DAX lord despises. It has two words and it goes in a table.
+**Hint:** He wants to see a table, not hear a phrase. The Model View, west of the hall, has one.
 
 **The way to 200 here:**
 
-- `say calculated column` — 'A CALCULATED COLUMN?' The Duke rises. 'IN. MY. MODEL?' Two guards seize you by the arms and hurl you from the window into the Moat of T-SQL below — the Warehouse this whole Keep was built on. You surface, sputtering, covered in semicolons and something that might be a CROSS APPLY. You climb out. **+25**
+- `give date table to duke` — The Duke takes the table. Turns it over. 'A date table,' he says. 'UNMARKED.' The room goes quiet. 'You built time intelligence on a table you never marked as a date table.' He does not finish the sentence. He finishes you. 'A CALCULATED COLUMN?' The Duke rises. 'IN. MY. MODEL?' **+20**
 
 **Rules — what this room answers to:**
 
+- `look at date table` — There's no table in here. The Duke would like one. The Model View, west of the hall, has one.
 - `say dax` — You say 'DAX' to the Duke of DAX. He says nothing. You have been DAXxed; it feels like a filter you cannot see.
 - `south` — You back out of the chamber. The Duke loses count of you; nothing here survives leaving the filter context.
 - `say select *` — The Duke blinks. 'SELECT? This is a semantic model. We EVALUATE here.' He does not throw you. He corrects you, which is worse.
@@ -1058,12 +1076,17 @@ The Duke's Chamber. Filter context only. Your outside voice doesn't work in here
 - `give scroll to duke` (once you have the scroll) — 'PySpark?' The Duke holds it at arm's length. 'In the Keep?' You are not thrown in the moat, but it is close.
 - `give policy to duke` (once you have the incremental refresh policy) — 'Ten days at a time? I compute everything, every time, always.' He does not want it. Keep it for the Studio.
 
+**Curses:**
+
+- `use date table on duke` (before the Duke throws you in the moat, once you have the date table) — The Duke takes the table. Turns it over. 'A date table,' he says. 'UNMARKED.' The room goes quiet. 'You built time intelligence on a table you never marked as a date table.' He does not finish the sentence. He finishes you. 'A CALCULATED COLUMN?' The Duke rises. 'IN. MY. MODEL?' *(the cure)*
+- `say calculated column` (on the third wrong answer, before the Duke throws you in the moat) — 'WRONG,' says the Duke. 'Three times. You are hereby a CALCULATED COLUMN.' You feel yourself computed at refresh and stored in every row. Throttlor will not negotiate with a column. You are not exactly dead. You are worse: you are in the model.
+
 **Items:**
 
 - **throne** — A throne carved as a giant formula bar. Across the back, in gold: CALCULATE( — and nothing after it. The Duke is still waiting for the filter argument.
   - `use throne` — You reach for the throne. It is a formula bar. It autocompletes your hand to SUMX( and you back away.
   - `get throne of calculates` — The Duke is on it. He would like you to try.
-  - `open throne` — The Duke throws people from that window for one sin. Say it.
+  - `open throne` — The Duke throws people from that window for one thing, and lately he wants to see it, not hear it. Bring him a table.
 - **DAX query view** — A tall DAX query view beside the throne. Line 1: CALCULATE(. Line 2: a blinking cursor. Line 3: a red squiggle under nothing in particular.
   - `say implicit measure` — The Duke shudders. 'Implicit.' But he has heard worse today.
   - `say measure` — The Duke waits for the rest of the measure. It does not come. He closes the DAX query view on your fingers.
@@ -1086,45 +1109,47 @@ The Duke's Chamber. Filter context only. Your outside voice doesn't work in here
 
 1. 'CALCULATE(,' says the Duke, and waits. He is waiting for your filter argument. He will wait forever.
 2. 'CALCULATE(,' says the Duke, slower, and waits. You have brought nothing to put in the parentheses.
-3. 'There is one thing,' says the Duke, 'that I will not hear in this chamber. It has two words. It goes in a table. Say it, and see what happens.'
+3. 'There is one thing,' says the Duke, 'that I will not have in this chamber. It has every day in it and nobody marked it. Bring it, and see what happens.'
 4. 'Still no sin, Mister Star Schema. Say the two words. The ones every DAX lord despises.'
 
 Ask about anything else: The Duke waits for a filter argument. Whatever that was, it was not one.
 
 **Phrases — other things you can say here:**
 
+- `use calculated column` — 'Calculated column,' says the Duke. 'You'd say that.' He looks at your hands. 'Show me one. Bring me a table and I'll show you the moat.'
 - `sit` — You sit on the formula bar. It autocompletes you. You get up as SUMX(.
-
-**Curses:**
-
-- `use calculated column` — 'A CALCULATED COLUMN?' The Duke rises. 'IN. MY. MODEL?' Two guards seize you by the arms and hurl you from the window into the Moat of T-SQL below — the Warehouse this whole Keep was built on. You surface, sputtering, covered in semicolons and something that might be a CROSS APPLY. You climb out. *(the cure)*
 
 ## The Report Studio
 
 The Report Studio. A pie with 31 slices and a Card that says (Blank), which is also your plan. Exits: west to the Power Query Hall.
 
-**Goal:** Out-stare the Card (+10); give the Big Refresh the policy (+15). Bring: policy (Model View). You leave with: boots (wear them).
+**Goal:** Put a measure on the Card, twice (+10: the first one never counts); change the pie to a bar chart (+15) and the Big Refresh finishes. You leave with: boots (wear them).
 
-**Hint:** Look at the Card. Then out-wait it.
+**Hint:** There's a Card on the canvas showing Blank. Blank means nothing's on it.
 
 **The way to 200 here:**
 
-- `look at card` — You look at the Card. It shows (Blank). It looks back. Neither of you blinks.
-- `wait` — Still (Blank). Your eyes water. The Card's do not; it has none.
-- `wait` — The Card blinks. A number appears: 4.2M. It is wrong, but it is a number. You win. **+10**
-- `use policy on refresh` — You hand the Big Refresh a policy: ten days at a time. It blinks. It finishes 2019. Then 2020. Then all of it, in a minute, in small bursting steps. Something falls out of the progress bar: a pair of boots. **+15**
+- `put measure on card` — You drop Net Sales on the Card. It shows (Blank). It looked at you the whole time. Every one of us has done this: the first one never counts. Do it again.
+- `put measure on card` — You drop Net Sales on the Card again. $4,213,908. The Card blinks first. It has never done that. **+10**
+- `change pie chart to bar chart` — You select the pie. Thirty-one slices tense up. Visualizations pane: clustered bar. The slices unroll into bars, longest first, and for the first time you can read December. In the corner, the Big Refresh, which has been chewing on a 31-slice pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots. **+15**
 - `wear boots` — You lace up the Bursting Boots. You feel faster, and slightly over budget.
 
 **Rules — what this room answers to:**
 
+- `use measure on card` — You drop Net Sales on the Card. It shows (Blank). It looked at you the whole time. Every one of us has done this: the first one never counts. Do it again.
+- `drop measure with card` — You drop Net Sales on the Card. It shows (Blank). It looked at you the whole time. Every one of us has done this: the first one never counts. Do it again.
+- `use measure` — You drop Net Sales on the Card. It shows (Blank). It looked at you the whole time. Every one of us has done this: the first one never counts. Do it again.
+- `look at measure` — Net Sales, in the field list, waiting for somebody to put it on something. It has been waiting since 2019.
+- `wait` — Still (Blank). Your eyes water. The Card's do not; it has none.
 - `west` — You leave the Studio. The Card loses count of you; it was the only one counting.
 - `attack card` — You hit the Card. It shows (Blank). You cannot hurt what has no measure.
 - `give to card` — The Card does not take input.
-- `use card` (before you win the staring contest) — The Card takes no input. It wants staring at: look at it, then wait, then wait again.
+- `look at card` (before you win the staring contest) — You look at the Card. It shows (Blank). It looks back. Neither of you blinks.
+- `use card` (before you win the staring contest) — The Card takes no input from you. It takes measures. Net Sales is right there in the field list.
 - `give policy to card` (once you have the incremental refresh policy) — The Card does not take input. That is the Card's whole thing.
 - `give mug to card` (once you have the mug) — The Card shows (Mug). Then (Blank).
 - `give license to card` (once you have the Pro License Card) — The Card shows (Pro). Then (Blank). It is not impressed either.
-- `use policy` (once you have the incremental refresh policy) — On what? The Big Refresh is right there, at 97%. Use the policy on the refresh.
+- `use policy` (once you have the incremental refresh policy) — On what? Nothing in this room is waiting on ten days at a time. The Big Refresh is waiting on the pie.
 
 **Curses:**
 
@@ -1136,18 +1161,21 @@ The Report Studio. A pie with 31 slices and a Card that says (Blank), which is a
   - `use refresh` — It refreshes. Ten days, one minute. It is almost boring. You miss the drama.
   - `get refresh` — It is 97% of the way through 2019. Leave it.
   - `use bar chart on pie` — You turn the pie into a bar chart. Three stakeholders weep. The fourth sends a thumbs-up.
+  - `make it bar` — You select the pie. Thirty-one slices tense up. Visualizations pane: clustered bar. The slices unroll into bars, longest first, and for the first time you can read December. In the corner, the Big Refresh, which has been chewing on a 31-slice pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots. **+15**
   - `refresh` — Refresh failed: The column 'Column1' of the table wasn't found. It was found last week. Jeff renamed it. Jeff denies this.
-  - `use policy on refresh` (before the Big Refresh is fed, once you have the incremental refresh policy) — You hand the Big Refresh a policy: ten days at a time. It blinks. It finishes 2019. Then 2020. Then all of it, in a minute, in small bursting steps. Something falls out of the progress bar: a pair of boots. **+15**
-  - `give policy to refresh` (before the Big Refresh is fed, once you have the incremental refresh policy) — You give the Big Refresh the policy. It reads it twice, then refreshes ten days at a time: 2019, 2020, all of it, in a minute. Something falls out of the progress bar: a pair of boots. **+15**
-  - `use on refresh` (before the Big Refresh is fed) — The Big Refresh looks at you. 97%. It needs a policy, not encouragement.
+  - `use policy on refresh` (before the Big Refresh is fed, once you have the incremental refresh policy) — The Big Refresh doesn't want a policy. It wants the thing it's been chewing on since 2019 gone: look at the pie.
+  - `give policy to refresh` (before the Big Refresh is fed, once you have the incremental refresh policy) — The Big Refresh doesn't want a policy. It wants the thing it's been chewing on since 2019 gone: look at the pie.
+  - `use on refresh` (before the Big Refresh is fed) — The Big Refresh looks at you. 97%. It doesn't need encouragement. It needs the pie gone.
   - `use refresh` (before the Big Refresh is fed) — Refresh failed: The column 'Column1' of the table wasn't found. It was found last week. Jeff renamed it. Jeff denies this.
   - `use refresh` (before the Big Refresh is fed) — You click Refresh. It was already refreshing. It is now refreshing harder. (The policy in your pocket is not helping from there.)
 - **pie chart** — A pie with 31 slices. Twelve of them are 'Other'. You could fix it. You could also leave it and let it be someone else's problem in Q3.
+  - `use pie` — It's a bar chart. It's been a bar chart for a minute. Leave it.
   - `use pie` — You click a slice. It is 'Other'. Inside 'Other' is more 'Other'.
   - `get pie` — The pie is 31 slices. You cannot take it in one trip, and nobody wants a slice.
   - `eat pie` — You eat a slice. It is 'Other'. It tastes like the other eleven 'Other's.
   - `fix pie` — A pie with 31 slices. Twelve of them are 'Other'. You could fix it. You could also leave it and let it be someone else's problem in Q3.
   - `open other page` — You open the other page. 400 visuals. Your laptop fan hits a note only dogs and Throttlor can hear. The fan wins. The tab said DO NOT OPEN. You read it as a dare. ☠
+  - `use pie` (before the Big Refresh is fed) — You select the pie. Thirty-one slices tense up. Visualizations pane: clustered bar. The slices unroll into bars, longest first, and for the first time you can read December. In the corner, the Big Refresh, which has been chewing on a 31-slice pie since 2019, reads 98%. 99%. 100%. Something falls out of the progress bar: a pair of boots. **+15**
 - **slicers** — A stack of eight slicers: Year, Month, Region, Region (Old), Product, Colour, "Test", and one with no field at all. It filters everything, including itself.
   - `use slicers` — You select 2019 in the Year slicer. Every visual on the page flashes (Blank), then recovers, then does not.
   - `get slicers` — The slicers are synced across nine pages. Move one and eight others move with it.
@@ -1181,14 +1209,15 @@ The Report Studio. A pie with 31 slices and a Card that says (Blank), which is a
 
 1. The Card says (Blank). You realize you are now staring at it. It is staring back. This is going to take a while.
 2. (Blank). Again. The Card is not stalling; it has nothing to stall with.
-3. The Card shows (Blank). It will show a number if you look at it and then wait. Twice. Blink and it wins.
+3. Put something on me. Anything. Net Sales. I've heard good things.
 4. Still (Blank), Mister Star Schema.
 
 Ask about anything else: The Card shows (Blank). It is its answer to that, and to everything.
 
 **Phrases — other things you can say here:**
 
-- `open card` — The Card wants staring at. The refresh wants a policy. The Model View, west of the hall, keeps one.
+- `open card` — The Card wants a measure. The refresh wants the pie changed. Wear what falls out.
+- `drag measure to card` — You drop Net Sales on the Card. It shows (Blank). It looked at you the whole time. Every one of us has done this: the first one never counts. Do it again.
 - `align` — You align the visuals. Eleven pixels. Then ten. Then eleven again. It is never done.
 - `use q & a` — Q&A shows sales by month. You asked about regions. It is very confident.
 
@@ -1620,7 +1649,7 @@ These work in every room. The replies shown are from the start of the game; most
 - `refresh` — You refresh. Nothing changes, but it feels productive.
 - `dax` — You write a measure. It returns BLANK(). It always returns BLANK(). You are beginning to suspect the problem is you.
 - `select *` — Not here. This is not even a Warehouse. Say it to the Duke and get corrected.
-- …and 51 more.
+- …and 52 more.
 
 **Ways to die ☠:**
 

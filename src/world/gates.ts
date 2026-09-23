@@ -95,14 +95,15 @@ const stillToGet = (s: GameState): string => {
   return todo.length ? `Still to get: ${todo.join('; ')}.` : '';
 };
 
-const SESSION_PCT = (s: GameState): string => ['0%', '33%', '67%'][(s.flags['gate.waiting'] as number) ?? 0] ?? '0%';
+/** GATE_VERBS without `use` and `knock`: at the Monastery Gate those press Start (actions-that-fit §1.5). */
+const START_IS_USE = '(open|unlock|push|pull|cross|climb|lower|raise|enter|break|kick( down)?|go through|walk (across|over|through)|try)';
 
 /** Every gating object, as data (the sweep in tests/setting-effects.test.ts reads their hint lines). */
 export const GATES: GateSpec[] = [
   // ---- The Keep ----
   {
     id: 'desktop', room: 'fortress.bridge', nouns: '(drawbridge|bridge|gate|keep gate|splash( screen)?|guard|guards|bridge guard)', when: (s) => !s.flags['bridge.down'],
-    shape: 'The bridge answers to the guard. The guard answers to SKUs. Say one to him.', more: "Trial's free.",
+    shape: 'The bridge answers to the guard. The guard answers to SKUs. The only one you can afford is a link under the update dialog.', more: "It says Try free. Sixty days, then it's someone else's budget.",
     flavor: [
       { on: /^(open|unlock|use|push|try)\b.*\b(splash|drawbridge|bridge|gate)\b/, line: "You click the splash screen. It is not a button. The guard shouts: 'STATE. YOUR. SKU.'" },
       { on: /^(use|push|pull|try)\b.*\b(drawbridge|bridge|gate)\b/, line: 'You push the drawbridge. It is a splash screen. Splash screens are not pushed; they are waited out, or bribed with a SKU.' },
@@ -113,7 +114,7 @@ export const GATES: GateSpec[] = [
   },
   {
     id: 'duke', room: 'fortress.throne', nouns: '(throne|formula bar|window|casement|keep window|duke|duke of dax|duke of warehouse|guards)', when: (s) => !s.flags['trial.moat'],
-    shape: 'The Duke throws people from that window for one sin. Say it.', more: 'Two words. They go in a table.',
+    shape: 'The Duke throws people from that window for one thing, and lately he wants to see it, not hear it. Bring him a table.', more: "The date table. The Model View has it, once it's related.",
     flavor: [
       { on: /^(open|unlock)\b.*\b(window|casement)\b/, line: 'You open the window. The moat winks up at you. It is the fastest exit in the Keep. You close it; you are not ready to smell like that.' },
       { on: /^(use|push|pull|try|enter|climb)\b.*\b(throne|formula bar)\b/, line: 'You reach for the throne. It is a formula bar. It autocompletes your hand to SUMX( and you back away.' },
@@ -125,31 +126,30 @@ export const GATES: GateSpec[] = [
     id: 'studio', room: 'fortress.yard', nouns: '(card|card visual|big refresh|refresh|progress bar|refresh bar)', when: (s) => !s.flags['refresh.done'],
     verbs: GATE_VERBS_NO_USE,
     // After the Duke's spinner times out the Card is (Blank) again (stare.count 3, stare.done off), but the stare is won.
-    shape: (s) => (s.flags['stare.done'] || s.flags['stare.count'] === 3
-      ? 'The Card is stared at. The refresh wants a policy. The Model View, west of the hall, keeps one.'
-      : 'The Card wants staring at. The refresh wants a policy. The Model View, west of the hall, keeps one.'),
+    shape: (s) => (s.flags['stare.done'] || s.flags['card.measure'] === 2
+      ? 'The Card has its measure. The refresh wants the pie changed. Wear what falls out.'
+      : 'The Card wants a measure. The refresh wants the pie changed. Wear what falls out.'),
     more: (s) => [
-      !s.flags['stare.done'] && !s.flags['stare.count'] && 'Look at the Card, then wait, twice.',
-      s.inventory.includes('policy') ? 'The policy in your pocket goes on the refresh.' : !s.flags['taken.policy'] && 'The policy is on a lectern, west of the hall.',
+      !s.flags['stare.done'] && s.flags['card.measure'] !== 2 && 'Put a measure on the Card. Twice; the first one never counts.',
+      'Change the pie to a bar chart.',
     ].filter(Boolean).join(' '),
     flavor: [{ on: /^(push|try)\b.*\b(refresh|progress bar)\b/, line: 'You push the Big Refresh. 97%. It has been pushed before; there is a sticky note about it.' }],
   },
   // ---- The Monastery ----
   {
     id: 'monastery', room: 'monastery.gate', nouns: '(gate|door|bell|monastery gate|lock)', when: (s) => !s.flags['gate.open'],
-    verbs: withVerbs('ring'),
-    shape: 'Locked. The session is starting. `wait`. Three times; the bar counts them.',
-    more: (s) => `Type \`wait\`. The bar is at ${SESSION_PCT(s)}; it counts waits, and only waits.`,
+    verbs: START_IS_USE, // use / knock / ring press Start (monastery.wait): the gate must not shadow the score
+    shape: 'Locked. The session is stopped. There is a Start button on the bar.',
+    more: 'Press Start. That is the whole puzzle. Really.',
     flavor: [
       { on: /^(open|unlock|use|push|pull|try)\b.*\b(gate|door)\b/, line: 'You push the gate. The monk shakes his head and points at the progress bar. Some things cannot be rushed. Well — they can, with a Starter Pool, but not here.' },
-      { on: /^knock\b/, line: 'You knock. The gate says: Session starting. Please wait. It has always said that. Knocking does not count as waiting.' },
-      { on: /^ring\b/, line: 'You ring the bell. It rings at the speed of a Spark session, which is to say it will, later.' },
     ],
   },
   {
     id: 'session', room: 'monastery.gate', nouns: '(session|spark session|progress bar|bar|stone progress bar|monk|gatekeeper|gatekeeper monk)', when: (s) => !s.flags['gate.open'],
-    shape: "It's starting. `wait`. That's the puzzle. Really.",
-    more: (s) => `Three of them. The bar is at ${SESSION_PCT(s)}; it is counting.`,
+    verbs: GATE_VERBS_NO_USE, // `use bar` presses Start; knocking on a monk is still just knocking on a monk
+    shape: "It's stopped. There's a Start button on it. That's the puzzle. Really.",
+    more: 'Press Start. Nobody has since 2023.',
     flavor: [{ on: /^(use|push|pull|try|climb)\b.*\bbar\b/, line: 'You lean on the progress bar. It is stone. It moves at the speed of stone, which is also the speed of a Spark session.' }],
   },
   {
@@ -211,7 +211,7 @@ export const GATES: GateSpec[] = [
     id: 'pass', room: 'peaks.pass', nouns: '(sign|delay|interactive delay|pass|throttling pass|air|throttle|throttling|rocks?)', when: (s) => !s.worn.includes('boots'),
     shape: "Interactive operations may be delayed. Boots help. The Studio's Big Refresh drops a pair.",
     more: (s) => (s.inventory.includes('boots') ? 'They are in your pack. `wear boots`. You have been carrying the fix.'
-      : 'The policy in the Model View goes on the Big Refresh in the Studio. Wear what falls out.'),
+      : 'The Big Refresh in the Studio is stuck on the pie. Change the pie to a bar chart, and wear what falls out.'),
     flavor: [{ on: /^(push|pull|try|knock|use)\b.*\bsign\b/, line: 'You push the sign. The push is queued. It arrives a moment later, smoothed.' }],
   },
   {

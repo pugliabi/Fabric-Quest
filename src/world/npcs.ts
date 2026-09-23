@@ -143,10 +143,10 @@ export const NPCS: Record<string, Npc> = Object.fromEntries([
         : n === 3 ? '"North," says the monk. First word in four minutes. "The Abbot is in the cloister. Go before it times out."'
         : cycle(n, [`The monk has said his word, ${nick(s)}. North.`, `Lookin' good, ${nick(s)}. Go in. The session won't last.`, `He points north again, ${nick(s)}, with both hands this time.`])
       : n === 2 ? 'The monk points at the progress bar again, a little harder. It is still starting.'
-        : n === 3 ? '"Wait," the monk says, quietly, so the session doesn\'t hear. "Three times. Type it. It counts your patience; nothing else counts."'
-        : cycle(n, [`Still not waiting, ${nick(s)}. The bar noticed.`, `"WAIT," the monk mouths at you, ${nick(s)}. He has broken his vow for this.`, `Almost there, ${nick(s)}. Wait until the bar says 100%. Talking is not waiting.`])),
+        : n === 3 ? "'Press Start,' says the monk. 'Nobody ever presses Start. They wait, and they bill.'"
+        : cycle(n, [`Still not pressing Start, ${nick(s)}. The bar noticed.`, `"START," the monk mouths at you, ${nick(s)}. He has broken his vow for this.`, `Almost there, ${nick(s)}. The button is on the bar. Talking is not pressing.`])),
     brushOff: BRUSHOFFS.monk,
-    knows: ['session', 'spark', 'spark session', 'progress', 'bar', 'progress bar', 'wait', 'waiting', 'gate', 'door', 'abbot', 'cloister', 'monastery', 'vow', 'silence'],
+    knows: ['session', 'spark', 'spark session', 'progress', 'bar', 'progress bar', 'wait', 'waiting', 'gate', 'door', 'abbot', 'cloister', 'monastery', 'vow', 'silence', 'start', 'button'],
   }),
   npc({
     id: 'abbot', name: 'the Abbot', aliases: ['abbot', 'father abbot', 'father'],
@@ -233,10 +233,10 @@ export const NPCS: Record<string, Npc> = Object.fromEntries([
         : n === 3 ? '"Sixty. Days. Go in. The hall is north; the Duke is north of that. Stop talking to the guard."'
         : cycle(n, ["'Lookin' good, Mr. Trial.'", `'Still here, ${nick(s)}? The Keep is that way. North. Where the drawbridge fell.'`, `'You have a trial and a Keep, ${nick(s)}. Use one on the other.'`])
       : n === 2 ? '"HALT," the guard says again, quieter, as if halting were something you could do more of. "Your SKU."'
-        : n === 3 ? '"A SKU. S-K-U. Trial\'s free, peasant, if you can\'t afford one."'
-        : cycle(n, [`'Still no SKU, ${nick(s)}.'`, `'Almost there, ${nick(s)}, but that's PRO.'`, `'Say it, ${nick(s)}. T-R-I-A-L. It's free. That's the joke.'`])),
+        : n === 3 ? '"A SKU. S-K-U. Trial\'s free, peasant, if you can\'t afford one. Link\'s under the dialog."'
+        : cycle(n, [`'Still no SKU, ${nick(s)}.'`, `'Almost there, ${nick(s)}, but that's PRO.'`, `'The link, ${nick(s)}. Under the dialog. Try free. It's free. That's the joke.'`])),
     brushOff: BRUSHOFFS.guard,
-    knows: ['sku', 'skus', 'trial', 'pro', 'premium', 'ppu', 'fabric', 'capacity', 'license', 'bridge', 'drawbridge', 'gate', 'keep', 'splash', 'splash screen', 'desktop', 'days', 'sixty days', 'moat', 'lanyard', 'password'],
+    knows: ['sku', 'skus', 'trial', 'link', 'try free', 'pro', 'premium', 'ppu', 'fabric', 'capacity', 'license', 'bridge', 'drawbridge', 'gate', 'keep', 'splash', 'splash screen', 'desktop', 'days', 'sixty days', 'moat', 'lanyard', 'password'],
   }),
   npc({
     id: 'duke', name: 'the Duke of DAX', aliases: ['duke', 'duke of dax', 'the duke', 'duke of warehouse'],
@@ -249,10 +249,10 @@ export const NPCS: Record<string, Npc> = Object.fromEntries([
         : n === 3 ? "'You have your smell,' says the Duke, to the window. 'The Studio is east of the hall. Go stare at something.'"
         : cycle(n, [`'Still here, ${nick(s)}? You smell like my basement and you are standing in my chamber.'`, `'Lookin' good, ${nick(s)}. Awful, but good.'`, `The Duke evaluates you, ${nick(s)}. The result is (Blank).`])
       : n === 2 ? "'CALCULATE(,' says the Duke, slower, and waits. You have brought nothing to put in the parentheses."
-        : n === 3 ? "'There is one thing,' says the Duke, 'that I will not hear in this chamber. It has two words. It goes in a table. Say it, and see what happens.'"
+        : n === 3 ? "'There is one thing,' says the Duke, 'that I will not have in this chamber. It has every day in it and nobody marked it. Bring it, and see what happens.'"
         : cycle(n, [`'Still no sin, ${nick(s)}. Say the two words. The ones every DAX lord despises.'`, `'Almost there, ${nick(s)}. Not SQL. A modeling shortcut. The lazy one.'`, `'The word is not SQL, ${nick(s)}. Think smaller. Think of a column.'`])),
     brushOff: BRUSHOFFS.duke,
-    knows: ['calculate', 'dax', 'filter', 'filter context', 'context', 'measure', 'measures', 'column', 'columns', 'calculated column', 'sin', 'sql', 'table', 'tables', 'window', 'throne', 'moat', 'warehouse', 'studio', 'smell', 'basement'],
+    knows: ['calculate', 'dax', 'filter', 'filter context', 'context', 'measure', 'measures', 'column', 'columns', 'calculated column', 'sin', 'sql', 'table', 'tables', 'window', 'throne', 'moat', 'warehouse', 'studio', 'smell', 'basement', 'date table', 'date', 'calendar', 'marked'],
   }),
   npc({
     id: 'cardinality', name: 'Sir Cardinality', aliases: ['sir cardinality', 'cardinality', 'knight', 'sir'],
@@ -265,7 +265,7 @@ export const NPCS: Record<string, Npc> = Object.fromEntries([
         : `${CARDINALITY_ADVICE[2]} He looks toward the north gate. 'The monks are that way. The Duke is east, then north. Go be humiliated in the correct order.'`)
       : cycle(n, [`"One. To. Many, ${nick(s)}."`, `"Star schema, ${nick(s)}. I have said it. I will say it at your funeral."`, `"The dragon wants two words, ${nick(s)}. I have given you three. That is the last time I round up."`])),
     brushOff: BRUSHOFFS.cardinality,
-    knows: ['cardinality', 'relationship', 'relationships', 'star schema', 'schema', 'star', 'snowflake', 'model', 'one to many', 'many to many', 'bidirectional', 'direction', 'fact', 'fact table', 'dimension', 'dimensions', 'table', 'tables', 'dragon', 'bridge', 'duke', 'monks', 'abbot', 'eyebrow'],
+    knows: ['cardinality', 'relationship', 'relationships', 'star schema', 'schema', 'star', 'snowflake', 'model', 'one to many', 'many to many', 'bidirectional', 'direction', 'fact', 'fact table', 'dimension', 'dimensions', 'table', 'tables', 'dragon', 'bridge', 'duke', 'monks', 'abbot', 'eyebrow', 'dashed', 'inactive', 'date table'],
   }),
   npc({
     id: 'card', name: 'the Card visual', aliases: ['card', 'card visual', 'blank', 'the card'],
@@ -278,13 +278,13 @@ export const NPCS: Record<string, Npc> = Object.fromEntries([
     // The Studio's talk rules (fortress.talk-card-stare, fortress.talk-card) call talkTo, so this escalation runs there.
     talkMore: (s, n) => (s.flags['stare.done']
       ? n === 2 ? 'The Card says 4.2M again, slightly louder. It has one value and it is committed to it.'
-        : n === 3 ? 'The Card shows 4.2M. Beside it, the Big Refresh shows 97%. One of them wants a policy. It is not the Card.'
+        : n === 3 ? 'The Card shows 4.2M. Beside it, the Big Refresh shows 97%. One of them was choking on a pie. It was not the Card.'
         : cycle(n, [`(4.2M), ${nick(s)}.`, `The Card looks at you, ${nick(s)}, the way a card looks at anything: with a number.`, `Lookin' good, ${nick(s)}. Lookin' (4.2M).`])
       : n === 2 ? '(Blank). Again. The Card is not stalling; it has nothing to stall with.'
-        : n === 3 ? 'The Card shows (Blank). It will show a number if you look at it and then wait. Twice. Blink and it wins.'
-        : cycle(n, [`Still (Blank), ${nick(s)}.`, `Almost there, ${nick(s)}. Look, then wait, then wait.`, `(Blank) is not a conversation, ${nick(s)}. It is a measure that never got written.`])),
+        : n === 3 ? "Put something on me. Anything. Net Sales. I've heard good things."
+        : cycle(n, [`Still (Blank), ${nick(s)}.`, `Almost there, ${nick(s)}. A measure. Then the same measure, because the first one never counts.`, `(Blank) is not a conversation, ${nick(s)}. It is a measure that never got written.`])),
     brushOff: BRUSHOFFS.card,
-    knows: ['blank', 'measure', 'measures', 'number', 'value', '4.2m', 'refresh', 'big refresh', 'policy', 'incremental', 'stare', 'staring', 'wait', 'visual', 'report'],
+    knows: ['blank', 'measure', 'measures', 'number', 'value', '4.2m', 'refresh', 'big refresh', 'policy', 'incremental', 'stare', 'staring', 'wait', 'visual', 'report', 'net sales', 'sales', 'bar chart', 'pie'],
   }),
   npc({
     id: 'throttlor', name: 'Throttlor', aliases: ['dragon', 'throttlor the capacity dragon', 'capacity dragon', 'the dragon'],

@@ -15,7 +15,7 @@ const MAIN = [
   'peaks.foothills', 'peaks.pass', 'peaks.ledge', 'peaks.shrine',
 ];
 
-const IMPERATIVE = /\b(wait|talk|give|use|read|get|wear|say|board|go|north|south|east|west|exit|show|look)\b/i;
+const IMPERATIVE = /\b(wait|talk|give|use|read|get|wear|say|board|go|north|south|east|west|exit|show|look|start)\b/i;
 
 // The same two probe states the world lint uses: every settable flag true and every item held, or nothing at all.
 const allFlags = new Set<string>();
@@ -123,7 +123,7 @@ describe('something to do, give or use in every room', () => {
     ['swamp.bronze', ['name tag'], {}, ['use name tag on csv'], /Column3/],
     ['swamp.silver', [], {}, ['read column names'], /Column3 is still Column3/],
     ['swamp.gold', ['shortcut'], {}, ['use shortcut on marsh'], /contains the marsh/],
-    ['monastery.gate', [], {}, ['knock'], /Session starting/i],
+    ['monastery.gate', [], {}, ['wait'], /somebody pressed Start/],
     ['monastery.gate', ['pamphlet'], {}, ['give pamphlet to monk'], /wrote it/],
     ['monastery.cloister', ['kpi'], {}, ['give kpi to abbot'], /This is the realm/],
     ['monastery.spark', ['kpi'], {}, ['use kpi on notebook'], /seen worse/],
@@ -154,10 +154,10 @@ describe('something to do, give or use in every room', () => {
     expect(run(at('swamp.gold', ['shortcut']), 'use shortcut on marsh').s.room).toBe('swamp.gold');
   });
 
-  it('the Monastery gate hint counts the waits', () => {
+  it('the Monastery gate hint points at the Start button, not the waits', () => {
     const hint = (n?: number) => WORLD.rooms['monastery.gate']!.flaskHint(at('monastery.gate', [], n === undefined ? {} : { 'gate.waiting': n }));
-    expect(hint()).toMatch(/Wait\. Then wait again\. Then once more/);
-    expect(hint(2)).toMatch(/Wait/);
+    expect(hint()).toBe("There's a Start button on the progress bar. Nobody has pressed it since 2023.");
+    expect(hint(2)).not.toMatch(/\bwait\b/i);
     expect(WORLD.rooms['monastery.gate']!.flaskHint(at('monastery.gate', [], { 'gate.open': true }))).toMatch(/north/i);
   });
 
@@ -182,9 +182,9 @@ describe('flask hints stay current (final review M5)', () => {
   const hint = (room: string, flags: Record<string, FlagValue>, worn: string[] = []) => WORLD.rooms[room]!.flaskHint({ ...at(room, [], flags), worn });
   const keepDone = { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true };
   it('the Gate stops sending you to the Duke and the policy once both are done', () => {
-    expect(hint('fortress.bridge', { 'bridge.down': true })).toMatch(/Duke.*policy/);
+    expect(hint('fortress.bridge', { 'bridge.down': true })).toMatch(/dashed line.*Duke/);
     expect(hint('fortress.bridge', { 'bridge.down': true, 'trial.moat': true })).not.toMatch(/Duke/);
-    expect(hint('fortress.bridge', { 'bridge.down': true, 'trial.moat': true })).toMatch(/policy/);
+    expect(hint('fortress.bridge', { 'bridge.down': true, 'trial.moat': true })).toMatch(/measure/);
     const done = hint('fortress.bridge', { ...keepDone, 'trial.hoodie': true });
     expect(done).not.toMatch(/Duke|policy|Monastery/);
   });

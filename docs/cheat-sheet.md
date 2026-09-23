@@ -9,7 +9,7 @@ hand count.
 ## 1. The 200 in order
 
 One command per line, grouped by room (the room is named on the first command typed there), with the points each
-command earns and the running total after it. This is `tests/golden-path.json`: 200 points in 69 turns.
+command earns and the running total after it. This is `tests/golden-path.json`: 200 points in 67 turns.
 
 | # | Room | Command | Points | Total |
 |---|---|---|---|---|
@@ -25,63 +25,61 @@ command earns and the running total after it. This is `tests/golden-path.json`: 
 | 10 | **Village Square** | `e` |  |  |
 | 11 | **Refresh Fields** | `e` |  |  |
 | 12 | **Foothills** | `n` |  |  |
-| 13 | **Power BI Desktop Gate** | `say trial` | +10 | 25 |
+| 13 | **Power BI Desktop Gate** | `use trial` | +10 | 25 |
 | 14 |  | `n` |  |  |
-| 15 | **Power Query Hall** | `n` |  |  |
-| 16 | **Duke's Chamber** | `say calculated column` (you are thrown into the moat and land at the Gate) | +25 | 50 |
-| 17 | **Power BI Desktop Gate** | `n` |  |  |
-| 18 | **Power Query Hall** | `w` |  |  |
-| 19 | **The Model View** | `get policy` |  |  |
-| 20 |  | `e` |  |  |
-| 21 | **Power Query Hall** | `e` |  |  |
-| 22 | **The Report Studio** | `look at card` |  |  |
-| 23 |  | `wait` |  |  |
-| 24 |  | `wait` (you out-stare the Card) | +10 | 60 |
-| 25 |  | `use policy on refresh` | +15 | 75 |
+| 15 | **Power Query Hall** | `w` |  |  |
+| 16 | **The Model View** | `use relationship` | +10 | 35 |
+| 17 |  | `get date table` |  |  |
+| 18 |  | `e` |  |  |
+| 19 | **Power Query Hall** | `n` |  |  |
+| 20 | **Duke's Chamber** | `give date table to duke` | +20 | 55 |
+| 21 | **Power BI Desktop Gate** | `n` |  |  |
+| 22 | **Power Query Hall** | `e` |  |  |
+| 23 | **The Report Studio** | `put measure on card` |  |  |
+| 24 |  | `put measure on card` | +10 | 65 |
+| 25 |  | `change pie chart to bar chart` | +15 | 80 |
 | 26 |  | `wear boots` |  |  |
 | 27 |  | `w` |  |  |
 | 28 | **Power Query Hall** | `w` |  |  |
 | 29 | **The Model View** | `n` |  |  |
-| 30 | **Monastery Gate** | `wait` |  |  |
-| 31 |  | `wait` |  |  |
-| 32 |  | `wait` (the gate opens) | +10 | 85 |
-| 33 |  | `n` |  |  |
-| 34 | **Cloister** | `w` |  |  |
-| 35 | **Library of Deprecated Notebooks** | `give license to librarian` | +10 | 95 |
-| 36 |  | `read scroll` | +5 | 100 |
-| 37 |  | `e` |  |  |
-| 38 | **Cloister** | `e` |  |  |
-| 39 | **Spark Session Chamber** | `use scroll on notebook` | +20 | 120 |
-| 40 |  | `w` |  |  |
-| 41 | **Cloister** | `talk to abbot` (the Hoodie of Spark) | +15 | 135 |
-| 42 |  | `wear hoodie` |  |  |
-| 43 |  | `s` |  |  |
-| 44 | **Monastery Gate** | `s` |  |  |
-| 45 | **The Model View** | `e` |  |  |
-| 46 | **Power Query Hall** | `s` |  |  |
-| 47 | **Power BI Desktop Gate** | `s` |  |  |
-| 48 | **Foothills** | `w` |  |  |
-| 49 | **Refresh Fields** | `w` |  |  |
-| 50 | **Village Square** | `s` |  |  |
-| 51 | **OneLake Shore** | `e` |  |  |
-| 52 | **Ferryman's Dock** | `give credentials to ferryman` | +15 | 150 |
+| 30 | **Monastery Gate** | `start session` | +5 | 85 |
+| 31 |  | `n` |  |  |
+| 32 | **Cloister** | `w` |  |  |
+| 33 | **Library of Deprecated Notebooks** | `give license to librarian` | +10 | 95 |
+| 34 |  | `read scroll` | +5 | 100 |
+| 35 |  | `e` |  |  |
+| 36 | **Cloister** | `e` |  |  |
+| 37 | **Spark Session Chamber** | `use scroll on notebook` | +20 | 120 |
+| 38 |  | `w` |  |  |
+| 39 | **Cloister** | `talk to abbot` | +15 | 135 |
+| 40 |  | `wear hoodie` |  |  |
+| 41 |  | `s` |  |  |
+| 42 | **Monastery Gate** | `s` |  |  |
+| 43 | **The Model View** | `e` |  |  |
+| 44 | **Power Query Hall** | `s` |  |  |
+| 45 | **Power BI Desktop Gate** | `s` |  |  |
+| 46 | **Foothills** | `w` |  |  |
+| 47 | **Refresh Fields** | `w` |  |  |
+| 48 | **Village Square** | `s` |  |  |
+| 49 | **OneLake Shore** | `e` |  |  |
+| 50 | **Ferryman's Dock** | `give credentials to ferryman` | +15 | 150 |
+| 51 |  | `board boat` |  |  |
+| 52 | **Isle of Gateway** | `get standard key` | +20 | 170 |
 | 53 |  | `board boat` |  |  |
-| 54 | **Isle of Gateway** | `get standard key` | +20 | 170 |
-| 55 |  | `board boat` |  |  |
-| 56 | **Ferryman's Dock** | `w` |  |  |
-| 57 | **OneLake Shore** | `s` |  |  |
-| 58 | **Bronze Marsh** | `s` |  |  |
-| 59 | **Silver Marsh** | `s` |  |  |
-| 60 | **Gold Marsh** | `get shortcut` | +10 | 180 |
-| 61 |  | `use shortcut` (back to the Shore) |  |  |
-| 62 | **OneLake Shore** | `n` |  |  |
-| 63 | **Village Square** | `e` |  |  |
-| 64 | **Refresh Fields** | `e` |  |  |
-| 65 | **Foothills** | `e` |  |  |
-| 66 | **Throttling Pass** | `n` |  |  |
-| 67 | **Bursting Ledge** | `n` (the door opens for the Worthy Three: hoodie, moat, key) | +5 | 185 |
-| 68 | **The Shrine** | `say star schema` | +10 | 195 |
-| 69 |  | `get model` (the win) | +5 | **200** |
+| 54 | **Ferryman's Dock** | `w` |  |  |
+| 55 | **OneLake Shore** | `s` |  |  |
+| 56 | **Bronze Marsh** | `s` |  |  |
+| 57 | **Silver Marsh** | `s` |  |  |
+| 58 | **Gold Marsh** | `get shortcut` | +10 | 180 |
+| 59 |  | `use shortcut` |  |  |
+| 60 | **OneLake Shore** | `n` |  |  |
+| 61 | **Village Square** | `e` |  |  |
+| 62 | **Refresh Fields** | `e` |  |  |
+| 63 | **Foothills** | `e` |  |  |
+| 64 | **Throttling Pass** | `n` |  |  |
+| 65 | **Bursting Ledge** | `n` | +5 | 185 |
+| 66 | **The Shrine** | `say star schema` | +10 | 195 |
+| 67 |  | `get model` | +5 | 200 |
 
 ### The side quests and the other bonuses (70)
 
@@ -111,7 +109,7 @@ hoodie, back in the village and in the Shrine):
 | `show me sales` | Too vague; Copilot starts asking (model, measure, region, quarter, shape). |
 | `total q4 2025 northeast net sales from the certified model, just the number` | **+25.** One line that fills every slot. Slot by slot also works: `use the certified model` · `net sales` · `for the northeast` · `q4 2025` · `just the total`. The Model Gallery (`e`) has the names. |
 
-**Applied Steps, +10.** In Power Query Hall (after `say trial`, `n`), rebuild the query in order:
+**Applied Steps, +10.** In Power Query Hall (after `use trial`, `n`), rebuild the query in order:
 
 `source` · `navigate` · `promote headers` · `change type` · `filter rows` · `remove other columns` · `rename columns` (**+10**)
 
@@ -138,12 +136,12 @@ with, and the exact words to type. You start with your Pro license (the card) in
 - **Dataflow Gen1 Mill.** Get the Gen1 credentials (+10). You leave with: credentials. Type: `talk to miller` (or `open chest`, `get credentials`).
 - **Refresh Fields.** Pass through, east to the Foothills. Type: Never `refresh` here (☠).
 - **Foothills.** The crossroads: north to the Keep, east up the Peaks. Type: `n` Power BI Desktop Gate; `e` Throttling Pass.
-- **Power BI Desktop Gate.** Name a SKU the guard accepts (+10). You leave with: bridge down. Type: The guard wants a SKU; the free one is the trial: `say trial`, then `n`. Don't `swim moat` (☠).
+- **Power BI Desktop Gate.** Click the Try free link (+10): the guard wants a SKU and the trial is free. You leave with: bridge down. Type: `use trial`, then `n`. `say trial` only gets you 'Show me.' Don't `swim moat` (☠).
 - **Power Query Hall.** Pass through. Optional: rebuild the query in order (+10 bonus). Type: `source` · `navigate` · `promote headers` · `change type` · `filter rows` · `remove other columns` · `rename columns`. `look at steps`. `n` Duke, `w` Model View, `e` Report Studio. Don't type DAX into the M editor (☠).
-- **Duke's Chamber.** Say the sin every DAX lord despises (+25): you are thrown into the Moat of T-SQL and land at the Gate. You leave with: Trial 2: you smell like a Warehouse (`trial.moat`). Type: `say calculated column`. `say select *` only gets you corrected; three wrong answers and you are a column (curse).
-- **The Model View.** Take the policy. North is the back gate to the Monastery. You leave with: policy. Type: `get policy`, `n`. Don't turn on bidirectional filtering (☠).
-- **The Report Studio.** Out-stare the Card (+10); give the Big Refresh the policy (+15). Bring: policy (Model View). You leave with: boots (wear them). Type: `look at card` · `wait` · `wait`; `use policy on refresh`; `wear boots`. Don't `open other page` (☠). Don't stare past six (the Blank curse).
-- **Monastery Gate.** Wait out the Spark session (+10). You leave with: gate open. Type: `wait` ×3, then `n`.
+- **Duke's Chamber.** Hand the Duke your date table (+20): unmarked or CALENDARAUTO, either way you are thrown into the Moat of T-SQL and land at the Gate. Bring: date table (Model View). You leave with: Trial 2: you smell like a Warehouse (`trial.moat`). Type: `give date table to duke`. `say calculated column` is a strike now; three strikes and you are a column (curse).
+- **The Model View.** Activate the dashed Date-to-Sales line (+10), then take the date table. North is the back gate to the Monastery. You leave with: date table. Type: `use relationship`, `get date table`, later `n`. Don't turn on bidirectional filtering (☠).
+- **The Report Studio.** Put a measure on the Card, twice (+10: the first one never counts); change the pie to a bar chart (+15) and the Big Refresh finishes. You leave with: boots (wear them). Type: `put measure on card` · `put measure on card`; `change pie chart to bar chart`; `wear boots`. Don't `open other page` (☠). Don't stare past six (the Blank curse).
+- **Monastery Gate.** Press Start on the Spark session (+5). You leave with: gate open. Type: `start session`, then `n`. `wait` only bills.
 - **Cloister.** Get the Hoodie of Spark (+15) once the notebook runs; optional errand. Bring: notebook fixed (Spark Session Chamber). You leave with: hoodie (wear it: Trial 1). Type: `talk to abbot`, `wear hoodie`. `talk to abbot` again for the errand (+10 bonus). `w` Library, `e` Spark Chamber, `u` Sacristy, `s` Gate.
 - **Library of Deprecated Notebooks.** Trade your license for the PySpark scroll (+10); read it (+5). Bring: license (you start with it). You leave with: scroll. Type: `give license to librarian`, `read scroll`.
 - **Spark Session Chamber.** Fix Brother Pandas' notebook (+20). Bring: scroll (Library). You leave with: notebook fixed. Type: `use scroll on notebook` (or `give scroll to pandas`).

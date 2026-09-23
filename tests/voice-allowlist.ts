@@ -18,5 +18,9 @@ export const ALLOWLIST: readonly string[] = [
   // F12 first run: 26 unknowns, every one this game's UI, field or report vocabulary (checked line by line)
   'Analyst', 'Senior', 'Server', 'Upgrade', 'Council', 'Adirondack', 'CustomerName', 'Customer', 'Off', 'Run', 'Continued', 'Remind', 'North', 'Territory',
   'December', 'Month', 'Colour', 'Default', 'Mr', 'Confidential', 'Highly', 'Yes', 'Values', 'Salesperson', 'Units', 'Requests',
+  // actions-that-fit Task 2: the Model View's dashed line and the Duke's diagnosis
+  'CALENDARAUTO', 'OrderDate', 'Sales[OrderDate', // the heuristic splits on spaces, so the column reference is one token
+  // actions-that-fit Task 3: the Monastery Gate's Start button (the Spark session's own UI word)
+  'Start',
   // the allusion layer and the brands are added from voice.ts by the harness itself
 ];
