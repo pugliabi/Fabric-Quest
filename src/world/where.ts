@@ -28,7 +28,7 @@ export const WHERE: Record<string, WhereLine> = {
   'swamp.bronze': 'The Bronze Marsh. Everything here is a string, including your plan.',
   'swamp.silver': "The Silver Marsh. Things have names now. Yours is still 'peasant'.",
   'swamp.gold': 'The Gold Marsh. Clean, typed, modeled. You lower the tone just by standing here.',
-  'monastery.gate': "The Monastery Gate. A session is starting. It was starting when you got here and it'll be starting at your funeral.",
+  'monastery.gate': "The Monastery Gate. A session that isn't starting. It wasn't starting when you got here and it won't start at your funeral, unless somebody presses Start.",
   'monastery.cloister': "The Cloister. Monks in a circle, chanting. You're in the loop now. There's no break statement.",
   'monastery.spark': 'The Spark Session Chamber. Warm, humming, billed. Like a hot tub with an invoice.',
   'monastery.library': 'The Library of Deprecated Notebooks. One of them is yours. She knows.',

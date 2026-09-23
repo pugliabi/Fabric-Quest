@@ -71,7 +71,7 @@ const START_SESSION: RuleThen = {
 export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
   room({
     id: 'monastery.gate', name: 'Monastery Gate', region: 'monastery',
-    enterQuip: () => 'A gate. A Spark session is starting. It says so. It has said so for a while.',
+    enterQuip: () => 'A gate. A Spark session, stopped. A Start button. You can see where this is going.',
     // The Keep's back gate is the XMLA endpoint from this side too (spec2 §3.4): Off, and it is a wall both ways.
     describe: (s) =>
       s.flags['gate.open']
@@ -138,7 +138,7 @@ export const MONASTERY_ROOMS: Record<string, Room> = Object.fromEntries([
       {
         id: 'monastery.go-north-closed',
         when: { verb: 'go', dir: 'n', flags: [{ flag: 'gate.open', not: true }] },
-        then: { text: 'The gate is closed. SESSION STARTING…', outcome: 'fail' },
+        then: { text: 'The gate is closed. SESSION STOPPED. There is a Start button and a monk, and neither of them is going to press it for you.', outcome: 'fail' },
       },
       {
         // The Keep's back gate is its own thing here (round 2, M4 nit): the builtin would suffix-match 'back gate' to the

@@ -136,13 +136,13 @@ export const NPCS: Record<string, Npc> = Object.fromEntries([
     id: 'monk', name: 'the gatekeeper monk', aliases: ['monk', 'gatekeeper', 'gatekeeper monk'],
     // A second look in a row (Task F7, read off `recent`) gets the short one.
     describe: (s) => ((s.recent?.n ?? 1) >= 2 ? "He hasn't moved since you last looked. He hasn't moved since Runtime 1.1." : 'A monk in a grey robe, standing very still beside a stone progress bar.'),
-    talk: () => "The monk points at the progress bar without a word. 'Session starting…'",
+    talk: (s) => (s.flags['gate.open'] ? 'The monk points north without a word. The session is running. So is the meter.' : "The monk points at the progress bar without a word. 'Session stopped.'"),
     // He has a vow. Talk 3 is the only time he breaks it, and only to say the one word the room wants.
     talkMore: (s, n) => (s.flags['gate.open']
       ? n === 2 ? 'The monk points at the open gate. Then at you. Then at the gate again. Some things do not need a session.'
         : n === 3 ? '"North," says the monk. First word in four minutes. "The Abbot is in the cloister. Go before it times out."'
         : cycle(n, [`The monk has said his word, ${nick(s)}. North.`, `Lookin' good, ${nick(s)}. Go in. The session won't last.`, `He points north again, ${nick(s)}, with both hands this time.`])
-      : n === 2 ? 'The monk points at the progress bar again, a little harder. It is still starting.'
+      : n === 2 ? 'The monk points at the progress bar again, a little harder. Then at the button on it. It is still stopped.'
         : n === 3 ? "'Press Start,' says the monk. 'Nobody ever presses Start. They wait, and they bill.'"
         : cycle(n, [`Still not pressing Start, ${nick(s)}. The bar noticed.`, `"START," the monk mouths at you, ${nick(s)}. He has broken his vow for this.`, `Almost there, ${nick(s)}. The button is on the bar. Talking is not pressing.`])),
     brushOff: BRUSHOFFS.monk,
@@ -250,7 +250,7 @@ export const NPCS: Record<string, Npc> = Object.fromEntries([
         : cycle(n, [`'Still here, ${nick(s)}? You smell like my basement and you are standing in my chamber.'`, `'Lookin' good, ${nick(s)}. Awful, but good.'`, `The Duke evaluates you, ${nick(s)}. The result is (Blank).`])
       : n === 2 ? "'CALCULATE(,' says the Duke, slower, and waits. You have brought nothing to put in the parentheses."
         : n === 3 ? "'There is one thing,' says the Duke, 'that I will not have in this chamber. It has every day in it and nobody marked it. Bring it, and see what happens.'"
-        : cycle(n, [`'Still no sin, ${nick(s)}. Say the two words. The ones every DAX lord despises.'`, `'Almost there, ${nick(s)}. Not SQL. A modeling shortcut. The lazy one.'`, `'The word is not SQL, ${nick(s)}. Think smaller. Think of a column.'`])),
+        : cycle(n, [`'Still no table, ${nick(s)}. Bring me the one that knows what day it is.'`, `'Almost there, ${nick(s)}. Not a phrase. A table. The Model View is hoarding one.'`, `'Words are not evidence, ${nick(s)}. Every day from 1900 to 2099 is.'`])),
     brushOff: BRUSHOFFS.duke,
     knows: ['calculate', 'dax', 'filter', 'filter context', 'context', 'measure', 'measures', 'column', 'columns', 'calculated column', 'sin', 'sql', 'table', 'tables', 'window', 'throne', 'moat', 'warehouse', 'studio', 'smell', 'basement', 'date table', 'date', 'calendar', 'marked'],
   }),
@@ -259,7 +259,7 @@ export const NPCS: Record<string, Npc> = Object.fromEntries([
     describe: () => 'A knight with one eyebrow permanently raised. He has seen your relationships.',
     // Talk 1 is advice[0]; the builtin's escalation walks the rest (the Model View no longer has its own talk rule).
     talk: () => CARDINALITY_ADVICE[0]!,
-    talkMore: (s, n) => (n === 2 ? CARDINALITY_ADVICE[1]!
+    talkMore: (s, n) => (n === 2 ? (s.flags['model.related'] ? CARDINALITY_ADVICE[1]! : `${CARDINALITY_ADVICE[1]} He glances at the dashed line. 'One line in this diagram is inactive. It has been inactive since a meeting. I was at the meeting.'`)
       : n === 3 ? (xmlaOff(s)
         ? `${CARDINALITY_ADVICE[2]} He looks toward the north gate, which is bricks. 'The monks are behind that, and XMLA endpoint: Read Write is off; the Capacity Ledger in their Sacristy has it. Or the Gold Marsh, the long way. The Duke is east, then north. Go be humiliated in the correct order.'`
         : `${CARDINALITY_ADVICE[2]} He looks toward the north gate. 'The monks are that way. The Duke is east, then north. Go be humiliated in the correct order.'`)

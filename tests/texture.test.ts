@@ -180,7 +180,7 @@ describe('something to do, give or use in every room', () => {
 
 describe('flask hints stay current (final review M5)', () => {
   const hint = (room: string, flags: Record<string, FlagValue>, worn: string[] = []) => WORLD.rooms[room]!.flaskHint({ ...at(room, [], flags), worn });
-  const keepDone = { 'bridge.down': true, 'trial.moat': true, 'taken.policy': true, 'refresh.done': true };
+  const keepDone = { 'bridge.down': true, 'trial.moat': true, 'model.related': true, 'taken.date': true, 'refresh.done': true, 'stare.done': true, 'card.measure': 2 };
   it('the Gate stops sending you to the Duke and the policy once both are done', () => {
     expect(hint('fortress.bridge', { 'bridge.down': true })).toMatch(/dashed line.*Duke/);
     expect(hint('fortress.bridge', { 'bridge.down': true, 'trial.moat': true })).not.toMatch(/Duke/);

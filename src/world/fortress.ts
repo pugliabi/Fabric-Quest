@@ -67,7 +67,7 @@ const TRIAL_THEN: RuleThen = {
 // ---- The Duke's sin (spec1 §4.1): the modeling shortcut every DAX lord despises. Not SQL; that only gets you corrected. ----
 const SIN = ['calculated column', 'calculated columns', 'a calculated column', 'use a calculated column', 'add a calculated column', 'make a calculated column', 'just use a calculated column',
   'i will use a calculated column', "i'll use a calculated column", 'i will just use a calculated column', "i'll just use a calculated column"];
-export const MOAT_TEXT = "'A CALCULATED COLUMN?' The Duke rises. 'IN. MY. MODEL?' Two guards seize you by the arms and hurl you from the window into the Moat of T-SQL below — the Warehouse this whole Keep was built on. You surface, sputtering, covered in semicolons and something that might be a CROSS APPLY. You climb out. You will never not smell like this.";
+export const MOAT_TEXT = "The Duke rises. 'IN. MY. MODEL?' Two guards seize you by the arms and hurl you from the window into the Moat of T-SQL below — the Warehouse this whole Keep was built on. You surface, sputtering, covered in semicolons and something that might be a CROSS APPLY. You climb out. You will never not smell like this.";
 /**
  * Trial 2 (+20, `trial.moat`, actions-that-fit §1.3): the Duke wants to SEE the sin, not hear it, so the date table goes
  * on his desk and you go out the window. The id and key are unchanged; the 5 points it gave up went to the Model View's
@@ -86,7 +86,7 @@ const MOAT_GIVE: RuleThen = {
   remove: ['date-table'],
   set: { ...MOAT_THEN.set, 'model.date': true },
 };
-const MOAT_AGAIN: RuleThen = { text: "'Another?' The Duke does not rise this time. 'Once was instructive. Twice is a habit.' He points at the window. You take the stairs.", outcome: 'snark' };
+const MOAT_AGAIN: RuleThen = { text: "'Calculated column,' says the Duke. He does not look up. 'You smell like my basement. Say what you like.' He points at the window anyway. You take the stairs.", outcome: 'snark' };
 
 /**
  * The Duke's patience (spec1 §5.4, fix round 1): a WRONG answer is a `say` about DAX or the model that is not the sin
@@ -813,7 +813,9 @@ export const FORTRESS_ROOMS: Record<string, Room> = Object.fromEntries([
       if (s.flags['curse.blank']) return 'You are (Blank). Two words put a value back in you, and Sir Cardinality says them in his sleep, two rooms west. The Card can wait; it has practice.';
       if (s.flags['refresh.done']) {
         if (!s.worn.includes('boots')) return 'Wear the boots. The mountain will feel shorter.';
-        return s.flags['trial.hoodie'] ? 'Nothing left here but the pie. Leave the pie. West, then south, out of the Keep.' : 'Nothing left here but the pie. Leave the pie. West, then west, then north: the Monastery.';
+        if (s.flags['card.measure'] === 1) return 'The first one never counts. Same measure, same Card.';
+        if (!measured(s)) return "The refresh is done and the Card still says Blank. Blank means nothing's on it.";
+        return s.flags['trial.hoodie'] ? 'Nothing left here but a bar chart that used to be a pie. Leave it. West, then south, out of the Keep.' : 'Nothing left here but a bar chart that used to be a pie. Leave it. West, then west, then north: the Monastery.';
       }
       if (s.flags['card.measure'] === 1) return 'The first one never counts. Same measure, same Card.';
       if (!measured(s)) return "There's a Card on the canvas showing Blank. Blank means nothing's on it.";

@@ -593,7 +593,7 @@ The Lake House. A house. On a lake. You keep saying it like it'll start meaning 
 
 ## Monastery Gate
 
-The Monastery Gate. A session is starting. It was starting when you got here and it'll be starting at your funeral. Exits: west to the Gold Marsh; south to The Model View; north once the way opens.
+The Monastery Gate. A session that isn't starting. It wasn't starting when you got here and it won't start at your funeral, unless somebody presses Start. Exits: west to the Gold Marsh; south to The Model View; north once the way opens.
 
 **Goal:** Press Start on the Spark session (+5). You leave with: gate open.
 
@@ -612,7 +612,7 @@ The Monastery Gate. A session is starting. It was starting when you got here and
 
 - `attack monk` — You shove the monk. He does not move. He has been standing here since Runtime 1.1.
 - `wait` (before the gate opens) — You wait. The bar doesn't. Sessions don't start because you're patient; they start because somebody pressed Start.
-- `north` (before the gate opens) — The gate is closed. SESSION STARTING…
+- `north` (before the gate opens) — The gate is closed. SESSION STOPPED. There is a Start button and a monk, and neither of them is going to press it for you.
 
 *Only after a Sacristy setting is changed:*
 
@@ -620,7 +620,7 @@ The Monastery Gate. A session is starting. It was starting when you got here and
 
 **Items:**
 
-- **gate** — A stone gate with a stone progress bar. SESSION STARTING… 0% Not enough capacitude to hurry it.
+- **gate** — A stone gate with a stone progress bar. SESSION STOPPED. On the bar, a Start button, unpressed since 2023. Not enough capacitude to hurry it; enough to press a button.
   - `look at back gate` — The Keep's back gate, south: the XMLA endpoint, Read Write. Through it, the Model View, Sir Cardinality, and one eyebrow, already raised.
   - `open gate` — Locked. The session is stopped. There is a Start button on the bar.
   - `open gate` (once the gate is open) — Yeah, totally! Except it's already open, you moron. Try: north.
@@ -634,8 +634,8 @@ The Monastery Gate. A session is starting. It was starting when you got here and
 
 *the gatekeeper monk* (`talk to monk`, again and again):
 
-1. The monk points at the progress bar without a word. 'Session starting…'
-2. The monk points at the progress bar again, a little harder. It is still starting.
+1. The monk points at the progress bar without a word. 'Session stopped.'
+2. The monk points at the progress bar again, a little harder. Then at the button on it. It is still stopped.
 3. 'Press Start,' says the monk. 'Nobody ever presses Start. They wait, and they bill.'
 4. Still not pressing Start, Mister Star Schema. The bar noticed.
 
@@ -1026,7 +1026,7 @@ The Model View. Tables on plinths, lines between them, and one bridge that wobbl
 *Sir Cardinality* (`talk to sir cardinality`, again and again):
 
 1. "One. To. Many."
-2. "Star schema. Not snowflake. Not… whatever that is."
+2. "Star schema. Not snowflake. Not… whatever that is." He glances at the dashed line. 'One line in this diagram is inactive. It has been inactive since a meeting. I was at the meeting.'
 3. "The dragon will ask you a question. The answer is two words. I have said them already." He looks toward the north gate. 'The monks are that way. The Duke is east, then north. Go be humiliated in the correct order.'
 4. "One. To. Many, Mister Star Schema."
 
@@ -1051,7 +1051,7 @@ The Duke's Chamber. Filter context only. Your outside voice doesn't work in here
 
 **The way to 200 here:**
 
-- `give date table to duke` — The Duke takes the table. Turns it over. 'A date table,' he says. 'UNMARKED.' The room goes quiet. 'You built time intelligence on a table you never marked as a date table.' He does not finish the sentence. He finishes you. 'A CALCULATED COLUMN?' The Duke rises. 'IN. MY. MODEL?' **+20**
+- `give date table to duke` — The Duke takes the table. Turns it over. 'A date table,' he says. 'UNMARKED.' The room goes quiet. 'You built time intelligence on a table you never marked as a date table.' He does not finish the sentence. He finishes you. The Duke rises. 'IN. MY. MODEL?' **+20**
 
 **Rules — what this room answers to:**
 
@@ -1078,7 +1078,7 @@ The Duke's Chamber. Filter context only. Your outside voice doesn't work in here
 
 **Curses:**
 
-- `use date table on duke` (before the Duke throws you in the moat, once you have the date table) — The Duke takes the table. Turns it over. 'A date table,' he says. 'UNMARKED.' The room goes quiet. 'You built time intelligence on a table you never marked as a date table.' He does not finish the sentence. He finishes you. 'A CALCULATED COLUMN?' The Duke rises. 'IN. MY. MODEL?' *(the cure)*
+- `use date table on duke` (before the Duke throws you in the moat, once you have the date table) — The Duke takes the table. Turns it over. 'A date table,' he says. 'UNMARKED.' The room goes quiet. 'You built time intelligence on a table you never marked as a date table.' He does not finish the sentence. He finishes you. The Duke rises. 'IN. MY. MODEL?' *(the cure)*
 - `say calculated column` (on the third wrong answer, before the Duke throws you in the moat) — 'WRONG,' says the Duke. 'Three times. You are hereby a CALCULATED COLUMN.' You feel yourself computed at refresh and stored in every row. Throttlor will not negotiate with a column. You are not exactly dead. You are worse: you are in the model.
 
 **Items:**
@@ -1110,7 +1110,7 @@ The Duke's Chamber. Filter context only. Your outside voice doesn't work in here
 1. 'CALCULATE(,' says the Duke, and waits. He is waiting for your filter argument. He will wait forever.
 2. 'CALCULATE(,' says the Duke, slower, and waits. You have brought nothing to put in the parentheses.
 3. 'There is one thing,' says the Duke, 'that I will not have in this chamber. It has every day in it and nobody marked it. Bring it, and see what happens.'
-4. 'Still no sin, Mister Star Schema. Say the two words. The ones every DAX lord despises.'
+4. 'Still no table, Mister Star Schema. Bring me the one that knows what day it is.'
 
 Ask about anything else: The Duke waits for a filter argument. Whatever that was, it was not one.
 

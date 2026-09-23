@@ -153,7 +153,7 @@ export const KEEP_ITEMS: Item[] = [
     id: 'date-table', name: 'date table', aliases: ['date table', 'calendar', 'dates', 'date', 'calendar table'],
     // Takeable once the dashed line is related (actions-that-fit §1.2): the Model View's own get rules gate it first.
     takeable: true,
-    blurb: 'The date table: 1900 to 2099, related to Sales, not yet marked. The Duke will notice.',
+    blurb: 'The date table: 1900 to 2099, related to Sales. Marked or not, the Duke will notice.',
     untakeableText: 'The date table is the most important table in the model. It is also the one nobody bothered to mark.',
     again: "You have the date table. It's the only table in the realm that knows what day it is.",
     describe: (s) => (s.flags['model.date']

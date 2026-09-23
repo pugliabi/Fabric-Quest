@@ -21,7 +21,7 @@ describe("the Duke's sin (spec1 §4.1)", () => {
   it('give date table to duke → the moat, +20, trial.moat, back at the gate', () => {
     let s = { ...newGame(WORLD, 6), room: 'fortress.throne', inventory: ['date-table'] };
     const last = step(s, 'give date table to duke', WORLD); s = last.state;
-    expect(last.output[0]).toMatch(/'A CALCULATED COLUMN\?' The Duke rises\. 'IN\. MY\. MODEL\?'/);
+    expect(last.output[0]).toMatch(/UNMARKED.*The Duke rises\. 'IN\. MY\. MODEL\?'/);
     expect(last.output[0]).toMatch(/You will never not smell like this\.$/);
     expect(s.score).toBe(20); expect(s.flags['trial.moat']).toBe(true); expect(s.room).toBe('fortress.bridge');
     expect(last.stepId).toBe('fortress.moat'); expect(last.sfx).toBe('death'); expect(s.dead).toBe(false);
@@ -32,7 +32,7 @@ describe("the Duke's sin (spec1 §4.1)", () => {
   });
   it('a second sin is a habit, not a second bath', () => {
     const { s, last } = at(['say calculated column'], { 'trial.moat': true, 'pts.fortress.moat': true, 'seen.fortress.bridge': true });
-    expect(s.score).toBe(0); expect(last.output[0]).toMatch(/Once was instructive\. Twice is a habit\./);
+    expect(s.score).toBe(0); expect(last.output[0]).toMatch(/You smell like my basement\. Say what you like\./);
   });
   it('select * is corrected, not thrown', () => {
     const { s, last } = at(['say select *']);
