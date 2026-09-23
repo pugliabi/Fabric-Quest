@@ -108,6 +108,39 @@ export function Silver() {
   );
 }
 
+export function LakeHouse() {
+  return (
+    <>
+      <Exterior sky={EGA.blue} ground={EGA.green} horizon={100} night />
+      <Moon x={252} y={16} />
+      {/* water band: the bottom third of the scene */}
+      <Water y={133} h={67} />
+      <Reeds x={10} y={136} n={4} />
+      {/* mailbox, on land, on a post */}
+      <R x={30} y={108} w={4} h={26} f={EGA.brown} />
+      <R x={24} y={100} w={16} h={10} f={EGA.lred} />
+      {/* the house on stilts, standing in the water */}
+      <R x={148} y={130} w={6} h={40} f={EGA.brown} s={null} />
+      <R x={188} y={130} w={6} h={40} f={EGA.brown} s={null} />
+      <R x={228} y={130} w={6} h={40} f={EGA.brown} s={null} />
+      <R x={120} y={70} w={160} h={60} f={EGA.brown} />
+      <P pts={[[110, 70], [200, 34], [290, 70]]} f={EGA.dgray} />
+      <R x={230} y={96} w={22} h={34} f={EGA.dgray} />
+      <R x={140} y={90} w={26} h={20} f={EGA.yellow} />
+      {/* porch, with a deck chair, extending over the water toward the shore */}
+      <R x={92} y={122} w={40} h={10} f={EGA.brown} />
+      <R x={96} y={132} w={4} h={30} f={EGA.brown} s={null} />
+      <R x={122} y={132} w={4} h={30} f={EGA.brown} s={null} />
+      <R x={100} y={104} w={4} h={20} f={EGA.lgray} />
+      <R x={98} y={120} w={16} h={4} f={EGA.lgray} />
+      {/* the sign: LAKE and HOUSE, added at different times, in different fonts */}
+      <R x={140} y={40} w={90} h={26} f={EGA.white} />
+      <Label x={185} y={55} text="LAKE" color={EGA.black} size={9} anchor="middle" />
+      <Label x={185} y={63} text="HOUSE" color={EGA.dgray} size={5} anchor="middle" />
+    </>
+  );
+}
+
 export function Gold({ signTaken = false }: { signTaken?: boolean }) {
   return (
     <Marsh water={EGA.yellow} wave={EGA.white} band={EGA.brown}>

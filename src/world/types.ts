@@ -1,4 +1,11 @@
-import type { Dir, GameState, Outcome, Verb } from '../engine/types';
+import type { Dir, GameState, HeardLine, Outcome, Verb } from '../engine/types';
+
+export type Region = 'village' | 'lake' | 'swamp' | 'monastery' | 'fortress' | 'peaks' | 'excel' | 'copilot';
+export const SIDE_REGIONS: ReadonlySet<Region> = new Set<Region>(['excel', 'copilot']);
+/** What the narrator calls each side realm when telling you how to leave it. */
+export const SIDE_REALM_NAME: Partial<Record<Region, string>> = { excel: "Jeff's Excel", copilot: 'Copilot' };
+/** Flag holding roomIndex() of the room a side quest was entered from. Lives here (not in engine/step) to keep imports acyclic. */
+export const RETURN_FLAG = 'sq.return';
 
 export type Cond = { flag: string; is?: boolean | number; not?: boolean };
 
@@ -17,6 +24,8 @@ export type RuleWhen = {
   has?: string[];
   notHas?: string[];
   worn?: string[];
+  /** Only when the player used one of these verb words ("use", "apply"), not a synonym that maps to the same verb. */
+  verbWord?: string[];
 };
 
 export type RuleThen = {
@@ -26,6 +35,10 @@ export type RuleThen = {
   remove?: string[];
   wear?: string[];
   moveTo?: string;
+  /** Bonus points (side quests). Awarded once per pointsKey ?? id, never added to score. */
+  bonus?: number;
+  /** Move back to the room stored in flags['sq.return'] (see RETURN_FLAG) and describe it. */
+  returnTo?: true;
   points?: number;
   /** Points are awarded once per key; defaults to the rule id. Lets alternate rules share one award. */
   pointsKey?: string;
@@ -47,13 +60,19 @@ export type PhraseRule = {
   death?: string;
   /** Restrict to one room. */
   room?: string;
+  /** Restrict to every room of one region (e.g. the Keep's DirectQuery line). Ignored when `room` is set. */
+  region?: Region;
   sfx?: string;
+  /** Side-quest hook resolved by the engine: enter a realm, or leave one (see world/sidequests.ts). */
+  dynamic?: 'excel' | 'copilot' | 'exit';
+  /** Only right after this: checked against the state BEFORE the turn (its `recent` is the previous command). */
+  after?: (prev: GameState) => boolean;
 };
 
 export type Room = {
   id: string;
   name: string;
-  region: 'village' | 'lake' | 'swamp' | 'monastery' | 'fortress' | 'peaks';
+  region: Region;
   describe: (s: GameState) => string;
   exits: Partial<Record<Dir, string | ((s: GameState) => string | null)>>;
   items: string[];
@@ -63,6 +82,10 @@ export type Room = {
   onEnter?: (s: GameState) => string | null;
   /** The "get ye flask" nudge for this room. */
   flaskHint: (s: GameState) => string;
+  /** Shown in the message box the first time the player enters (null = nothing). */
+  enterQuip?: (s: GameState) => string | null;
+  /** Last-resort handler for any line the room wants to interpret itself (Copilot prompts). Runs after rules, before builtins. */
+  catchAll?: (s: GameState, line: HeardLine) => { then: RuleThen; id?: string } | null;
 };
 
 export type Item = {

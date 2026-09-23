@@ -50,6 +50,13 @@ input { font-family: var(--font-mono); }
 .scene-region { font-size: 9px; letter-spacing: 2px; opacity: 0.8; }
 .scene-name { font-size: 16px; line-height: 1.6; }
 
+/* ---------- side quests: realm colors and the sting's flash ---------- */
+.play[data-region="excel"] .statusbar { background: #1d6f42; color: #fff; }
+.play[data-region="copilot"] .statusbar { background: #6b4fbb; color: #fff; }
+.scene.flash::after { content: ''; position: absolute; inset: 0; background: #fff; animation: sqflash 260ms steps(3, end) forwards; pointer-events: none; }
+@keyframes sqflash { from { opacity: 1; } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .scene.flash::after { animation: none; display: none; } }
+
 /* ---------- text window & prompt ---------- */
 .textwin {
   background: var(--ega-black); color: var(--ega-white);

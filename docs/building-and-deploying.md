@@ -44,11 +44,13 @@ rooms and puzzles.
 src/engine/    parser.ts (two-word grammar + synonyms) · step.ts (pure: step(state, input, world))
                builtins.ts (look/get/go/…) · snark.ts (seeded "I don't understand" rotation) · god.ts
 src/world/     the content: one file per region (village, lake, monastery, fortress, peaks) + items, npcs, globals
+               excel.ts / copilot.ts (the side quests' rooms) · copilot-ladder.ts (the prompt ladder, pure)
+               sidequests.ts (shared entry/exit machinery) · keep-items.ts (the Semantic Model Keep's objects)
 src/game/      recorder.ts (telemetry queue → Fabric) · save.ts (localStorage) · sfx.ts (Web Audio chiptunes)
 src/scenes/    the 8-bit scenes, drawn in SVG with a tiny kit (EGA palette, 4:3, stretched like a CRT)
 src/ui/        SplashScreen · TitleScreen · PlayScreen · ScenePanel · MessageBox · DeathCard · FinishScreen
 rayfin/        rayfin.yml (app config) · data/*.ts (the three entities and their permissions)
-tests/         vitest suites + golden-path.json (the canonical 59-command, 200-point run)
+tests/         vitest suites + golden-path.json (the canonical 69-command, 200-point run)
 docs/          this folder, plus docs/superpowers (the original design spec and build plan)
 .github/       pages.yml (GitHub Pages mirror) · deploy-to-fabric.yml (Fabric App deploy)
 ```
@@ -165,7 +167,14 @@ mirror of the unsent telemetry queue. Nothing else.
 |---|---|---|
 | `dbo.Quests` | game started | `id`, `player_name`, `client_id`, `user_agent`, `world_version`, `started_at` |
 | `dbo.Activities` | command typed | `quest_id`, `seq`, `step_id` (rule id), `room_id`, `raw_input`, `verb`, `noun`, `outcome`, `output_text`, `points_awarded`, `score_after`, `turns_after`, `flags_after` (JSON), `occurred_at` |
-| `dbo.HallOfFames` | game submitted | `quest_id`, `player_name`, `score`, `turns`, `elapsed_seconds`, `finished_at` |
+| `dbo.HallOfFames` | game submitted | `quest_id`, `player_name`, `score`, `bonus`, `turns`, `elapsed_seconds`, `finished_at` |
+
+`bonus` (side-quest points, on top of `score`) is `@int({ optional: true })` — rows written before the side
+quests existed have none, and the leaderboard treats a missing value as 0. It's in `HallOfFame`'s anonymous
+read `include` list alongside the rest, for the same reason `score` is: the create mutation echoes the row back,
+and the echo has to pass the same read permission the caller has. **Deploying this schema needs a real
+`rayfin up`** — it's an additive column, but the AppBackend's SQL database only picks it up when the entity
+definition is redeployed; a frontend-only `staticapp deploy` doesn't touch it.
 
 Telemetry is batched: rows are queued in the browser and flushed every 10 seconds or every 25 rows, four requests
 in flight at a time, so a small capacity isn't hammered. God-mode turns (see below) are logged too, with step ids
@@ -207,10 +216,32 @@ line `get ye flask` whispers there. Run `npm run lint:world`.
 ```
 
 `when` can match `verb`, `noun`/`noun2` (string or list), `nounMatches` (regex), `dir`, required `flags`, `has`,
-`notHas`, `worn`. `then` can set `text`, `set` flags, `give`/`remove`/`wear` items, `moveTo`, `points`
-(awarded once per `pointsKey ?? id`), `death`, `win`, `sfx`. Room rules are checked before global rules; the
-first match wins. Phrase rules (`src/world/globals.ts`) match the raw line with a regex before parsing — that's
-where the easter eggs and instant deaths live.
+`notHas`, `worn`, and `verbWord` — a list of the actual typed verb *words* ("use", "apply"), for when a rule
+should only fire on one of the synonyms mapped to a verb, not all of them (Jeff's Excel uses this so `use net
+sales` places a field but `fix net sales` and `label net sales` don't). `then` can set `text`, `set` flags,
+`give`/`remove`/`wear` items, `moveTo`, `points` (awarded once per `pointsKey ?? id`), `death`, `win`, `sfx`, and
+two fields the side quests added: `bonus` (like `points`, but added to `GameState.bonus` instead of `score`,
+also once per `pointsKey ?? id`) and `returnTo: true` (moves the player back to the room stored in
+`flags['sq.return']` and re-describes it — how a side quest's `exit` and its winning rule get you home). Room
+rules are checked before global rules; the first match wins. Phrase rules (`src/world/globals.ts`) match the raw
+line with a regex before parsing — that's where the easter eggs and instant deaths live; a `PhraseRule` can be
+scoped to one `room`, or to every room in one `region` (the Keep's DirectQuery/DirectLake/publish/label eggs use
+`region: 'fortress'` so they fire in all five of its rooms without repeating the rule five times).
+
+**Give a room a first-impression line.** `Room.enterQuip?: (s) => string | null` shows once, in the Sierra
+message box, the first time the player steps into that room — deadpan, one line, no points. Every room in the
+game has one; a new room should too.
+
+**Let a room read raw lines itself.** `Room.catchAll?: (s, line) => { then: RuleThen; id?: string } | null` is a
+last-resort hook, checked after that room's rules and the global rules but before the builtins (`look`, `get`,
+movement, …), so those still work normally. `line` is a `HeardLine`: the raw text (`line.raw`) and the same text
+with its wrapper words taken off (`line.command`, plus `line.lead` / `line.trail` saying which wrappers were
+there — see `unwrap()` in `src/engine/quirks.ts`). Two rooms use it: the Model View (bare relationship words
+like `single` or `both`) and `copilot.pane`, where any line that isn't a recognized command is a prompt for
+Copilot's ladder (`src/world/copilot-ladder.ts`, pure: `evaluatePrompt(text) → { rung, text, hint, shape }`). The
+pane feeds the ladder the unwrapped line, so "i want to see …" or "ugh just give me …" is judged on the question
+underneath. It's the general hook to reach for whenever a room needs to interpret free text instead of matching
+fixed nouns.
 
 **Keep the ledger at 200.** `tests/golden-path.test.ts` replays `tests/golden-path.json` and asserts the final
 score; if you add points, add them to the path or rebalance.
@@ -219,12 +250,67 @@ score; if you add points, add them to the path or rebalance.
 walls, a bed, a table, a window…). Anything is allowed as long as it looks like it was drawn in 1987. A PNG
 dropped at `public/scenes/<sceneId>.png` overrides the SVG automatically.
 
+**Add a sound.** Cues are synthesized note sequences in `src/game/sfx.ts` (`CUES: Record<Cue, Note[]>`) — no
+audio files, just Web Audio oscillators. Add the cue name to the `Cue` union and a `Note[]` sequence
+(`[freq, ms, wave?, gain?, together?]`), then reference it from a rule's `sfx`. The side quests added five:
+`sidequest` (the rising sting on entry), `sidequest-out` (the same sting, reversed, on exit), `excel-ding` (a
+field landing in the pivot), `copilot-think` (every reply), and `bonus` (the cha-ching on winning either one).
+
+### Side quests
+
+A side quest is a self-contained `region` (`excel`, `copilot` are the two so far) with its own rooms, reachable
+from anywhere and returning the player exactly where they were. Adding a third is content, not engine work —
+the entry/exit machinery in `src/world/sidequests.ts` is generic:
+
+1. Add the realm to `SIDEQUEST_ENTRY` (`src/world/sidequests.ts`) — a realm key and its entry room id.
+2. Add one or more trigger phrases to `SIDEQUEST_PHRASES`, each `{ id, test: /regex/, text: '', dynamic:
+   '<realm>' }` — `dynamic` is resolved by the engine (`enterThen()` stashes the current room in
+   `flags['sq.return']`, plays the `sidequest` sting, and warps in), so the rule's own `text` is never shown.
+   Scope a trigger to one room with `room` (Jeff's Excel also has `help jeff` in `village.square`) the way the
+   Keep's phrase rules use `room`/`region`. A phrase rule can also carry `after: (prev) => boolean`, checked
+   against the state before the turn (`prev.recent` is the previous command): that is how a bare `yes` enters
+   Jeff's Excel only right after Jeff has asked. Copilot's trigger takes any line that addresses it (`ask
+   copilot …`, `hey copilot, …`, `copilot, …`); when a question follows the trigger words, `step()` enters the
+   pane and asks it on the same turn (`copilotPromptIn()` in `sidequests.ts`).
+3. Build the realm's rooms in their own file (`src/world/<realm>.ts`), region set to the new key, each with
+   `enterQuip`, `flaskHint`, a `scene`, and an `out` exit that returns `() => null` (the exit rules resolve
+   `out`/`exit`/`leave` to `EXIT_THEN` — `{ returnTo: true, sfx: 'sidequest-out' }` — generically; a room only
+   needs to *not* have a real `out` destination).
+   The winning rule sets `bonus`, its own `sq.<name>.done` flag, and `returnTo: true`.
+4. Register the realm's room map and its `PhraseRule`s in `src/world/index.ts`, ahead of the global
+   `PHRASE_RULES` so a realm's own vocabulary (e.g. `copilot` meaning the sparkle in front of you, not the
+   easter egg) wins inside it.
+5. Leaving isn't something the room needs to implement. `exit`/`leave`/`close`/`back` and friends are phrase
+   rules with `dynamic: 'exit'` in `SIDEQUEST_PHRASES`, and the direction `out` is intercepted before it ever
+   reaches a room's own exits: `builtins.ts`'s movement handler returns `null` for `dir === 'out'` whenever
+   `SIDE_REGIONS.has(room.region)` ("the sq.exit.words phrase owns leaving a realm"), and `step.ts` has a
+   second fallback for the phrasings that aren't a bare `out` (`outside`, `go outside`, `walk out`). Both paths
+   run the same `EXIT_THEN` (`{ returnTo: true, sfx: 'sidequest-out' }`), which `step()` resolves against
+   `flags['sq.return']` (`RETURN_FLAG`, set on entry to `roomIndex()` of wherever the player was) to put them
+   back exactly where they left off. A side room's `out: () => null` exit (step 3, above) is never actually
+   followed; `describeRoom()` shows it in a side room's exit list as `exit (back to the realm)`, so give every
+   side room one. `quit` typed inside a realm is caught the same way: it leaves the realm with the exit sting
+   and a one-line warning (`quitInRealmText()`), and `App.tsx` only ends the run on the builtin quit, whose
+   outcome is `meta`. `help` inside a realm adds a line naming `EXIT` (`SIDE_REALM_NAME` in
+   `src/world/types.ts`). World lint
+   (`src/world/lint.ts`) doesn't know about side-quest exits at all; what it does check, side rooms included,
+   is that every room has an `enterQuip`, that each side quest's entry room (`SIDEQUEST_ENTRY`) exists and is
+   reachable, and that no two phrase rules share the same test within the same scope (room/region/global).
+
+No deaths happen inside a side realm: `step()` turns any rule or phrase that would kill you there into the
+realm's own shrug (`NO_DEATH` in `sidequests.ts`, keyed by realm; add a line for a new one). The Peaks'
+interactive delay and Jeff's square ambient are both suppressed there too. Give the realm a status-bar color in
+`src/ui/styles.css` (`.play[data-region="<realm>"] .statusbar`; `PlayScreen` sets `data-region`) if you want it
+to match (Jeff's Excel is spreadsheet green, Copilot is Copilot purple).
+
 ## God mode
 
 There is an undocumented admin mode for demos and QA. It's not in the help text on purpose; the trigger is a word
-Homestar Runner fans will guess. Once on, `godhelp` lists the extra commands (`rooms`, `warp <room>`,
-`prompts [all|global]` to see every command a room accepts with its points and preconditions, `summon <item>`,
-`flags`). Runs that used it show a ⚡ in the status bar and are not eligible for the Hall of Fame.
+Homestar Runner fans will guess. Once on, `godhelp` lists the extra commands: `rooms`, `warp <room>`, `prompts
+[all|global]` to see every command a room accepts with its points and preconditions, `summon <item>`, `flags`,
+and `locate <thing>` (aliases: `find <thing>`, `how do i get/find <thing>`, `what do i give/say (to) <thing>`) —
+searches the whole world for who wants it, where it lives, and what to type, points-earning matches first. Runs
+that used it show a ⚡ in the status bar and are not eligible for the Hall of Fame.
 
 ## Troubleshooting
 

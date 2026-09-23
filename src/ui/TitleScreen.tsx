@@ -128,7 +128,7 @@ export function TitleScreen({ onStart, onRestore, savedName, muted, onToggleMute
                 {hallStatus === 'done' && (hall && hall.length ? (
                   <ol className="hall-list">
                     {hall.map((h, i) => (
-                      <li key={i}><span>{i + 1}. {h.player_name}</span><span>{h.score} pts &middot; {h.turns} turns &middot; {fmt(h.elapsed_seconds)}</span></li>
+                      <li key={i}><span>{i + 1}. {h.player_name}</span><span>{h.score} pts{h.bonus ? ` +${h.bonus}` : ''} &middot; {h.turns} turns &middot; {fmt(h.elapsed_seconds)}</span></li>
                     ))}
                   </ol>
                 ) : <p className="muted-note">No heroes yet. Be the first.</p>)}

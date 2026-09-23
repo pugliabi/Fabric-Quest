@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { MAX_SCORE, describeRoom, newGame, step } from '@/engine/step';
-import { resolveNoun } from '@/engine/builtins';
-import { hasItemPicture } from '@/scenes/items';
+import { noticeFor, type Notice } from '@/game/notice';
 import { SplashScreen } from '@/ui/SplashScreen';
 import type { GameState, StepResult } from '@/engine/types';
 import { WORLD, WORLD_VERSION } from '@/world';
@@ -15,7 +14,7 @@ import { DeathCard } from '@/ui/DeathCard';
 import { FinishScreen } from '@/ui/FinishScreen';
 
 type Screen = 'splash' | 'title' | 'play' | 'dead' | 'finish';
-export type Notice = { text: string; itemId?: string };
+export type { Notice };
 
 type Session = {
   questId: string;
@@ -34,9 +33,19 @@ export default function App({ recorder }: { recorder: Recorder }) {
   const [savedGame] = useState<SaveBlob | null>(() => load());
   const [lastDeath, setLastDeath] = useState<string>('');
   const [finishedAt, setFinishedAt] = useState<string>('');
+  const [flash, setFlash] = useState(false);
+  const flashTimer = useRef<number | undefined>(undefined);
   const seqRef = useRef(0);
 
   useEffect(() => { setSfxMuted(muted); setMuted(muted); }, [muted]);
+  useEffect(() => () => window.clearTimeout(flashTimer.current), []);
+
+  // The side-quest sting's white flash over the scene: on for 300 ms.
+  const flashScene = useCallback(() => {
+    window.clearTimeout(flashTimer.current);
+    setFlash(true);
+    flashTimer.current = window.setTimeout(() => setFlash(false), 300);
+  }, []);
 
   const sfx = useCallback((cue: Cue | null) => { if (cue) play(cue); }, []);
 
@@ -104,7 +113,8 @@ export default function App({ recorder }: { recorder: Recorder }) {
       return;
     }
     if (v === 'restart') { setState(r.state); setLog(lines); restartGame(); return; }
-    if (v === 'quit') {
+    // A quit typed inside a side realm only leaves the realm (outcome 'move'); the builtin quit is 'meta'.
+    if (v === 'quit' && r.outcome === 'meta') {
       // Retire: the run ends here, but the score can still be posted to the Hall of Fame.
       const retired = [...lines, `You retire from the quest with ${r.state.score} points in ${r.state.turns} turns. The dragon keeps the Model. For now.`];
       setState(r.state);
@@ -120,21 +130,10 @@ export default function App({ recorder }: { recorder: Recorder }) {
     setState(r.state);
     setLog(lines);
     sfx((r.sfx as Cue | undefined) ?? cueForOutcome(r.outcome, r.pointsAwarded));
+    if (r.sfx === 'sidequest') flashScene();
 
-    // The Sierra message box: big moments, and pictures of things you pick up or examine.
-    const gained = r.state.inventory.filter((i) => !state.inventory.includes(i));
-    const pic = gained.find(hasItemPicture);
-    let examined: string | undefined;
-    if ((v === 'look' || v === 'read') && r.parsed.noun) {
-      const res = resolveNoun(r.state, WORLD, r.parsed.noun);
-      if (res && res.kind === 'item' && hasItemPicture(res.item.id)) examined = res.item.id;
-    }
-    if (!r.state.dead && !r.state.won) {
-      if (r.pointsAwarded > 0 || pic) setNotice({ text: r.output[0] ?? '', itemId: pic });
-      else if (examined) setNotice({ text: r.output[0] ?? '', itemId: examined });
-      else if (r.sfx === 'door') setNotice({ text: r.output[0] ?? '' });
-      else setNotice(null);
-    } else setNotice(null);
+    // The Sierra message box: big moments (points and side-quest bonuses), entrance quips, and pictures of things you pick up or examine.
+    setNotice(noticeFor(r, state, WORLD));
 
     if (r.state.dead) {
       setLastDeath(r.output.join(' '));
@@ -148,7 +147,7 @@ export default function App({ recorder }: { recorder: Recorder }) {
       setScreen('finish');
       clearSave();
     }
-  }, [state, session, log, recorder, persist, restoreGame, restartGame, sfx]);
+  }, [state, session, log, recorder, persist, restoreGame, restartGame, sfx, flashScene]);
 
   // Leaving mid-quest is safe (autosave), but the score only reaches the Hall of Fame from the finish screen.
   useEffect(() => {
@@ -161,7 +160,7 @@ export default function App({ recorder }: { recorder: Recorder }) {
   const submitScore = useCallback(async () => {
     if (!state || !session) return;
     const elapsed = Math.max(0, Math.round((new Date(finishedAt).getTime() - new Date(session.startedAt).getTime()) / 1000));
-    await recorder.finish({ questId: session.questId, playerName: session.playerName, score: state.score, turns: state.turns, elapsedSeconds: elapsed, finishedAt });
+    await recorder.finish({ questId: session.questId, playerName: session.playerName, score: state.score, bonus: state.bonus, turns: state.turns, elapsedSeconds: elapsed, finishedAt });
   }, [state, session, recorder, finishedAt]);
 
   const onDeathChoice = useCallback((choice: 'restore' | 'restart' | 'quit') => {
@@ -198,6 +197,7 @@ export default function App({ recorder }: { recorder: Recorder }) {
         playerName={session.playerName}
         score={state.score}
         maxScore={MAX_SCORE}
+        bonus={state.bonus}
         turns={state.turns}
         startedAt={session.startedAt}
         finishedAt={finishedAt}
@@ -222,6 +222,7 @@ export default function App({ recorder }: { recorder: Recorder }) {
         disabled={screen === 'dead'}
         notice={notice}
         onDismissNotice={() => setNotice(null)}
+        flash={flash}
       />
       {screen === 'dead' && <DeathCard cause={lastDeath} onChoice={onDeathChoice} />}
     </>

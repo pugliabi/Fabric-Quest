@@ -60,12 +60,13 @@ The room description ends with `Exits: …`. Exits can appear and disappear as t
 | `get mug` / `take` / `grab` / `pick up` / `steal` | pick something up |
 | `drop mug` / `discard` | put it down (it stays in the room) |
 | `wear hoodie` / `put on` / `don` / `equip` | wear something wearable |
-| `use cable on copy activity` / `apply` / `put` / `plug` / `insert` | use one thing on another |
+| `use policy on refresh` / `apply` / `put` / `plug` / `insert` | use one thing on another |
 | `give mug to jeff` / `offer` / `hand` / `show` | hand something to someone |
 | `open door` / `unlock`, `close door` / `shut` | doors and lids |
 | `drink water` / `sip` / `taste` | usually a bad idea |
 | `attack dragon` / `fight` / `hit` / `kill` / `punch` / `stab` / `slay` | also usually a bad idea |
 | `wait` / `z` / `rest` | let a turn pass (some puzzles need this) |
+| `plant seed`, `skip pebble`, `squeeze ball`, `knock` | more ways of using a thing; every room has something small to pick up and one place it earns a line (never points) |
 
 ### Talking
 
@@ -89,12 +90,31 @@ phrase through.
 ## Scoring
 
 There are exactly **200 points**. Each is awarded once for a specific piece of progress — reading the prophecy,
-fixing the notebook, out-staring the Lookup Activity, and so on — and the status bar updates immediately. Some
+fixing the notebook, out-staring the Card visual, and so on — and the status bar updates immediately. Some
 steps have more than one way to complete them; you get the points once either way. `score` shows the count with
 your turn total. The complete list is in [the ledger](ledger.md).
 
 Turns count every command, including `look` and `help`. The Hall of Fame records score, turns and elapsed time,
 so a tight run is worth something.
+
+## Side quests
+
+Two extra rooms of trouble hide behind ordinary-looking sentences. Type `show me a table` (or, once you're in the
+Village Square, `help jeff`) and the screen goes white: you're in **Jeff's Excel**, trying to prove — with Analyze
+in Excel and a pivot — that his export is wrong in three specific ways. Type `what are my sales numbers` (or
+`ask copilot` and your question, which it answers on the way in) and a sparkle shows up: you're in **Copilot**,
+working your way up a ladder of prompts toward one that actually answers the question. Neither quest interrupts the other; typing one realm's trigger while you're
+inside the other just gets a joke about pipelines.
+
+Both quests pay a **bonus**, on top of the 200-point score, the moment you solve them — shown in the status bar as
+`Score : N of 200 +B` and, separately, in the Hall of Fame. `exit` (or `leave`, `out`, `close`) gets you out of
+either one at any point, finished or not, and puts you back where you were; the exits line and `help` in there both
+say so, and your progress is remembered if you go back in. `quit` inside a side quest only leaves the side quest —
+say it again outside if you really mean to retire. Nothing about a side quest is timed, and neither one can kill
+you.
+
+If you get stuck in Copilot, look at what it suggests under its own reply — those `[Copilot suggests: …]` lines
+are Copilot telling on itself, and following them up the ladder is the fastest way to the number you're after.
 
 ## Saving, leaving, and getting on the board
 
@@ -131,8 +151,8 @@ remembered.
 
 ## When you're stuck
 
-- **`get ye flask`** — works in every room. You won't get a flask. You *will* get a nudge about what this room is
-  for and what you might be missing. It's the game's hint system, disguised as a joke.
+- **`get ye flask`** — works in every room. You won't get a flask. You *will* get a nudge that names the next thing
+  to do in this room, and it changes as you make progress. It's the game's hint system, disguised as a joke.
 - `look` again. Room descriptions change as flags flip; things you couldn't see before may be visible now.
 - `talk to` everyone twice. NPCs say different things once you've done something for them.
 - Check `inventory` — you start with something useful already in your pocket.
@@ -145,9 +165,25 @@ didn't work — same room, same words — and it notices, and keeps noticing. Ty
 into text adventures when nobody is watching and the realm has a policy about that, adjusted for where you are
 standing. Most "that doesn't work" answers rotate rather than repeat.
 
+### Wrappers
+
+You don't have to type the bare verb-noun. Dress a command up and the parser strips the dressing, runs the
+command underneath, and the narrator comments on the dressing:
+
+- **Wanting it politely** — `i want to get mug`, `could i get mug`, `let me get mug`, `how do i get mug` — runs
+  `get mug` and adds a line about wanting not being doing (*"Wanting is noted. Doing is a verb."*).
+- **Insisting you already said it** — `i said get mug`, `again, get mug`, `get mug already` — runs `get mug` and
+  adds a line about the realm having heard you the first time.
+- **Getting frustrated** — `ugh, get mug`, `get mug, dammit`, `get mug now` — runs `get mug` and adds a line
+  acknowledging the heat, with a wink (*"The dragon is not fed by tone."*).
+
+Wrappers stack with shouting and with repeats — `I SAID GET MUG!` for the third time in a row gets its own line
+about that being a support ticket now — and they work everywhere, including inside both side quests (Copilot logs
+a frustrated prompt as feedback and answers the question underneath anyway).
+
 ## Things the narrator has opinions about
 
-Typing the following is safe (mostly) and rewarded with commentary: `export to excel`, `ask copilot`, `refresh`,
+Typing the following is safe (mostly) and rewarded with commentary: `export to excel`, `ask the ai`, `refresh`,
 `calculate`, `sudo`, `xyzzy`, `dance`, `sing`, `pray`, `cheat`, `win`, `undo`, `thanks`. There are around sixty of
 these. Finding them is its own side quest.
 

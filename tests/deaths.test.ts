@@ -87,7 +87,7 @@ describe('ye flask', () => {
     expect(b.state.flags['flask.count']).toBe(2);
     expect(b.output[0]).toContain('notice board');
     const ledge = play(['get ye flask'], play(['out', 'e', 'e', 'e', 'n']).state);
-    expect(ledge.output.join('\n')).toContain('Still dark');
+    expect(ledge.output.join('\n')).toContain('wear the hoodie, smell like the moat, hold the key'); // spec §18: the hint names the action
   });
 });
 
@@ -96,7 +96,7 @@ describe('easter eggs', () => {
     ['sudo make me a sandwich', 'sudoers'],
     ['export to excel', '1,048,576'],
     ['calculate', 'Context'],
-    ['ask copilot for help', 'sourdough'],
+    ['ask the ai for help', 'sourdough'],
     ['xyzzy', 'Direct Lake'],
     ['refresh', 'productive'],
   ])('%s', (cmd, expected) => {

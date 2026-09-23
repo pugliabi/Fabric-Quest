@@ -24,8 +24,9 @@ export function Scene({ children, bg = K }: { children: ReactNode; bg?: string }
   );
 }
 
-export const R = ({ x, y, w, h, f, s = K, sw = 2 }: { x: number; y: number; w: number; h: number; f: string; s?: string | null; sw?: number }) => (
-  <rect x={x} y={y} width={w} height={h} fill={f} stroke={s ?? undefined} strokeWidth={s ? sw : 0} />
+/** Rectangle. `rx` rounds the corners (modern UI chrome in the side realms); omit it for the usual square EGA block. */
+export const R = ({ x, y, w, h, f, s = K, sw = 2, rx }: { x: number; y: number; w: number; h: number; f: string; s?: string | null; sw?: number; rx?: number }) => (
+  <rect x={x} y={y} width={w} height={h} rx={rx} fill={f} stroke={s ?? undefined} strokeWidth={s ? sw : 0} />
 );
 export const P = ({ pts, f, s = K, sw = 2 }: { pts: number[][]; f: string; s?: string | null; sw?: number }) => (
   <polygon points={pts.map((p) => p.join(',')).join(' ')} fill={f} stroke={s ?? undefined} strokeWidth={s ? sw : 0} />
@@ -478,8 +479,9 @@ export function Scarecrow({ x, y }: { x: number; y: number }) {
   );
 }
 
-export function Label({ x, y, text, color = EGA.white, size = 7 }: { x: number; y: number; text: string; color?: string; size?: number }) {
-  return <text x={x} y={y} fontSize={size} fontFamily="'Press Start 2P', monospace" fill={color}>{text}</text>;
+/** Pixel-font text. `anchor` centres or right-aligns at x; `bold` for the rare number that must shout. */
+export function Label({ x, y, text, color = EGA.white, size = 7, anchor, bold = false }: { x: number; y: number; text: string; color?: string; size?: number; anchor?: 'start' | 'middle' | 'end'; bold?: boolean }) {
+  return <text x={x} y={y} fontSize={size} fontFamily="'Press Start 2P', monospace" fill={color} textAnchor={anchor} fontWeight={bold ? 'bold' : undefined}>{text}</text>;
 }
 
 /* ------------------------------------------------------------------ */

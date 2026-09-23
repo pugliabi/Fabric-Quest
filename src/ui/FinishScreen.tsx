@@ -5,6 +5,8 @@ type Props = {
   playerName: string;
   score: number;
   maxScore: number;
+  /** Side-quest bonus points, shown next to the score when there are any. */
+  bonus: number;
   turns: number;
   startedAt: string;
   finishedAt: string;
@@ -18,7 +20,7 @@ type Props = {
 
 const fmt = (secs: number) => `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
 
-export function FinishScreen({ playerName, score, maxScore, turns, startedAt, finishedAt, endingText, recorder, cheated, onSubmit, onPlayAgain }: Props) {
+export function FinishScreen({ playerName, score, maxScore, bonus, turns, startedAt, finishedAt, endingText, recorder, cheated, onSubmit, onPlayAgain }: Props) {
   const elapsed = Math.max(0, Math.round((new Date(finishedAt).getTime() - new Date(startedAt).getTime()) / 1000));
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [hall, setHall] = useState<HallEntry[] | null>(null);
@@ -43,7 +45,7 @@ export function FinishScreen({ playerName, score, maxScore, turns, startedAt, fi
       </div>
       <div className="summary">
         <div>{playerName}</div>
-        <div>Score {score} / {maxScore} &middot; {turns} turns &middot; {fmt(elapsed)}</div>
+        <div>Score {score} / {maxScore}{bonus > 0 ? ` · +${bonus} bonus` : ''} &middot; {turns} turns &middot; {fmt(elapsed)}</div>
       </div>
       <div className="buttons">
         {cheated ? (
@@ -74,7 +76,7 @@ export function FinishScreen({ playerName, score, maxScore, turns, startedAt, fi
         ) : (
           <ol>
             {hall.map((h, i) => (
-              <li key={i}><span>{h.player_name}</span><span>{h.score} pts &middot; {h.turns} turns &middot; {fmt(h.elapsed_seconds)}</span></li>
+              <li key={i}><span>{h.player_name}</span><span>{h.score} pts{h.bonus ? ` +${h.bonus}` : ''} &middot; {h.turns} turns &middot; {fmt(h.elapsed_seconds)}</span></li>
             ))}
           </ol>
         )}

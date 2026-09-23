@@ -11,6 +11,8 @@ const REGION_BG: Record<Room['region'], [string, string]> = {
   monastery: ['#555555', '#aaaaaa'],
   fortress: ['#aa0000', '#ff5555'],
   peaks: ['#aa00aa', '#ff55ff'],
+  excel: ['#ffffff', '#1d6f42'],
+  copilot: ['#f3f2f1', '#6b4fbb'],
 };
 
 /**
@@ -18,7 +20,7 @@ const REGION_BG: Record<Room['region'], [string, string]> = {
  * the code-drawn SVG scene → a flat EGA placeholder with the room name.
  * `children` renders on top (message box, item card).
  */
-export function ScenePanel({ room, sceneId, state, children }: { room: Room; sceneId: string; state: GameState; children?: ReactNode }) {
+export function ScenePanel({ room, sceneId, state, children, className }: { room: Room; sceneId: string; state: GameState; children?: ReactNode; className?: string }) {
   const [src, setSrc] = useState<string | null>(null);
   useEffect(() => {
     let cancelled = false;
@@ -33,7 +35,7 @@ export function ScenePanel({ room, sceneId, state, children }: { room: Room; sce
   const [bg, fg] = REGION_BG[room.region];
   const drawn = !!SCENES[sceneId];
   return (
-    <div className="scene" data-scene={sceneId} style={{ background: bg }}>
+    <div className={className ? `scene ${className}` : 'scene'} data-scene={sceneId} style={{ background: bg }}>
       {src ? (
         <img src={src} alt={room.name} className="scene-img" />
       ) : drawn ? (

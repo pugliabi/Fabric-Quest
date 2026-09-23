@@ -22,6 +22,7 @@ export function load(): SaveBlob | null {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return null;
     const b = JSON.parse(raw) as SaveBlob;
+    if (b?.state) b.state.bonus = b.state.bonus ?? 0;
     return b && b.state && b.questId ? b : null;
   } catch { return null; }
 }

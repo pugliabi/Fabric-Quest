@@ -4,6 +4,11 @@ import { WORLD } from '../src/world';
 import { GOLDEN_PATH } from './golden-path';
 
 describe('golden path', () => {
+  it('the JSON walkthrough and GOLDEN_PATH are the same run', async () => {
+    const json = (await import('./golden-path.json')).default as string[];
+    expect(json).toEqual(GOLDEN_PATH);
+  });
+
   it('reaches 200/200 and wins without dying', () => {
     let s = newGame(WORLD, 42);
     const log: string[] = [];
@@ -16,6 +21,7 @@ describe('golden path', () => {
     }
     expect(s.score, log.join('\n')).toBe(MAX_SCORE);
     expect(s.won).toBe(true);
+    expect(s.turns).toBe(69); // village → Keep → Monastery (via the Model View's back gate) → Lake → swamp → Peaks
     expect(s.flags['trial.hoodie']).toBe(true);
     expect(s.flags['trial.moat']).toBe(true);
     expect(s.flags['trial.key']).toBe(true);

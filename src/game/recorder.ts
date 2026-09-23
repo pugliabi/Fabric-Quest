@@ -6,8 +6,9 @@ export type ActivityRecord = {
   questId: string; playerName: string; clientId: string; seq: number; stepId: string; roomId: string; rawInput: string; verb?: string; noun?: string;
   outcome: string; outputText: string; pointsAwarded: number; scoreAfter: number; turnsAfter: number; flagsAfter: string; occurredAt: string;
 };
-export type FinishRecord = { questId: string; playerName: string; score: number; turns: number; elapsedSeconds: number; finishedAt: string };
-export type HallEntry = { player_name: string; score: number; turns: number; elapsed_seconds: number; finished_at: string };
+export type FinishRecord = { questId: string; playerName: string; score: number; bonus: number; turns: number; elapsedSeconds: number; finishedAt: string };
+/** `bonus` is side-quest points on top of the 200-point score; 0 for rows written before side quests existed. */
+export type HallEntry = { player_name: string; score: number; bonus: number; turns: number; elapsed_seconds: number; finished_at: string };
 
 export interface Recorder {
   startQuest(q: QuestStart): void;
@@ -90,6 +91,7 @@ export class RayfinRecorder implements Recorder {
       quest_id: f.questId,
       player_name: clip(f.playerName, 40),
       score: f.score,
+      bonus: f.bonus,
       turns: f.turns,
       elapsed_seconds: f.elapsedSeconds,
       finished_at: new Date(f.finishedAt),
@@ -99,13 +101,13 @@ export class RayfinRecorder implements Recorder {
 
   async hallOfFame(limit: number): Promise<HallEntry[]> {
     const rows = await this.client.data.HallOfFame
-      .select(['player_name', 'score', 'turns', 'elapsed_seconds', 'finished_at'])
+      .select(['player_name', 'score', 'bonus', 'turns', 'elapsed_seconds', 'finished_at'])
       .where({ finished_at: { gte: HALL_OPENED }, score: { gt: 0 } }) // the board reset at public launch; zeros don't count
-      .orderBy({ score: 'desc', turns: 'asc' })
+      .orderBy({ score: 'desc', bonus: 'desc', turns: 'asc' }) // bonus breaks score ties
       .first(limit)
       .execute();
     return rows.map((r) => ({
-      player_name: r.player_name, score: r.score, turns: r.turns, elapsed_seconds: r.elapsed_seconds,
+      player_name: r.player_name, score: r.score, bonus: r.bonus ?? 0, turns: r.turns, elapsed_seconds: r.elapsed_seconds,
       finished_at: r.finished_at instanceof Date ? r.finished_at.toISOString() : String(r.finished_at),
     }));
   }

@@ -2,13 +2,17 @@
  * Chiptune cues synthesized with the Web Audio API — no audio files.
  * Square waves for the "PC speaker / NES" feel, a triangle for softer blips.
  */
-export type Cue = 'title' | 'splash' | 'move' | 'success' | 'item' | 'fail' | 'snark' | 'door' | 'death' | 'win' | 'flask' | 'type';
+export type Cue =
+  | 'title' | 'splash' | 'move' | 'success' | 'item' | 'fail' | 'snark' | 'door' | 'death' | 'win' | 'flask' | 'type'
+  | 'sidequest' | 'sidequest-out' | 'excel-ding' | 'copilot-think' | 'bonus';
 
-type Note = [freq: number, ms: number, wave?: OscillatorType, gain?: number];
+/** `together`: start at the same moment as the previous note (a chord / a bass hit under the lead). */
+type Note = [freq: number, ms: number, wave?: OscillatorType, gain?: number, together?: boolean];
 
 // Frequencies in Hz. 0 = rest.
 const C4 = 261.63, D4 = 293.66, E4 = 329.63, F4 = 349.23, G4 = 392.0, A4 = 440.0, B4 = 493.88;
 const C5 = 523.25, D5 = 587.33, E5 = 659.25, G5 = 783.99, C6 = 1046.5;
+const E6 = 1318.51, G6 = 1567.98;
 const B3 = 246.94, A3 = 220.0, E3 = 164.81, C3 = 130.81;
 
 const CUES: Record<Cue, Note[]> = {
@@ -26,6 +30,13 @@ const CUES: Record<Cue, Note[]> = {
   death: [[E4, 180], [D4, 180], [C4, 180], [B3, 260], [0, 80], [E3, 420, 'square', 0.22]],
   win: [[C4, 100], [E4, 100], [G4, 100], [C5, 200], [0, 40], [E5, 100], [D5, 100], [C5, 100], [G5, 380], [0, 60], [C6, 500]],
   flask: [[A4, 60], [G4, 60], [F4, 60], [E4, 60], [0, 40], [C3, 200, 'square', 0.2]],
+  // the side-quest sting: doot doot DOOOT, with a bass hit under the last one
+  sidequest: [[G4, 90], [0, 30], [G4, 90], [0, 30], [C5, 90], [E5, 90], [G5, 90], [C6, 520, 'square', 0.16], [C3, 520, 'triangle', 0.2, true]],
+  // …and the same sting backwards on the way out
+  'sidequest-out': [[C6, 90], [G5, 90], [E5, 90], [C5, 90], [0, 30], [G4, 90], [0, 30], [G4, 260]],
+  'excel-ding': [[E5, 60, 'triangle', 0.14], [G5, 160, 'triangle', 0.14]],
+  'copilot-think': [[C5, 50, 'triangle', 0.1], [E5, 50, 'triangle', 0.1], [G5, 50, 'triangle', 0.1], [0, 80], [C5, 50, 'triangle', 0.1], [E5, 50, 'triangle', 0.1], [G5, 50, 'triangle', 0.1]],
+  bonus: [[C5, 60], [E5, 60], [G5, 60], [C6, 60], [E6, 60], [G6, 300, 'square', 0.16]],
 };
 
 let ctx: AudioContext | null = null;
@@ -48,20 +59,24 @@ export function play(cue: Cue): void {
   const ac = getCtx();
   if (!ac) return;
   let t = ac.currentTime;
-  for (const [freq, ms, wave = 'square', gain = 0.12] of CUES[cue]) {
+  let prevStart = t;
+  for (const [freq, ms, wave = 'square', gain = 0.12, together = false] of CUES[cue]) {
     const dur = ms / 1000;
+    const at = together ? prevStart : t;
     if (freq > 0) {
       const osc = ac.createOscillator();
       const g = ac.createGain();
       osc.type = wave;
-      osc.frequency.setValueAtTime(freq, t);
-      g.gain.setValueAtTime(gain, t);
-      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.frequency.setValueAtTime(freq, at);
+      g.gain.setValueAtTime(gain, at);
+      g.gain.exponentialRampToValueAtTime(0.001, at + dur);
       osc.connect(g).connect(ac.destination);
-      osc.start(t);
-      osc.stop(t + dur);
+      osc.start(at);
+      osc.stop(at + dur);
     }
-    t += dur + 0.012;
+    prevStart = at;
+    if (together) t = Math.max(t, at + dur + 0.012);
+    else t += dur + 0.012;
   }
 }
 

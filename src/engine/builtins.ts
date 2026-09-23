@@ -1,5 +1,6 @@
 import type { GameState, Outcome, ParsedCommand } from './types';
 import type { Item, Npc, World } from '../world/types';
+import { SIDE_REALM_NAME, SIDE_REGIONS } from '../world/types';
 import { vary } from './quirks';
 
 export const MAX_SCORE = 200;
@@ -25,6 +26,10 @@ export function roomItems(s: GameState, world: World): Item[] {
 /** Flags hold booleans/numbers only, so a room id is stored as its index. */
 export function roomIndex(roomId: string, world: World): number {
   return Object.keys(world.rooms).indexOf(roomId);
+}
+
+export function roomFromIndex(i: number, world: World): string | undefined {
+  return Object.keys(world.rooms)[i];
 }
 
 export function roomNpcs(s: GameState, world: World): Npc[] {
@@ -61,6 +66,8 @@ export function describeRoom(s: GameState, world: World): string {
   const exits = Object.entries(room.exits)
     .filter(([, target]) => (typeof target === 'function' ? target(s) !== null : !!target))
     .map(([d]) => d);
+  // A side room's `out` resolves to null (the engine returns you to where you came from), so it is named here instead.
+  if (SIDE_REGIONS.has(room.region) && 'out' in room.exits) exits.push('exit (back to the realm)');
   if (exits.length) parts.push(`Exits: ${exits.join(', ')}.`);
   return parts.join('\n');
 }
@@ -82,6 +89,7 @@ export function handle(s: GameState, cmd: ParsedCommand, world: World): Handled 
       return null;
     case 'go': {
       if (!cmd.dir) return { state: s, output: ['Go where?'], outcome: 'fail' };
+      if (cmd.dir === 'out' && SIDE_REGIONS.has(room.region)) return null; // the sq.exit.words phrase owns leaving a realm
       const target = room.exits[cmd.dir];
       const dest = typeof target === 'function' ? target(s) : target ?? null;
       if (!dest || !world.rooms[dest]) return { state: s, output: [vary(s, ["You can't go that way.", 'There is no exit that way. There is a wall, doing its job.', 'That direction is not in the schema.', 'You walk into the edge of the map. The map apologizes.'])], outcome: 'fail' };
@@ -134,9 +142,11 @@ export function handle(s: GameState, cmd: ParsedCommand, world: World): Handled 
       return { state: next, output: [`You put on the ${r.item.name}.`], outcome: 'success' };
     }
     case 'score':
-      return { state: s, output: [`Score : ${s.score} of ${MAX_SCORE}, in ${s.turns} turns.`], outcome: 'meta' };
-    case 'help':
-      return { state: s, output: [world.helpText], outcome: 'meta' };
+      return { state: s, output: [`Score : ${s.score} of ${MAX_SCORE}${s.bonus > 0 ? ` (+${s.bonus} bonus)` : ''}, in ${s.turns} turns.`], outcome: 'meta' };
+    case 'help': {
+      const realm = SIDE_REALM_NAME[room.region];
+      return { state: s, output: realm ? [world.helpText, `Type EXIT to leave ${realm}; you return where you were.`] : [world.helpText], outcome: 'meta' };
+    }
     case 'save':
       return { state: s, output: ['Game saved.'], outcome: 'meta' };
     case 'restore':

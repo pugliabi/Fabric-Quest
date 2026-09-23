@@ -1,5 +1,5 @@
 import { pickSnark } from './snark';
-import type { GameState, Outcome, StepResult } from './types';
+import type { GameState, Outcome, StepResult, Unwrapped, WrapKind } from './types';
 
 /**
  * The chirpy layer. Runs after a turn is resolved and appends a line when the player
@@ -19,6 +19,72 @@ export function bangs(input: string): number {
   const m = /!+\s*$/.exec(input.trim());
   return m ? m[0].trim().length : 0;
 }
+
+export type { WrapKind } from './types';
+
+/** Leading frustration wrappers. Exported so the Copilot pane can tell a frustrated prompt the same way the chirps do. */
+export const FRUSTRATED_LEAD: readonly RegExp[] = [
+  /^(ugh|argh|omg|come on|seriously|for the love of \w+|dammit|damn it|why won't you|why can't i|please just|just|okay fine|fine)[,!]?\s+/i,
+  /^(listen|hey)[,!]\s+/i,
+];
+
+const LEAD: [RegExp, WrapKind][] = [
+  [/^(i want to|i wanna|i would like to|i'd like to|can i|could i|may i|let me|i will|i'll|i'm going to|im going to|try to|attempt to|how do i|how about i)\s+/i, 'intent'],
+  [/^(i said|i told you|i already said|like i said|as i said|again,?)\s+/i, 'insist'],
+  ...FRUSTRATED_LEAD.map((re): [RegExp, WrapKind] => [re, 'frustrated']),
+];
+const TRAIL: [RegExp, WrapKind][] = [
+  [/[,!]?\s+(again|already|like i said)\s*([!?.]*)$/i, 'insist'],
+  [/[,!]?\s+(dammit|damn it|you idiot|you stupid game|right now|now|please)\s*([!?.]*)$/i, 'frustrated'],
+];
+
+/** Strip one leading and/or one trailing wrapper. Keeps the trailing punctuation so bangs() still sees it. */
+export function unwrap(raw: string): Unwrapped {
+  let s = raw.trim();
+  const out: Unwrapped = { command: s, kind: null };
+  for (const [re, k] of LEAD) {
+    const m = re.exec(s);
+    if (m && m[0].length < s.length) { s = s.slice(m[0].length); out.lead = { kind: k, word: m[1]!.toLowerCase() }; break; }
+  }
+  for (const [re, k] of TRAIL) {
+    const m = re.exec(s);
+    if (m && m.index > 0) { s = s.slice(0, m.index) + (m[2] ?? ''); out.trail = { kind: k, word: m[1]!.toLowerCase() }; break; }
+  }
+  out.command = s.trim();
+  out.kind = out.lead?.kind ?? out.trail?.kind ?? null;
+  return out;
+}
+
+/** "I want to …" that worked (or was a look / inventory): the permission was never the problem. */
+export const INTENT_OK = [
+  'You may. You just did.',
+  'Ambition logged. Result attached.',
+  'The realm does not need your consent form. Just the verb.',
+  'Permission was never the issue. Look, it worked.',
+];
+/** "I want to …" that did not: the wanting is all that happened. */
+export const INTENT_NO = [
+  'Wanting is noted. Doing is a verb.',
+  'Noted: you would like to. The realm would like a star schema. We all have wants.',
+  'The realm does not need your consent form. It needs a better idea.',
+  'Permission granted. Success sold separately.',
+];
+const INSIST = [
+  'You said. The realm heard. The realm is choosing not to.',
+  "Saying it again with 'I said' in front does not add a verb.",
+  'The narrator was there the first time.',
+  "'Again' is not a modifier the parser supports. Neither is 'already'.",
+  'Yes. You said. It is in the log. The log is unimpressed.',
+];
+const FRUSTRATED = [
+  'Frustration logged. It does not count toward the 200.',
+  "Okay, okay. Same answer, but I'll say it slower.",
+  'Ye wish. Ye wish with feeling.',
+  'The dragon is not fed by tone.',
+  'Deep breaths. The realm has all day. The realm is billed by the second, but it has all day.',
+  'The narrator senses frustration. The narrator has a certification in that.',
+];
+const ALL_THREE = 'All three. Caps, "I said", and a third try. This is a support ticket now.';
 
 const SHOUT_OK = [
   'Ye did it, and ye did it LOUDLY.',
@@ -103,8 +169,13 @@ function unchanged(a: GameState, b: GameState): boolean {
     && a.worn.length === b.worn.length && JSON.stringify(a.flags) === JSON.stringify(b.flags);
 }
 
+export type QuirkOptions = {
+  /** The turn was answered by a prompt room (Copilot), which does its own wrapper and repeat commentary: only the shout lines apply. */
+  suppressWrapAndRepeat?: boolean;
+};
+
 /** Add the shout and repeat commentary. `prev` is the state before the turn; `input` the raw line. */
-export function applyQuirks(prev: GameState, input: string, result: StepResult, recent: Recent): StepResult {
+export function applyQuirks(prev: GameState, input: string, result: StepResult, recent: Recent, kind: WrapKind | null = null, opts: QuirkOptions = {}): StepResult {
   if (result.state.dead || result.state.won) return result;
   const extra: string[] = [];
   const isFlask = /^get ye flask$/.test(normalize(input));
@@ -120,10 +191,17 @@ export function applyQuirks(prev: GameState, input: string, result: StepResult, 
     else if (result.outcome !== 'meta') extra.push(pick(prev, SHOUT_NO, 4));
   }
 
+  if (opts.suppressWrapAndRepeat) return extra.length ? { ...result, output: [...result.output, ...extra] } : result;
+
+  if (kind === 'intent') extra.push(pick(prev, good.includes(result.outcome) || result.outcome === 'meta' ? INTENT_OK : INTENT_NO, 11));
+  else if (kind === 'insist') extra.push(pick(prev, INSIST, 12));
+  else if (kind === 'frustrated') extra.push(pick(prev, FRUSTRATED, 13));
+  if (kind && n > 0 && recent.n >= 3) extra.push(ALL_THREE);
+
   // Repeats: failures and snark that changed nothing, looking at the same thing twice, and the flask (always).
   const looking = (result.parsed.verb === 'look' || result.parsed.verb === 'read') && result.outcome === 'success';
   const failed = result.outcome === 'fail' || result.outcome === 'snark';
-  if (recent.n >= 2 && (isFlask || ((failed || looking) && unchanged(prev, result.state)))) {
+  if (recent.n >= 2 && (isFlask || (!kind && (failed || looking) && unchanged(prev, result.state)))) {
     if (isFlask) extra.push(pick(prev, REPEAT_FLASK, 5));
     else if (looking) extra.push(pick(prev, REPEAT_LOOK, 6));
     else if (recent.n === 2) extra.push(pick(prev, REPEAT_2, 7));

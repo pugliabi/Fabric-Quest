@@ -11,12 +11,14 @@ import { anonymous, authenticated, date, entity, int, text, uuid } from '@micros
 @entity()
 @authenticated('read')
 @anonymous('create')
-@anonymous('read', { include: ['id', 'quest_id', 'player_name', 'score', 'turns', 'elapsed_seconds', 'finished_at'] })
+@anonymous('read', { include: ['id', 'quest_id', 'player_name', 'score', 'bonus', 'turns', 'elapsed_seconds', 'finished_at'] })
 export class HallOfFame {
   @uuid() id!: string;
   @text({ max: 64 }) quest_id!: string;
   @text({ max: 40 }) player_name!: string;
   @int() score!: number;
+  /** Side-quest bonus points, on top of the 200-point score. Optional: rows from before side quests have none. */
+  @int({ optional: true }) bonus?: number;
   @int() turns!: number;
   @int() elapsed_seconds!: number;
   @date() finished_at!: Date;

@@ -17,9 +17,11 @@ type Props = {
   disabled?: boolean;
   notice?: Notice | null;
   onDismissNotice?: () => void;
+  /** A one-shot white flash over the scene (the side-quest sting). */
+  flash?: boolean;
 };
 
-export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onToggleMute, disabled, notice, onDismissNotice }: Props) {
+export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onToggleMute, disabled, notice, onDismissNotice, flash }: Props) {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [histIx, setHistIx] = useState<number>(-1);
@@ -57,9 +59,9 @@ export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onTog
   };
 
   return (
-    <div className="screen play" onClick={() => { if (!disabled) inputRef.current?.focus(); }} role="presentation">
+    <div className="screen play" data-region={room.region} onClick={() => { if (!disabled) inputRef.current?.focus(); }} role="presentation">
       <div className="statusbar">
-        <span>Score : {score} of {maxScore}</span>
+        <span>Score : {score} of {maxScore}{state.bonus > 0 ? ` +${state.bonus}` : ''}</span>
         <span className="statusbar-right">
           <button type="button" className="mute inline" onClick={(e) => { e.stopPropagation(); onToggleMute(); }} aria-label={muted ? 'Unmute' : 'Mute'}>
             {muted ? '♪ off' : '♪ on'}
@@ -67,7 +69,7 @@ export function PlayScreen({ state, score, maxScore, log, onSubmit, muted, onTog
           Fabric&rsquo;s Quest{state.flags.god ? ' ⚡' : ''}
         </span>
       </div>
-      <ScenePanel room={room} sceneId={sceneId} state={state}>
+      <ScenePanel room={room} sceneId={sceneId} state={state} className={flash ? 'flash' : undefined}>
         {notice && <MessageBox text={notice.text} itemId={notice.itemId} onDismiss={() => { onDismissNotice?.(); inputRef.current?.focus(); }} />}
       </ScenePanel>
       <div className="textwin" ref={textRef} aria-live="polite">

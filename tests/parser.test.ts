@@ -40,6 +40,6 @@ describe('parse', () => {
   it('handles multi-word nouns', () => {
     expect(parse('get standard key')).toMatchObject({ verb: 'get', noun: 'standard key' });
     expect(parse('get ye flask')).toMatchObject({ verb: 'get', noun: 'ye flask' });
-    expect(parse('use cable on copy activity')).toMatchObject({ verb: 'use', noun: 'cable', noun2: 'copy activity' });
+    expect(parse('use policy on big refresh')).toMatchObject({ verb: 'use', noun: 'policy', noun2: 'big refresh' });
   });
 });

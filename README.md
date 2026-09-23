@@ -59,14 +59,21 @@ That means three trials, in any order:
 
 - **The Hoodie of Spark** — earned at the Monastery of Data Engineering, if you can outwait a Spark session and fix
   Brother Pandas' notebook.
-- **The Moat of T-SQL** — the Duke of Warehouse throws people in it for saying the wrong thing. You will need to say
-  the wrong thing on purpose.
+- **The Moat of T-SQL** — the Duke of DAX, holding court in the Semantic Model Keep, throws people in it for
+  saying the wrong thing. You will need to say the wrong thing on purpose.
 - **The Gateway Key** — the Ferryman on OneLake has it, but the Ferryman has been offline since the Gen1 credentials
   expired.
 
 Then it's up the Peaks, past the interactive delay, to Throttlor. Bring a star schema.
 
-22 rooms · 23 items · 13 characters · 200 points · a respectable number of ways to die.
+Two side quests hide in the realm: type `show me a table` and you're in Jeff's Excel, trying to make his export
+match the report; type `what are my sales numbers` and you're arguing with Copilot. Both pay bonus points on top
+of the 200. Both can be left with `exit`.
+
+West of the OneLake Shore, there's also a house. On a lake. It's called the Lake House. That's the whole joke;
+there are no points in it.
+
+29 rooms · 97 items · 14 characters · 200 points · a respectable number of ways to die.
 
 ## How to play
 
@@ -82,7 +89,7 @@ Then it's up the Peaks, past the interactive delay, to Throttlor. Bring a star s
    | Talk | `talk to miller` |
    | Say something specific | `say star schema` |
    | Hand something over | `give mug to jeff` |
-   | Use one thing on another | `use cable on copy activity` |
+   | Use one thing on another | `use policy on refresh` |
    | Read, wear, open, board, wait | `read board`, `wear hoodie`, `open door`, `board boat`, `wait` |
    | Check yourself | `inventory` (or `i`), `score` |
    | Save / restore / restart | `save`, `restore`, `restart` |
@@ -93,8 +100,8 @@ Then it's up the Peaks, past the interactive delay, to Throttlor. Bring a star s
 4. When you die — you will — the Sierra death card offers **Restore**, **Restart** or **Quit**. The game autosaves
    after every turn to your browser, so restoring costs you nothing but dignity.
 5. Finish — or type `quit` to retire early — and you can submit your name, score, turn count and time to the
-   public **Hall of Fame** (top 25). Your progress autosaves as you play; your *score* is posted only from that
-   finish screen.
+   public **Hall of Fame** (top 25), plus any side-quest bonus you picked up along the way. Your progress
+   autosaves as you play; your *score* (and bonus) is posted only from that finish screen.
 
 Sound is on by default (chiptune cues for moves, items, doors, deaths and the victory fanfare). The `♪` toggle in
 the status bar mutes it.
@@ -108,12 +115,13 @@ Spoiler-light, in rough order of "how stuck are you":
 - **`get ye flask` works in every room.** It won't give you a flask. It will tell you what you're missing here.
 - The village has three things you need before you leave it. One of them is in your cottage.
 - Jeff from Finance will not stop asking. Giving him *something* makes the square quieter.
+- The Keep is east, past the fields; the monks are behind it. At the gate, the guard wants a SKU. The cheapest
+  one gets you in.
+- In the Duke's chamber, the query every DBA hates gets you exactly where you need to go.
+- The Report Studio has a Card that needs out-staring, and a Big Refresh that wants a policy — the Model View,
+  west of the hall, keeps one on a lectern.
 - The Ferryman is offline for a boring, real-world reason. The Mill knows more.
 - At the Monastery, waiting is sometimes the correct answer. So is having a library card.
-- At the drawbridge the guard wants a SKU. The cheapest one gets you in.
-- In the throne room the Duke wants a query. The query every DBA hates gets you exactly where you need to go.
-- The Peaks are slow without the right footwear. The Fortress yard has a Copy Activity, a cable, and a Lookup
-  Activity that just needs to be out-stared.
 - Throttlor wants one thing said to his face. It's the same thing every Power BI consultant wants said.
 - Don't drink the water in the swamp. Don't import the lake. Don't swim the moat. The narrator did warn you.
 
@@ -128,7 +136,7 @@ Three tables live in the app's Fabric SQL database:
 |---|---|---|
 | `Quests` | game started | player name, browser client id, user agent, world version, start time |
 | `Activities` | command typed | quest id, sequence, room, raw input, verb/noun, rule id, outcome, narrator output, points awarded, score/turns/flags after |
-| `HallOfFames` | game finished and submitted | player name, score, turns, elapsed seconds |
+| `HallOfFames` | game finished and submitted | player name, score, bonus, turns, elapsed seconds |
 
 Players write anonymously and can read only the Hall of Fame columns; everything else needs a signed-in Fabric
 identity. Point a Lakehouse shortcut at the database and the play data is yours to model.

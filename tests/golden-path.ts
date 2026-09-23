@@ -4,20 +4,20 @@ export const GOLDEN_PATH: string[] = [
   'look', 'get mug', 'read report', 'out', 'read board', 'give mug to jeff',
   // Mill (+10)
   'n', 'talk to miller', 's',
-  // Lake: ferry + key (+15 +20)
-  's', 'e', 'give credentials to ferryman', 'board boat', 'get standard key', 'board boat', 'w',
-  // Swamp: shortcut (+10)
-  's', 's', 's', 'get shortcut',
-  // Monastery gate (+10)
-  'e', 'wait', 'wait', 'wait', 'n',
+  // The Keep: SKU, moat (+10 +25) — the moat throws you back to the gate
+  'e', 'e', 'n', 'say trial', 'n', 'n', 'say select *',
+  // Model View: the policy; Report Studio: stare, Big Refresh, boots (+10 +15)
+  'n', 'w', 'get policy', 'e', 'e', 'look at card', 'wait', 'wait', 'use policy on refresh', 'wear boots',
+  // Out the Model View's back gate to the Monastery (+10)
+  'w', 'w', 'n', 'wait', 'wait', 'wait', 'n',
   // Library, scroll, fix, hoodie (+10 +5 +20 +15)
   'w', 'give license to librarian', 'read scroll', 'e', 'e', 'use scroll on notebook', 'w', 'talk to abbot', 'wear hoodie',
-  // Shortcut home, walk to the fortress
-  'use shortcut', 'n', 'e', 'e', 'n',
-  // Fortress: SKU, moat (+10 +25) — the moat throws you back to the bridge
-  'say trial', 'n', 'n', 'say select *',
-  // Yard: stare, copy, boots (+10 +15)
-  'n', 'e', 'look at lookup', 'wait', 'wait', 'get cable', 'use cable on copy activity', 'wear boots',
+  // Back through the Keep to the village
+  's', 's', 'e', 's', 's', 'w', 'w',
+  // Lake: ferry + key (+15 +20)
+  's', 'e', 'give credentials to ferryman', 'board boat', 'get standard key', 'board boat', 'w',
+  // Swamp: shortcut (+10), and take it home to the shore
+  's', 's', 's', 'get shortcut', 'use shortcut',
   // Peaks: door, dragon, model (+5 +10 +5)
-  'w', 's', 's', 'e', 'n', 'n', 'say star schema', 'get model',
+  'n', 'e', 'e', 'e', 'n', 'n', 'say star schema', 'get model',
 ];

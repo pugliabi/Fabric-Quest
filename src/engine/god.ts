@@ -22,6 +22,7 @@ const GOD_HELP = [
   '  prompts all           the same for the whole realm',
   '  prompts global        rules that work anywhere, plus the phrase eggs and deaths',
   '  summon <item>         put any item in your inventory',
+  '  locate <thing>        who wants it, where it is, what to say (e.g. locate sku, locate key)',
   '  flags                 dump the story flags',
   '  godhelp               this list',
   '  burninate             back to being a peasant',
@@ -40,6 +41,7 @@ export function promptFor(r: Rule): string {
   const w = r.when;
   if (w.verb === 'go' && w.dir) return `go ${w.dir}`;
   const parts: string[] = [w.verb];
+  if (w.verb === 'talk') parts.push('to');
   if (w.nounMatches) parts.push(`<${w.nounMatches.source}>`);
   else if (w.noun) parts.push(nounText(w.noun));
   if (w.noun2) parts.push(prep(w), nounText(w.noun2));
@@ -60,8 +62,10 @@ function effectText(r: Rule): string {
   const t = r.then;
   const bits: string[] = [];
   if (t.points) bits.push(`+${t.points}`);
+  if (t.bonus) bits.push(`+${t.bonus} bonus`);
   if (t.give?.length) bits.push(`gives ${t.give.join(',')}`);
   if (t.moveTo) bits.push(`→ ${t.moveTo}`);
+  if (t.returnTo) bits.push('→ back');
   if (t.death) bits.push('DEATH');
   if (t.win) bits.push('WIN');
   return bits.length ? `  (${bits.join(' ')})` : '';
@@ -92,6 +96,72 @@ function findItem(world: World, q: string): string | undefined {
   if (world.items[q]) return q;
   const needle = q.toLowerCase();
   return Object.values(world.items).find((i) => i.name.toLowerCase().includes(needle) || i.aliases.includes(needle))?.id;
+}
+
+/** Strips a leading article off a `locate`-family query, e.g. "the key" -> "key". */
+function cleanArticle(s: string): string {
+  return s.replace(/^(the|a|an)\s+/, '').trim();
+}
+
+/**
+ * `locate <thing>` search. Answers "who wants this, where is it, what do I say" by scanning the
+ * whole world: NPCs and the rules that mention them, rules matched by noun/noun2/id, items and
+ * whatever gives them, and rooms by name. Points-earning entries surface first; within the rest,
+ * rules come before items, items before NPC room lines, and NPC lines before room-name matches.
+ */
+function whereIs(world: World, q: string): string {
+  const needle = q.toLowerCase();
+  const hit = (s: string | undefined) => !!s && s.toLowerCase().includes(needle);
+  type Cat = 'rule' | 'item' | 'npc' | 'room';
+  // One hit is one block: a line, or an NPC's header with its rules indented under it. Blocks sort as units.
+  const hits: { lines: string[]; cat: Cat; pts: boolean }[] = [];
+  const push = (cat: Cat, lines: string[], pts = false) => hits.push({ lines, cat, pts });
+  const awards = (t: Rule['then']) => !!(t.points || t.bonus);
+  // Each rule is listed once, wherever it is first found (an NPC block, a noun match, or an item giver).
+  const listed = new Set<Rule>();
+  const fresh = (rule: Rule) => !listed.has(rule) && !!listed.add(rule);
+
+  // NPC matches: their room, plus every rule in that room that names them or is a say-rule
+  const npcs = Object.values(world.npcs).filter((n) => hit(n.name) || n.aliases.some(hit));
+  for (const n of npcs) for (const r of Object.values(world.rooms)) if (r.npcs.includes(n.id)) {
+    const lines = [`${r.id} — ${r.name} (npc ${n.name})`];
+    let pts = false;
+    for (const rule of r.rules) {
+      const w = rule.when;
+      const names = ([] as string[]).concat(w.noun ?? [], w.noun2 ?? []);
+      if ((names.some(hit) || w.verb === 'say' || (w.nounMatches?.test(needle) ?? false)) && fresh(rule)) {
+        lines.push(`  > ${promptFor(rule)}${effectText(rule)}${needsText(rule)}`);
+        pts ||= awards(rule.then);
+      }
+    }
+    push('npc', lines, pts);
+  }
+  // Rule matches by noun / noun2 / id across all rooms and globals
+  for (const r of Object.values(world.rooms)) for (const rule of r.rules) {
+    const w = rule.when;
+    const names = ([] as string[]).concat(w.noun ?? [], w.noun2 ?? [], [rule.id]);
+    if (names.some(hit) && fresh(rule)) push('rule', [`${r.id} — ${r.name}: > ${promptFor(rule)}${effectText(rule)}${needsText(rule)}`], awards(rule.then));
+  }
+  for (const rule of world.globalRules) {
+    const w = rule.when;
+    if (([] as string[]).concat(w.noun ?? [], w.noun2 ?? [], [rule.id]).some(hit) && fresh(rule)) push('rule', [`anywhere: > ${promptFor(rule)}${effectText(rule)}${needsText(rule)}`], awards(rule.then));
+  }
+  // Items: where they sit, and which rule gives them
+  for (const it of Object.values(world.items)) if (hit(it.name) || it.aliases.some(hit) || hit(it.id)) {
+    for (const r of Object.values(world.rooms)) if (r.items.includes(it.id)) push('item', [`item '${it.name}' lives in ${r.id} — ${r.name}`]);
+    for (const r of Object.values(world.rooms)) for (const rule of r.rules) if (rule.then.give?.includes(it.id) && fresh(rule)) push('item', [`${r.id} — ${r.name}: > ${promptFor(rule)} gives ${it.name}${needsText(rule)}`], awards(rule.then));
+  }
+  // Rooms by name
+  for (const r of Object.values(world.rooms)) if (hit(r.name) || hit(r.id)) push('room', [`room ${r.id} — ${r.name} (${r.region})`]);
+
+  const uniq = [...new Map(hits.map((h) => [h.lines.join('\n'), h])).values()];
+  const catRank: Record<Cat, number> = { rule: 0, item: 1, npc: 2, room: 3 };
+  uniq.sort((a, b) => {
+    const pa = a.pts ? 0 : 1;
+    const pb = b.pts ? 0 : 1;
+    return pa !== pb ? pa - pb : catRank[a.cat] - catRank[b.cat];
+  });
+  return uniq.length ? uniq.flatMap((h) => h.lines).join('\n') : `Nothing in the realm answers to '${q}'. Try: rooms, prompts all.`;
 }
 
 /** Returns a result when the input is a god-mode command, otherwise null. */
@@ -142,6 +212,31 @@ export function godStep(base: GameState, lower: string, world: World, parsed: Pa
     }
     case 'flags':
       return meta(base, [Object.keys(base.flags).length ? Object.entries(base.flags).map(([k, v]) => `${k} = ${v}`).join('\n') : '(no flags yet)'], 'god.flags', parsed);
+    // "where" is intentionally NOT a god command here — reserved for a future player-facing command.
+    case 'locate':
+    case 'find': {
+      const q = cleanArticle(arg.replace(/^(is|are|do i (get|find|give|say)( to)?|to)\s+/, ''));
+      if (!q) return meta(base, ['locate what?'], 'god.locate', parsed);
+      return meta(base, [whereIs(world, q)], 'god.locate', parsed);
+    }
+    // "how" and "what" only claim the specific alias shapes below ("how do i get/find X", "how
+    // about i get/find X", "what do i give/say (to) X"); anything else — "how about i grab the
+    // mug", "how do i inspect the mirror", a bare "what" — falls through (return null) to normal
+    // play. Matched against `arg`, not `lower`, since `cmd` (the first word) is already 'how'/'what'.
+    case 'how': {
+      const m = /^(do i (get|find)|about i (get|find))\s+(.+)$/.exec(arg);
+      if (!m) return null;
+      const q = cleanArticle(m[4]!);
+      if (!q) return meta(base, ['locate what?'], 'god.locate', parsed);
+      return meta(base, [whereIs(world, q)], 'god.locate', parsed);
+    }
+    case 'what': {
+      const m = /^do i (give|say)( to)?\s+(.+)$/.exec(arg);
+      if (!m) return null;
+      const q = cleanArticle(m[3]!);
+      if (!q) return meta(base, ['locate what?'], 'god.locate', parsed);
+      return meta(base, [whereIs(world, q)], 'god.locate', parsed);
+    }
     default:
       return null;
   }

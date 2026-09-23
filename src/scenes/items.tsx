@@ -47,10 +47,10 @@ const ITEM_ROWS: Record<string, string[]> = {
     '..kyykkyyk......', '...kyyyyk.......', '....kyyk........', '....kyyk........', '....kyykkk......', '....kyyyyk......',
     '....kyykkk......', '....kyyyyk......', '....kkkkkk......', '................',
   ],
-  cable: [
-    '................', '.kkk............', '.kyyk...........', '.kyykkkkkk......', '.kyyyyyyyyk.....', '.kkkkkkkkyyk....',
-    '.........kyyk...', '..........kyyk..', '..........kyyk..', '.........kyyk...', '........kyyk....', '.......kyykkkk..',
-    '.......kyyyyyk..', '.......kkkkkkk..', '................', '................',
+  policy: [
+    '................', '..kkkkkkkkkkkk..', '..kwwwwwwwwwwk..', '..kwbbbbbbbbwk..', '..kwwwwwwwwwwk..', '..kwGGGwwwwwwk..',
+    '..kwGGGGGGwwwk..', '..kwGGGGGGGGwk..', '..kwwwwwwwwwwk..', '..kwddddddddwk..', '..kwwwwwwwwwwk..', '..kwddddddwwwk..',
+    '..kwwwwwwwwwwk..', '..kkkkkkkkkkkk..', '................', '................',
   ],
   boots: [
     '................', '....kkkk........', '....kRRk........', '....kRRk........', '....kRRk........', '....kRRk........',

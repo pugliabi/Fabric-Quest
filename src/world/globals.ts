@@ -13,7 +13,7 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'death.delete-workspace', test: /^(delete|drop|remove|nuke)\b.*workspace/, text: 'You delete the workspace. You were in it.', death: 'death.delete-workspace' },
   { id: 'death.rm-rf', test: /rm -rf|format c:|drop database/, text: "You run it. The realm, to its credit, had a backup. You did not.", death: 'death.rm-rf' },
   { id: 'death.paginated', test: /paginated.*jeff|jeff.*paginated/, text: "You offer Jeff a paginated report. Jeff's eyes go dark. He was not built for this. Neither were you.", death: 'death.paginated' },
-  { id: 'death.import', test: /^import\b.*(lake|onelake)|^(use|get|take|open)\b.*(the )?(onelake|lake)$/, room: 'lake.shore', text: 'You attempt to Import the OneLake into Power BI Desktop. Your laptop becomes a small sun.', death: 'death.import' },
+  { id: 'death.import', test: /^import\b.*(lake|onelake)|^(use|get|take|open)\b(?!.*\b(pebble|stone)\b).*(the )?(onelake|lake)$/, room: 'lake.shore', text: 'You attempt to Import the OneLake into Power BI Desktop. Your laptop becomes a small sun.', death: 'death.import' },
   { id: 'death.swim-moat', test: /^(swim|dive|jump)\b.*(moat|in)?/, room: 'fortress.bridge', text: 'You dive into the Moat of T-SQL. It is deeper than it looks and made entirely of nested subqueries. You are still in there. You will always be in there.', death: 'death.swim-moat' },
 
   // ---- Classic verbs the parser was always going to be asked ----
@@ -36,7 +36,7 @@ export const PHRASE_RULES: PhraseRule[] = [
       if (region === 'lake') return 'You relieve yourself into the OneLake. Somewhere, a lineage view updates. It has your name on it.';
       if (region === 'swamp') return 'The marsh does not notice. The marsh has seen worse. The marsh is worse.';
       if (region === 'monastery') return 'The monks pause their chanting. Then resume, slightly faster.';
-      if (region === 'fortress') return 'The guards write it down. Everything in the Warehouse is logged, and this now has a row.';
+      if (region === 'fortress') return 'The guards write it down. Everything in the Keep is logged, and this now has a row in the audit table.';
       if (region === 'peaks') return 'It freezes instantly. It is billed per second until it thaws.';
       if (s.room === 'village.cottage') return 'In your own workspace? There is a well outside. Show some governance.';
       return 'In the square? Jeff from Finance looks up, mildly impressed, then goes back to waiting for his export.';
@@ -46,9 +46,16 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.fart', test: /^(fart|toot|break wind|pass gas)\b/, text: 'A small burst of Spark. Nobody claims it. The session timer restarts.' },
   { id: 'egg.puke', test: /^(spit|vomit|puke|throw up|barf|hurl)\b/, text: 'You add to the data lake. Quality, as always, varies by source.' },
   { id: 'egg.sudo', test: /^sudo\b/, text: 'You are not in the sudoers file. This incident will be reported to your capacity admin.' },
-  { id: 'egg.excel', test: /export.*excel|^excel\b|to excel|analyze in excel/, text: 'The game exports itself to Excel. 1,048,576 rows later, it stops. Nothing has changed.' },
+  // "analyze in excel" is not here: outside Excel the exact phrase enters the side quest; inside, the Data tab's rules need it.
+  {
+    id: 'egg.excel', test: /export.*excel|^excel\b|to excel/,
+    text: (s, world) => (world.rooms[s.room]?.region === 'excel'
+      ? 'You are already in Excel. This is as exported as it gets.'
+      : 'The game exports itself to Excel. 1,048,576 rows later, it stops. Nothing has changed.'),
+  },
   { id: 'egg.calculate', test: /^calculate\b/, text: 'CALCULATE what? Context is everything.' },
-  { id: 'egg.copilot', test: /^(ask )?copilot\b/, text: "Copilot: 'Great question! To bake sourdough, first feed your starter…' It has confidently answered a different question." },
+  // Not "ask copilot …": that opens the Copilot side quest. This is for asking some other AI, which Copilot answers anyway.
+  { id: 'egg.copilot', test: /^(ask|hey|use|talk to) (the |an? )?(ai|chat ?gpt|chatbot|llm|robot)\b/, text: "Copilot, uninvited: 'Great question! To bake sourdough, first feed your starter…' It has confidently answered a different question. Nobody asked it." },
   { id: 'egg.xyzzy', test: /^(xyzzy|plugh|plover)$/, text: "A hollow voice says: 'Direct Lake.'" },
   { id: 'egg.refresh', test: /^refresh\b/, text: 'You refresh. Nothing changes, but it feels productive.' },
   { id: 'egg.dax', test: /^(dax|write dax|write a measure|measure)\b/, text: 'You write a measure. It returns BLANK(). It always returns BLANK(). You are beginning to suspect the problem is you.' },
@@ -95,7 +102,7 @@ export const PHRASE_RULES: PhraseRule[] = [
   { id: 'egg.fly', test: /^(fly|flap|soar|levitate)\b/, text: 'You flap. You are not a Dataflow. You do not flow. You do not fly.' },
   { id: 'egg.lick', test: /^(lick|taste)\b/, text: 'You lick it. It tastes of stale metadata. Please stop.' },
   { id: 'egg.listen', test: /^(listen|hear)\b/, text: 'You listen. Somewhere, a refresh fails softly. Somewhere else, a Spark session starts. It is always starting.' },
-  { id: 'egg.hide', test: /^(hide|sneak|crouch|stealth)\b/, text: 'You hide. The Lookup Activity finds you immediately. It was always going to.' },
+  { id: 'egg.hide', test: /^(hide|sneak|crouch|stealth)\b/, text: 'You hide. The Card visual finds you immediately. It shows (Blank), which is where you were hiding.' },
   { id: 'egg.talk-self', test: /^(talk to (me|myself|self)|talk)$/, text: 'You talk to yourself. You are the only one in the realm who listens, and even you are not really listening.' },
   { id: 'egg.hello', test: /^(hello|hi|hey|yo|sup|greetings)\b/, text: 'The realm does not say hello back. The realm is busy refreshing.' },
   { id: 'egg.thanks', test: /^(thanks|thank you|ty)\b/, text: 'You are welcome. This is the first gratitude the realm has received since 2019. It does not know what to do with it.' },
@@ -131,11 +138,18 @@ const yeFlask: Rule = {
 
 const JEFF = ['jeff', 'jeff from finance', 'finance', 'man'];
 
+const SQUEEZES = [
+  'You squeeze. It is oddly calming. It is also oddly deprecated.',
+  'You squeeze the cube. The OLAP face stares back. It has been processing since 2008. So, you realize, have you.',
+  'Squeeze. Release. Squeeze. This is the most you have processed all quest. Your forearm is now a star schema.',
+];
+
 export const GLOBAL_RULES: Rule[] = [
   yeFlask,
   {
     id: 'global.use-shortcut',
-    when: { verb: 'use', noun: ['shortcut', 'signpost', 'sign', 'onelake shortcut', 'pointer'], has: ['shortcut'] },
+    // Only a real use: "fix shortcut" / "label shortcut" parse as use too, and must not teleport you.
+    when: { verb: 'use', verbWord: ['use', 'apply'], noun: ['shortcut', 'signpost', 'sign', 'onelake shortcut', 'pointer'], has: ['shortcut'] },
     then: { text: 'You take the Shortcut. No data was moved.', moveTo: 'lake.shore', outcome: 'success', sfx: 'door' },
   },
   {
@@ -157,6 +171,27 @@ export const GLOBAL_RULES: Rule[] = [
     then: {
       text: "You read the Spark Scroll. df = spark.read.format('delta').load(path). Then, in smaller letters: # TODO: figure out the path. You feel enlightened and slightly worried.",
       points: 5, outcome: 'success',
+    },
+  },
+  // ---- Room texture (spec §18): red herrings that work wherever you carry them ----
+  {
+    id: 'global.wear-lanyard',
+    when: { verb: 'wear', noun: ['lanyard', 'fabcon lanyard', 'conference lanyard', 'badge'], has: ['lanyard'], flags: [{ flag: 'lanyard.worn', not: true }] },
+    then: { text: 'You put on the FabCon lanyard. You now look like you belong. Nobody checks. Nobody ever checks.', wear: ['lanyard'], set: { 'lanyard.worn': true }, outcome: 'snark' },
+  },
+  {
+    id: 'global.wear-name-tag',
+    when: { verb: 'wear', noun: ['name tag', 'tag', 'nametag', 'hello tag'], has: ['name tag'], flags: [{ flag: 'name-tag.worn', not: true }] },
+    then: { text: 'You stick it on. HELLO MY NAME IS Column3. It suits you. Nobody will ever rename you, because nobody will ever open you.', wear: ['name tag'], set: { 'name-tag.worn': true }, outcome: 'snark' },
+  },
+  {
+    id: 'global.squeeze-stress-ball',
+    when: { verb: 'use', noun: ['stress ball', 'ball', 'cube', 'stress cube', 'olap cube'], has: ['stress ball'] },
+    // Escalates, then settles on the last line: the grind is allowed, and mocked.
+    then: {
+      text: (s) => SQUEEZES[Math.min(Number(s.flags['stress.squeezes']) || 0, SQUEEZES.length - 1)]!,
+      set: { 'stress.squeezes': (v) => (Number(v) || 0) + 1 },
+      outcome: 'snark',
     },
   },
   {
@@ -224,7 +259,7 @@ export const SNARK: string[] = [
   'You try. The realm returns HTTP 429: Too Many Requests.',
   "That's not a thing. Even in preview.",
   'You mutter the words. A nearby Lakehouse quietly ignores you.',
-  'The parser stares at you the way the Lookup Activity does.',
+  'The parser stares at you the way the Card visual stares at (Blank).',
   'Try again, peasant. Two words. Verb, noun.',
   'Your command has been placed in a queue. The queue is infinite.',
   'That would require a Premium capacity, and look at you.',
@@ -239,9 +274,9 @@ export const SNARK: string[] = [
 export const HELP_TEXT =
   'Two words, peasant. Try: look, look at <thing>, get <thing>, drop <thing>, use <thing> on <thing>, talk to <someone>, say <words>, give <thing> to <someone>, read <thing>, wear <thing>, wait, open <thing>, board boat, n/s/e/w/out, inventory, score, save, restore, restart, quit (ends the quest and lets you post your score). When lost: get ye flask.';
 
-/** Jeff will not let it go. Every third turn near him, until pacified. */
+/** Jeff will not let it go. Every third turn near him, until pacified (or until his Excel quest proves the report right). */
 export function ambient(s: GameState): string | null {
-  if (s.flags['jeff.pacified']) return null;
+  if (s.flags['jeff.pacified'] || s.flags['sq.excel.done']) return null;
   if (s.room !== 'village.square' && s.room !== 'village.fields') return null;
   if (s.turns % 3 !== 0) return null;
   const lines = [

@@ -6,8 +6,18 @@ const VERBS: Record<string, Verb> = {
   get: 'get', take: 'get', grab: 'get', 'pick up': 'get', pickup: 'get', steal: 'get',
   drop: 'drop', discard: 'drop',
   use: 'use', apply: 'use', put: 'use', plug: 'use', insert: 'use',
+  // Jeff's Excel: spreadsheet verbs all mean "use" ("create pivot table", "filter by year", "add net sales").
+  create: 'use', filter: 'use', add: 'use', rows: 'use', values: 'use', connect: 'use', analyze: 'use', pivot: 'use',
+  // The Keep (Power BI) and the Lake House: report-building and house verbs are all ways of using a thing.
+  // Not 'remove': it would read as its opposite ("remove filter" adding one in Jeff's Excel).
+  fold: 'use', merge: 'use', align: 'use', distribute: 'use', bookmark: 'use', hide: 'use', mark: 'use', format: 'use', fix: 'use',
+  write: 'use', knock: 'use', fish: 'use', sit: 'use', update: 'use', install: 'use', buffer: 'use', publish: 'use',
+  label: 'use', refresh: 'use',
+  // Room texture: plant a seed, skip a pebble, squeeze a stress ball.
+  plant: 'use', skip: 'use', squeeze: 'use',
   talk: 'talk', 'talk to': 'talk', speak: 'talk', 'speak to': 'talk', ask: 'talk', chat: 'talk',
   say: 'say', shout: 'say', answer: 'say', yell: 'say', tell: 'say', whisper: 'say',
+  'sign in': 'say', 'log in': 'say', login: 'say', signin: 'say',
   give: 'give', offer: 'give', hand: 'give', show: 'give',
   open: 'open', unlock: 'open', close: 'close', shut: 'close',
   read: 'read',
@@ -21,6 +31,9 @@ const VERBS: Record<string, Verb> = {
   score: 'score', save: 'save', restore: 'restore', load: 'restore',
   restart: 'restart', quit: 'quit', help: 'help', '?': 'help',
 };
+
+/** Say-verbs that are themselves the phrase: "sign in" parses as say "sign in", not an empty say. */
+const SELF_SAY = new Set(['sign in', 'log in', 'login', 'signin']);
 
 const DIRS: Record<string, Dir> = {
   n: 'n', north: 'n', s: 's', south: 's', e: 'e', east: 'e', w: 'w', west: 'w',
@@ -49,16 +62,25 @@ export function parse(input: string): ParsedCommand {
   const two = words.slice(0, 2).join(' ');
   let verb: Verb;
   let rest: string[];
+  let key: string;
   if (words.length >= 2 && VERBS[two]) {
+    key = two;
     verb = VERBS[two]!;
     rest = words.slice(2);
   } else if (VERBS[words[0]!]) {
+    key = words[0]!;
     verb = VERBS[words[0]!]!;
     rest = words.slice(1);
   } else {
     return { verb: 'unknown', raw, unknownVerb: words[0] };
   }
 
+  const cmd = finishParse(verb, key, rest, raw);
+  return { ...cmd, verbWord: key };
+}
+
+function finishParse(verb: Verb, key: string, rest: string[], raw: string): ParsedCommand {
+  if (verb === 'say' && SELF_SAY.has(key)) return { verb, noun: key, raw };
   if (verb === 'say') {
     const phrase = rest.filter((w) => w !== 'the').join(' ').trim();
     return { verb, noun: phrase || undefined, raw };
